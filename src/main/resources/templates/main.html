@@ -1,10 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="dashboard-screen">
+        <div class="main-dashboard">
+            <div class="background">
+                <div class="rectangle"></div>
+                <img class="background-img" src="https://placehold.co/2526x1980" alt="Background">
+            </div>
 
+            <div class="content">
+                <div class="content-header">
+                    <h1>Dashboard</h1>
+                </div>
+
+                <div class="content-cards">
+                    <!-- 첫 번째 카드 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Orders Overview</h3>
+                            <span class="order-growth">+30% this month</span>
+                        </div>
+                        <ul class="order-list">
+                            <li>New order #9851258 <span class="order-time">18 DEC 4:41 PM</span></li>
+                            <li>Unlock packages for Development <span class="order-time">19 DEC 11:35 PM</span></li>
+                            <li>New card added for order #3210145 <span class="order-time">20 DEC 3:52 PM</span></li>
+                            <li>Server Payments for April <span class="order-time">21 DEC 9:28 PM</span></li>
+                        </ul>
+                    </div>
+                    <!-- 두 번째 카드 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Project Progress</h3>
+                        </div>
+                        <ul class="progress-list">
+                            <li>Redesign Online Shop - <span class="progress">40%</span></li>
+                            <li>New Pricing Page - <span class="progress">25%</span></li>
+                            <li>Mobile App - <span class="progress">100%</span></li>
+                            <li>Fix Platform Errors - <span class="progress">100%</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <h3>Tasks</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Progress</th>
+                                <th>Budget</th>
+                                <th>Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Redesign New Online Shop</td>
+                                <td><span class="progress">40%</span></td>
+                                <td>$7,600</td>
+                                <td>Team A</td>
+                            </tr>
+                            <tr>
+                                <td>New Pricing Page</td>
+                                <td><span class="progress">25%</span></td>
+                                <td>$400</td>
+                                <td>Team B</td>
+                            </tr>
+                            <tr>
+                                <td>Launch Mobile App</td>
+                                <td><span class="progress">100%</span></td>
+                                <td>$32,000</td>
+                                <td>Team C</td>
+                            </tr>
+                            <tr>
+                                <td>Fix Platform Errors</td>
+                                <td><span class="progress">100%</span></td>
+                                <td>Not set</td>
+                                <td>Team D</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>
