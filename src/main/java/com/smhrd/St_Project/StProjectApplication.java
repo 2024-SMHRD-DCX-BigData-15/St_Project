@@ -10,4 +10,4 @@ public class StProjectApplication {
 		SpringApplication.run(StProjectApplication.class, args);
 	}
 
-}   
+}    
