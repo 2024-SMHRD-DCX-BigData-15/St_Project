@@ -45,6 +45,6 @@ public class MemberEntity {
     private Timestamp joinedAt;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Tank> tanks;
+    private List<TankEntity> tanks;
 	
 }
