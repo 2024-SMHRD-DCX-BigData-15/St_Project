@@ -1,93 +1,107 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-    <div class="dashboard-screen">
-        <div class="main-dashboard">
-            <div class="background">
-                <div class="rectangle"></div>
-                <img class="background-img" src="https://placehold.co/2526x1980" alt="Background">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/signUp.css" />
+  </head>
+  <body>
+    <div class="sign-up-screen">
+      <div class="new-design-wrapper">
+        <div class="new-design">
+          <div class="main-dashboard">
+            <div class="image">
+              <div class="TEXT">
+                <div class="overlap-group">
+                  <div class="text-wrapper">새우 티비</div>
+                  <div class="div">실시간 새우양식 관제 시스템</div>
+                </div>
+              </div>
             </div>
-
-            <div class="content">
-                <div class="content-header">
-                    <h1>Dashboard</h1>
+            <div class="inputs">
+              <div class="overlap">
+                <div class="background">
+                  <div class="div-wrapper">
+                    <p class="p">
+                      <span class="span">계정이 이미 있습니까? </span>
+                      <span class="text-wrapper-2" onclick="window.location.href='your-login-page-url'">로그인 하기</span>
+                    </p>
+                  </div>
                 </div>
 
-                <div class="content-cards">
-                    <!-- 첫 번째 카드 -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Orders Overview</h3>
-                            <span class="order-growth">+30% this month</span>
-                        </div>
-                        <ul class="order-list">
-                            <li>New order #9851258 <span class="order-time">18 DEC 4:41 PM</span></li>
-                            <li>Unlock packages for Development <span class="order-time">19 DEC 11:35 PM</span></li>
-                            <li>New card added for order #3210145 <span class="order-time">20 DEC 3:52 PM</span></li>
-                            <li>Server Payments for April <span class="order-time">21 DEC 9:28 PM</span></li>
-                        </ul>
+                <!-- 회원가입 버튼 -->
+                <div class="button-base">
+                  <button class="button-body">
+                    <div class="text">회원 가입</div>
+                  </button>
+                </div>
+
+                <!-- 저장하기 스위치 -->
+                <div class="remember-me">
+                  <div class="text-wrapper-3">저장하기</div>
+                  <label class="switch-base">
+                    <input type="checkbox" id="saveToggle" hidden />
+                    <div class="ellipse"></div>
+                  </label>
+                </div>
+
+                <div class="name">
+                  <div class="text-wrapper-5">이름</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="text" class="input-fieldtext" placeholder="이름을 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="email">
+                  <div class="text-wrapper-5">아이디</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="text" class="input-fieldtext" placeholder="아이디를 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="password">
+                  <div class="text-wrapper-5">비밀번호</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="password" class="input-fieldtext" placeholder="비밀번호를 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="register-with">
+                  <div class="overlap-2">
+                    <img class="google-button" src="img/google-button.svg" />
+                    <img class="img" src="img/image.svg" />
+                    <img class="SNS-kakaotalk" src="img/sns-kakaotalk.svg" />
+                    <div class="title">
+                      <div class="text-wrapper-6">또는</div>
+                      <div class="text-wrapper-7">간편 회원가입</div>
                     </div>
-                    <!-- 두 번째 카드 -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Project Progress</h3>
-                        </div>
-                        <ul class="progress-list">
-                            <li>Redesign Online Shop - <span class="progress">40%</span></li>
-                            <li>New Pricing Page - <span class="progress">25%</span></li>
-                            <li>Mobile App - <span class="progress">100%</span></li>
-                            <li>Fix Platform Errors - <span class="progress">100%</span></li>
-                        </ul>
-                    </div>
+                  </div>
                 </div>
-
-                <div class="task-list">
-                    <h3>Tasks</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Task</th>
-                                <th>Progress</th>
-                                <th>Budget</th>
-                                <th>Team</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Redesign New Online Shop</td>
-                                <td><span class="progress">40%</span></td>
-                                <td>$7,600</td>
-                                <td>Team A</td>
-                            </tr>
-                            <tr>
-                                <td>New Pricing Page</td>
-                                <td><span class="progress">25%</span></td>
-                                <td>$400</td>
-                                <td>Team B</td>
-                            </tr>
-                            <tr>
-                                <td>Launch Mobile App</td>
-                                <td><span class="progress">100%</span></td>
-                                <td>$32,000</td>
-                                <td>Team C</td>
-                            </tr>
-                            <tr>
-                                <td>Fix Platform Errors</td>
-                                <td><span class="progress">100%</span></td>
-                                <td>Not set</td>
-                                <td>Team D</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+              </div>
+              <div class="title-2">
+                <div class="text-wrapper-8">새 계정을 만들어보세요.</div>
+                <div class="text-wrapper-9">환영합니다!</div>
+              </div>
             </div>
-
+          </div>
         </div>
+      </div>
     </div>
-</body>
+
+    <!-- JavaScript 추가 -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById("saveToggle");
+        const switchBase = document.querySelector(".switch-base");
+
+        switchBase.addEventListener("click", function () {
+          toggle.checked = !toggle.checked;
+          if (toggle.checked) {
+            switchBase.style.backgroundColor = "#0075ff";
+          } else {
+            switchBase.style.backgroundColor = "#ccc";
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
