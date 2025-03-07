@@ -37,7 +37,7 @@ public class MemberService {
 		public MemberEntity login(String id, String pw) {
 			
 			// select * from member_entity where id = ? and pw = ?
-			return memberRepository.findByIdAndPw(id, pw);
+			return memberRepository.findByUserIdAndUserPw(id, pw);
 			
 		}
 		

@@ -2,6 +2,8 @@ package com.smhrd.St_Project.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -18,11 +20,11 @@ public class TankEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private MemberEntity user;  // FK (VARCHAR(50))
 
-    @Column(name = "tank_weight", precision = 12, scale = 1)
-    private Double tankWeight;  // 수조 직경 (DECIMAL(12,1))
+    @Column(name = "tank_width", precision = 12, scale = 1)
+    private BigDecimal tankWidth;  // 수조 직경 (DECIMAL(12,1))
 
     @Column(name = "tank_height", precision = 12, scale = 1)
-    private Double tankHeight;  // 수조 높이 (DECIMAL(12,1))
+    private BigDecimal tankHeight;  // 수조 높이 (DECIMAL(12,1))
 
     @Column(name = "tank_location", length = 255)
     private String tankLocation;  // 수조 위치 (VARCHAR(255))

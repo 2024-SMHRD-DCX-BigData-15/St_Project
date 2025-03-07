@@ -2,6 +2,8 @@ package com.smhrd.St_Project.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -21,11 +23,11 @@ public class EnvEntity {
     private Timestamp createdAt;  // 측정 날짜 (TIMESTAMP)
 
     @Column(name = "tank_density", precision = 10, scale = 4)
-    private Double tankDensity;  // 밀도 (DECIMAL(10,4))
+    private BigDecimal tankDensity;  // 밀도 (DECIMAL(10,4))
 
     @Column(name = "tank_temp", precision = 4, scale = 1)
-    private Double tankTemp;  // 온도 (DECIMAL(4,1))
+    private BigDecimal tankTemp;  // 온도 (DECIMAL(4,1))
 
     @Column(name = "tank_population", precision = 12, scale = 1)
-    private Double tankPopulation;  // 개체수 (DECIMAL(12,1))
+    private BigDecimal tankPopulation;  // 개체수 (DECIMAL(12,1))
 }
