@@ -1,10 +1,123 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <!--<meta name=description content="This site was generated with Anima. www.animaapp.com"/>-->
+    <!-- <link rel="shortcut icon" type=image/png href="https://animaproject.s3.amazonaws.com/home/favicon.png" /> -->
+    <meta name="viewport" content="width=1920, maximum-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="https://animaproject.s3.amazonaws.com/home/favicon.png" />
+    <meta name="og:type" content="website" />
+    <meta name="twitter:card" content="photo" />
+    <link rel="stylesheet" type="text/css" href="css/sign-in-screen.css" />
+    <link rel="stylesheet" type="text/css" href="css/styleguide.css" />
+    <link rel="stylesheet" type="text/css" href="css/globals.css" />
+  </head>
+  <body style="margin: 0">
+    <input type="hidden" id="anPageName" name="page" value="sign-in-screen" />
+    <div class="container-center-horizontal">
+      <div class="sign-in-screen screen">
+        <div class="overlap-group1">
+          <div class="main-dashboard">
+            <img class="image" src="img/image.png" alt="Image" />
+            <div class="inputs">
+              <div class="title">
+                <div class="text-21">반갑습니다!</div>
+                <!-- <div class="text-20 abel-normal-hit-gray-14px">아이디와 비밀번호를 입력해주세요.</div> -->
+              </div>
 
-</body>
+              <!-- input list -->
+
+              <style>
+                .input-field-text {
+                  width: 100%;
+                  padding: 12px;
+                  font-size: 16px;
+                  background: transparent;
+                  color: white;
+                  border: none;
+                  outline: none;
+                }
+              
+                .input-field-text::placeholder {
+                  color: rgba(255, 255, 255, 0.5);
+                }
+              </style>
+              
+              <div class="id">
+                <div class="text-1">아이디</div>
+                <div class="id_input">
+                  <input type="text" class="input-field-text" placeholder="아이디를 입력하세요" />
+                </div>
+              </div>
+              <div class="password">
+                <div class="text-1">비밀번호</div>
+                <div class="email">
+                  <input type="password" class="input-field-text" placeholder="비밀번호를 입력하세요" />
+                </div>
+              </div>
+
+              <!-- 로그인 저장 -->
+              
+              <div class="remember-me">
+                <label class="switch-base">
+                  <input type="checkbox" id="saveToggle" hidden />
+                  <div class="ellipse-1"></div>
+                </label>
+                <div class="text-15">저장하기</div>
+              </div>
+
+              <!-- js 추가 -->
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const toggle = document.getElementById("saveToggle");
+                  const switchBase = document.querySelector(".switch-base");
+
+                  switchBase.addEventListener("click", function () {
+                    toggle.checked = !toggle.checked;
+
+                    if (toggle.checked) {
+                      switchBase.style.backgroundColor = "#0075ff";
+                    } else {
+                      switchBase.style.backgroundColor = "#ccc";
+                    }
+                  });
+                });
+              </script>              
+
+              <!-- 로그인 -->
+              <div class="button-base_login">
+                <button class="button-body">
+                  <div class="text valign-text-middle">로그인</div>
+                </button>
+              </div>
+
+              <!-- 회원가입 -->
+              <div class="text-14 abel-normal-hit-gray-14px">
+                계정이 없으신가요? <a href="your-signup-page-url" class="signup-link">회원가입</a>
+              </div>
+
+              <!-- 간편 로그인 -->
+              <div class="text-13 abel-normal-hit-gray-14px">간편 로그인</div>
+
+              <!-- 소셜 로그인 -->
+              <div class="social-login-container">
+                <div class="social-buttons">
+                  <img class="social-icon-kakao" src="img/sns-kakaotalk.svg" alt="KakaoTalk" />
+                  <img class="social-icon-naver" src="img/-------.svg" alt="Naver" />
+                  <img class="social-icon-google" src="img/google-login.jpg" alt="Google" />
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+          <div class="text-container">
+            <div class="text-22">실시간 새우양식 관제시스템</div>
+            <div class="text-23">새우 티비</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

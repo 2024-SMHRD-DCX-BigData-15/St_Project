@@ -1,10 +1,107 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="sign-up-screen.css" />
+  </head>
+  <body>
+    <div class="sign-up-screen">
+      <div class="new-design-wrapper">
+        <div class="new-design">
+          <div class="main-dashboard">
+            <div class="image">
+              <div class="TEXT">
+                <div class="overlap-group">
+                  <div class="text-wrapper">새우 티비</div>
+                  <div class="div">실시간 새우양식 관제 시스템</div>
+                </div>
+              </div>
+            </div>
+            <div class="inputs">
+              <div class="overlap">
+                <div class="background">
+                  <div class="div-wrapper">
+                    <p class="p">
+                      <span class="span">계정이 이미 있습니까? </span>
+                      <span class="text-wrapper-2" onclick="window.location.href='your-login-page-url'">로그인 하기</span>
+                    </p>
+                  </div>
+                </div>
 
-</body>
+                <!-- 회원가입 버튼 -->
+                <div class="button-base">
+                  <button class="button-body">
+                    <div class="text">회원 가입</div>
+                  </button>
+                </div>
+
+                <!-- 저장하기 스위치 -->
+                <div class="remember-me">
+                  <div class="text-wrapper-3">저장하기</div>
+                  <label class="switch-base">
+                    <input type="checkbox" id="saveToggle" hidden />
+                    <div class="ellipse"></div>
+                  </label>
+                </div>
+
+                <div class="name">
+                  <div class="text-wrapper-5">이름</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="text" class="input-fieldtext" placeholder="이름을 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="email">
+                  <div class="text-wrapper-5">아이디</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="text" class="input-fieldtext" placeholder="아이디를 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="password">
+                  <div class="text-wrapper-5">비밀번호</div>
+                  <div class="input-fieldtext-wrapper">
+                    <input type="password" class="input-fieldtext" placeholder="비밀번호를 입력하세요" />
+                  </div>
+                </div>
+
+                <div class="register-with">
+                  <div class="overlap-2">
+                    <img class="google-button" src="img/google-button.svg" />
+                    <img class="img" src="img/image.svg" />
+                    <img class="SNS-kakaotalk" src="img/sns-kakaotalk.svg" />
+                    <div class="title">
+                      <div class="text-wrapper-6">또는</div>
+                      <div class="text-wrapper-7">간편 회원가입</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="title-2">
+                <div class="text-wrapper-8">새 계정을 만들어보세요.</div>
+                <div class="text-wrapper-9">환영합니다!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript 추가 -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById("saveToggle");
+        const switchBase = document.querySelector(".switch-base");
+
+        switchBase.addEventListener("click", function () {
+          toggle.checked = !toggle.checked;
+          if (toggle.checked) {
+            switchBase.style.backgroundColor = "#0075ff";
+          } else {
+            switchBase.style.backgroundColor = "#ccc";
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
