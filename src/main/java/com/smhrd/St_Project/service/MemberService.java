@@ -24,13 +24,13 @@ public class MemberService {
 		}
 		
 		// 아이디 중복체크 기능
-		public boolean isIdCheck(String id) {
+		public boolean isUserIdExists(String id) {
 			// 기능 추가
 			// id 중복체크!!
 			// existsById -> member pk idx
 			// 실제 id라는 컬럼을 희망
 			// true -> 데이터가 있다 --> 아이디가 중복되었다!
-			return memberRepository.existsById(id);
+			return memberRepository.existsByUserId(id);
 		}
 		
 		// 로그인 기능

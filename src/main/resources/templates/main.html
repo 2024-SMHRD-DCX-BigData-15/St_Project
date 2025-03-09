@@ -87,27 +87,33 @@
     });
 
     // 아이디 중복 체크
-    function checkId() {
-      const userId = document.getElementById('userId').value;
-      const idMessage = document.getElementById('idMessage');
+function checkId() {
+  const userId = document.getElementById('userId').value;
+  const idMessage = document.getElementById('idMessage');
 
-      // Ajax 중복 여부 확인
-      fetch('/check-id', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        idMessage.textContent = data.isDuplicated ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.";
-        idMessage.classList.toggle("text-danger", data.isDuplicated);
-        idMessage.classList.toggle("text-success", !data.isDuplicated);
-      })
-      .catch(() => {
-        idMessage.textContent = "중복된 아이디 입니다.";
-        idMessage.classList.add("text-danger");
-      });
+  fetch('/api/check-id', { // 컨트롤러 경로에 맞게 수정
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: userId }) // JSON 데이터 key 값도 userId로 일치시킴
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.isDuplicated) {
+      idMessage.textContent = "이미 존재하는 아이디입니다.";
+      idMessage.classList.add("text-danger");
+      idMessage.classList.remove("text-success");
+    } else {
+      idMessage.textContent = "사용 가능한 아이디입니다.";
+      idMessage.classList.add("text-success");
+      idMessage.classList.remove("text-danger");
     }
+  })
+  .catch(() => {
+    idMessage.textContent = "서버 오류 발생";
+    idMessage.classList.add("text-danger");
+  });
+}
+
 
     // 가입 날짜 타임스탬프
     document.getElementById("joinDate").value = new Date().toISOString().slice(0, 19).replace("T", " ");
