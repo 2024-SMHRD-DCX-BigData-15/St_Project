@@ -1,107 +1,116 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="/css/main.css" />
-  </head>
-  <body>
-    <div class="sign-up-screen">
-      <div class="new-design-wrapper">
-        <div class="new-design">
-          <div class="main-dashboard">
-            <div class="image">
-              <div class="TEXT">
-                <div class="overlap-group">
-                  <div class="text-wrapper">새우 티비</div>
-                  <div class="div">실시간 새우양식 관제 시스템</div>
-                </div>
-              </div>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body style="margin: 0">
+  <div class="container-center-horizontal">
+    <div class="sign-in-screen screen">
+      <div class="main-dashboard">
+        <div class="inputs">
+          <div class="title">
+            <div class="text-21">회원가입</div>
+          </div>
+
+          <form action="register.do" method="post" id="registerForm">
+            <div class="input-group">
+              <label for="userId" class="text-1">아이디</label>
+              <input type="text" id="userId" name="userId" class="input-field-text" placeholder="아이디를 입력하세요" required />
+              <button type="button" id="checkIdBtn" onclick="checkId()" class="check-btn">중복 체크</button>
+              <small id="idMessage"></small>
             </div>
-            <div class="inputs">
-              <div class="overlap">
-                <div class="background">
-                  <div class="div-wrapper">
-                    <p class="p">
-                      <span class="span">계정이 이미 있습니까? </span>
-                      <span class="text-wrapper-2" onclick="window.location.href='your-login-page-url'">로그인 하기</span>
-                    </p>
-                  </div>
-                </div>
-
-                <!-- 회원가입 버튼 -->
-                <div class="button-base">
-                  <button class="button-body">
-                    <div class="text">회원 가입</div>
-                  </button>
-                </div>
-
-                <!-- 저장하기 스위치 -->
-                <div class="remember-me">
-                  <div class="text-wrapper-3">저장하기</div>
-                  <label class="switch-base">
-                    <input type="checkbox" id="saveToggle" hidden />
-                    <div class="ellipse"></div>
-                  </label>
-                </div>
-
-                <div class="name">
-                  <div class="text-wrapper-5">이름</div>
-                  <div class="input-fieldtext-wrapper">
-                    <input type="text" class="input-fieldtext" placeholder="이름을 입력하세요" />
-                  </div>
-                </div>
-
-                <div class="email">
-                  <div class="text-wrapper-5">아이디</div>
-                  <div class="input-fieldtext-wrapper">
-                    <input type="text" class="input-fieldtext" placeholder="아이디를 입력하세요" />
-                  </div>
-                </div>
-
-                <div class="password">
-                  <div class="text-wrapper-5">비밀번호</div>
-                  <div class="input-fieldtext-wrapper">
-                    <input type="password" class="input-fieldtext" placeholder="비밀번호를 입력하세요" />
-                  </div>
-                </div>
-
-                <div class="register-with">
-                  <div class="overlap-2">
-                    <img class="google-button" src="img/google-button.svg" />
-                    <img class="img" src="img/image.svg" />
-                    <img class="SNS-kakaotalk" src="img/sns-kakaotalk.svg" />
-                    <div class="title">
-                      <div class="text-wrapper-6">또는</div>
-                      <div class="text-wrapper-7">간편 회원가입</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="title-2">
-                <div class="text-wrapper-8">새 계정을 만들어보세요.</div>
-                <div class="text-wrapper-9">환영합니다!</div>
-              </div>
+            
+            <div class="input-group">
+              <label for="password" class="text-1">비밀번호</label>
+              <input type="password" id="password" name="password" class="input-field-text" placeholder="비밀번호를 입력하세요" required />
             </div>
+
+            <div class="input-group">
+              <label for="passwordConfirm" class="text-1">비밀번호 확인</label>
+              <input type="password" id="passwordConfirm" name="passwordConfirm" class="input-field-text" placeholder="비밀번호를 한 번 더 입력하세요" required />
+              <small id="pwMessage"></small>
+            </div>
+
+            <div class="input-group">
+              <label for="name" class="text-1">이름</label>
+              <input type="text" id="name" name="name" class="input-field-text" placeholder="이름을 입력하세요" />
+            </div>
+
+            <div class="input-group">
+              <label for="farmAddr" class="text-1">양식장 주소</label>
+              <input type="text" id="farmAddr" name="farmAddr" class="input-field-text" placeholder="양식장 주소를 입력하세요" />
+            </div>
+
+            <div class="input-group">
+              <label for="contact" class="text-1">연락처</label>
+              <input type="text" id="contact" name="contact" class="input-field-text" placeholder="연락처를 입력하세요" />
+            </div>
+
+            <!-- 히든 필드 : 가입 날짜 타임스탬프, 회원 유형, 탈퇴 여부 -->
+            <input type="hidden" id="joinDate" name="joinDate" value="" />
+            <input type="hidden" id="userType" name="userType" value="사용자모드" />
+            <input type="hidden" id="isActive" name="isActive" value="N" />
+
+            <div class="button-base_login">
+              <button type="submit" id="registerBtn" class="button-body">
+                <div class="text">회원가입</div>
+              </button>
+            </div>
+          </form>
+
+          <div class="text-14">
+            계정이 있으신가요? <a href="login.html" class="signup-link">로그인</a>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  
+  <script>
+    // 비밀번호 확인
+    document.getElementById("passwordConfirm").addEventListener("input", function () {
+      const pw = document.getElementById("password").value;
+      const pwConfirm = this.value;
+      const pwMessage = document.getElementById("pwMessage");
 
-    <!-- JavaScript 추가 -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const toggle = document.getElementById("saveToggle");
-        const switchBase = document.querySelector(".switch-base");
+      if (pw === pwConfirm) {
+        pwMessage.textContent = "비밀번호가 일치합니다.";
+        pwMessage.classList.add("text-success");
+        pwMessage.classList.remove("text-danger");
+      } else {
+        pwMessage.textContent = "비밀번호가 일치하지 않습니다.";
+        pwMessage.classList.add("text-danger");
+        pwMessage.classList.remove("text-success");
+      }
+    });
 
-        switchBase.addEventListener("click", function () {
-          toggle.checked = !toggle.checked;
-          if (toggle.checked) {
-            switchBase.style.backgroundColor = "#0075ff";
-          } else {
-            switchBase.style.backgroundColor = "#ccc";
-          }
-        });
+    // 아이디 중복 체크
+    function checkId() {
+      const userId = document.getElementById('userId').value;
+      const idMessage = document.getElementById('idMessage');
+
+      // Ajax 중복 여부 확인
+      fetch('/check-id', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        idMessage.textContent = data.isDuplicated ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.";
+        idMessage.classList.toggle("text-danger", data.isDuplicated);
+        idMessage.classList.toggle("text-success", !data.isDuplicated);
+      })
+      .catch(() => {
+        idMessage.textContent = "중복된 아이디 입니다.";
+        idMessage.classList.add("text-danger");
       });
-    </script>
-  </body>
+    }
+
+    // 가입 날짜 타임스탬프
+    document.getElementById("joinDate").value = new Date().toISOString();
+  </script>
+</body>
 </html>
