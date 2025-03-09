@@ -6,7 +6,7 @@ import com.smhrd.St_Project.entity.MemberEntity;
 
 public interface MemberRepository extends JpaRepository<MemberEntity, String> {
 	
-	boolean existsById(String userId);
+	boolean existsByUserId(String userId);
 	
 	// 로그인 기능
 	MemberEntity findByUserIdAndUserPw(String userId, String userPw);

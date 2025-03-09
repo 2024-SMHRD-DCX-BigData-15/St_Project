@@ -46,7 +46,7 @@ public class MemberController {
 		
 		
 		// 로그인 기능 구현
-		@GetMapping("/login.do")
+		@PostMapping("/login.do")
 		public String login(@RequestParam String id, @RequestParam String pw,
 				HttpSession session) {
 			
