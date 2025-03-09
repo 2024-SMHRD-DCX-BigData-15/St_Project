@@ -15,7 +15,7 @@ public class MemberRestController {
 	
 	@GetMapping("/check-id")
 	public boolean checkId(@RequestParam String id) {
-//		System.out.println("check-id 확인");
+		System.out.println("check-id 확인");
 		boolean result = memberService.isIdCheck(id);
 		
 		return result;
