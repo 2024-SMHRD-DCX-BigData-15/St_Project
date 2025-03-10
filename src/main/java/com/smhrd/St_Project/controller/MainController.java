@@ -8,13 +8,13 @@ public class MainController {
 
 	@GetMapping("/")
 	public String main() {
-		return "main";
+		return "login";
 	}
 
-	// 로그인 페이지 이동
-	@GetMapping("/login")
+	// 회원가입 페이지 이동
+	@GetMapping("/register")
 	public String login() {
-		return "login";
+		return "register";
 	}
 
 }
