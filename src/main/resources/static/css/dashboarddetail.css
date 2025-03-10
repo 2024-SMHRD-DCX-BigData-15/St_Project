@@ -1,1 +1,370 @@
-@charset "UTF-8";
+/* 기본 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 전체 페이지 스타일 */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #1e213a;
+  color: #ffffff;
+  line-height: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0; /* 기본 여백을 제거 */
+  overflow-x: auto; /* 수평 스크롤을 자동으로 생성 */
+}
+
+/* 페이지 레이아웃을 위한 wrapper */
+.wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: flex-start; /* 세로로는 위에 맞추기 */
+  height: 100%; /* 화면 전체 높이 */
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+  padding: 30px;
+  width: 100%; /* 너비를 100%로 설정 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  padding: 10px 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #1a2530;
+  border-radius: 5px;
+  width: 100%;
+  display: inline-block;
+}
+
+
+
+.user-name {
+  font-size: 13px;
+  color: #ffffff;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+/* 대시보드 카드 */
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* 반응형을 위해 유지 */
+  
+}
+
+/* 각 카드 내의 canvas 크기 설정 */
+.dashboard-cards canvas {
+  width: 100%;
+  height: 50px;  
+}
+
+/* 실시간 그래프에 대한 canvas 크기 설정 */
+.graph-container canvas {
+  width: 100%;
+  height: 100px;  
+}
+
+
+/* 데이터 카드 (산성도, 용존산소, 수온, 염도, 암모니아, 아질산) */
+
+.card {
+  
+  padding: 20px;
+  background-color: #1e2a37;
+  border-radius: 10px;
+  color: white;
+  margin: 10px 0;
+  flex: 1 1 calc(16.66% - 20px); /* 6개 카드가 한 줄에 배치되도록 (100% / 6 - gap) */
+  max-width: calc(16.66% - 20px); /* 최대 너비 설정 */
+  min-width: 173px; /* 최소 너비 설정 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}
+
+
+.card h3, .card h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+
+
+.data-container p {
+  font-size: 16px;
+}
+
+.card button {
+  padding: 10px 20px;
+  background-color: #00bfae;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;        /* block 요소로 설정 */
+  margin: 0 auto;        /* 부모 요소 내에서 가운데 정렬 */
+}
+
+.card button:hover {
+  background-color: #009e8a;
+}
+
+/* 수조정보와 실시간 그래프 스타일 */
+.dashboard-cards {
+  display: flex;
+  flex-wrap: nowrap; /* 수평으로 고정 */
+  align-items: stretch; /* 높이 맞춤 */
+  width: 98%; /* 전체 너비 확보 */
+  gap: 20px; /* 수조정보와 실시간 그래프 사이 간격 */
+  min-height: 200px; /* 최소 높이 설정 */
+}
+
+/* 수조정보 */
+.tank-info {
+  background-color: #252c41;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 25%; /* 25% 너비로 고정 */
+  max-width: 25%;
+  min-width: 200px; /* 최소 너비 설정 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}
+
+/* 실시간 그래프 */
+.card-graph {
+  background-color: #252c41;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 75%; /* 75% 너비로 고정 */
+  max-width: 75%;
+  min-width: 300px; /* 최소 너비 설정 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}
+
+/* 실시간 그래프 */
+.graph-container {
+  background-color: #252c41;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  min-height: 200px;
+  max-height: 400px; /* 그래프 높이 제한 */
+  overflow-y: auto; /* 내용이 넘치면 스크롤 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .dashboard-cards {
+    flex-direction: column; /* 모바일에서는 세로로 나열 */
+  }
+
+  .tank-info, .card-graph {
+    min-width: 100%; /* 모바일에서는 100% 너비로 설정 */
+  }
+}
+
+/* 컨트롤 센터 레이아웃 (위험 알림과 알림 로그) */
+.control-center {
+  display: grid;
+  grid-template-columns: 25% 75%; /* 위험 알림은 25%, 알람 로그는 75% */
+  gap: 20px;
+  margin-top: 30px;
+  width: 98%;
+}
+
+/* 위험 알림 카드 */
+.card-alert {
+  background-color: #f44336;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 280px; /* 위험 알림의 최소 너비는 다르게 설정 */
+}
+
+.alarm-log {
+  background-color: #252c41;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 75%; /* 75% 너비로 고정 */
+}
+
+.alarm-log ul {
+  list-style: none;
+  padding: 0;
+}
+
+.alarm-log li {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #353f57;
+  border-radius: 4px;
+}
+
+.alarm-log li:last-child {
+  margin-bottom: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .dashboard-cards {
+    flex-direction: column;
+  }
+
+  .card {
+    flex: 1 1 100%; /* 모바일에서는 한 줄에 하나씩 */
+    max-width: 100%; /* 모바일에서는 최대 너비 100% */
+    margin-bottom: 20px;
+  }
+
+  .dashboard-cards:nth-child(2) {
+    flex-direction: column;
+  }
+
+  .tank-info {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .card-graph {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .control-center {
+    grid-template-columns: 1fr; /* 1열로 변경 */
+  }
+
+  .card-alert {
+    width: 100%;
+  }
+
+  .alarm-log {
+    width: 100%;
+  }
+}
+
+
+/* 사이드바 스타일 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* 사이드바는 왼쪽에서 숨겨짐 */
+  width: 180px;
+  height: 100%;
+  background-color: #252c41;
+  transition: left 0.3s ease; /* right에서 left로 변경 */
+  padding-top: 20px;
+  z-index: 1000;
+}
+
+/* 사이드바 열기 및 닫기 */
+.sidebar.open {
+  left: 0; /* 왼쪽에서 열림 */
+}
+
+.sidebar-header {
+  text-align: center;
+  color: #fff;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  padding: 10px;
+  text-align: center;
+}
+
+.sidebar-menu li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+}
+
+/* 햄버거 메뉴 스타일 */
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.hamburger-menu .bar {
+  width: 30px;
+  height: 5px;
+  background-color: #fff;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+
+
+.hamburger-menu.open .bar:nth-child(1) {
+  opacity: 1;
+}
+
+.hamburger-menu.open .bar:nth-child(2) {
+  opacity: 1;
+}
+
+.hamburger-menu.open .bar:nth-child(3) {
+  opacity: 1;
+}
