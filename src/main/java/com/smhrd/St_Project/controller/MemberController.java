@@ -45,6 +45,7 @@ public class MemberController {
 		return "login"; // 회원가입 후 로그인 페이지로 이동
 	}
 
+	// 로그인 기능
 	@PostMapping("/login.do")
 	public String login(@RequestParam(required = false) String id, @RequestParam(required = false) String pw,
 			HttpSession session) {
@@ -70,7 +71,9 @@ public class MemberController {
 			return "redirect:/login?error=true";
 		}
 	}
-
+	
+	
+	// 회원정보 수정 기능
 	// 생성자를 통해 MemberService를 주입받음
 	public MemberController(MemberService memberService) {
 		this.memberService = memberService;
@@ -121,12 +124,33 @@ public class MemberController {
 	    return "redirect:/maindashboard"; // 업데이트 후 대시보드로 이동
 	}
 
+	// 회원 탈퇴 폼
+    @GetMapping("/delete")
+    public String showDeleteForm() {
+        return "delete";  // 회원 탈퇴 페이지로 이동
+    }
 
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.removeAttribute("loginUser");
+    // 회원 탈퇴 처리
+    @PostMapping("/delete")
+    public String deleteMember(@RequestParam String userId, @RequestParam String userPw, Model model) {
+        // 탈퇴 처리 서비스 호출
+        boolean isDeleted = memberService.deleteMember(userId, userPw);
 
-		return "redirect:/";
-	}
+        // 탈퇴 처리 결과에 따른 메시지 설정
+        String message = isDeleted ? "회원 탈퇴가 완료되었습니다." : "아이디 또는 비밀번호가 잘못되었습니다.";
+        model.addAttribute("message", message);
 
+        // 탈퇴 후 홈 페이지로 리다이렉트
+        return "redirect:/";
+    }
+
+    // 로그아웃 처리
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        // 세션에서 로그인 정보 제거
+        session.removeAttribute("loginUser");
+
+        // 로그아웃 후 홈 페이지로 리다이렉트
+        return "redirect:/";
+    }
 }

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.smhrd.St_Project.repository.MemberRepository;
 import com.smhrd.St_Project.util.PasswordEncryptor;
+
+import jakarta.transaction.Transactional;
+
 import com.smhrd.St_Project.entity.MemberEntity;
 
 @Service
@@ -90,5 +93,20 @@ public class MemberService {
               System.out.println("Member not found");
           }
       }
-     
-}
+      
+      // 회원 탈퇴 처리
+      @Transactional
+      public boolean deleteMember(String id, String pw) {
+          // 1. 사용자 정보 확인
+          MemberEntity member = memberRepository.findById(id).orElse(null);
+          if (member == null || !member.getUserPw().equals(pw)) {
+              return false; // 아이디 또는 비밀번호 불일치
+          }
+
+          // 2. 탈퇴 처리 (userStatus를 'Y'로 설정)
+          member.setUserStatus('Y'); // 탈퇴 상태로 변경
+          memberRepository.save(member); // 업데이트 후 저장
+
+          return true; // 탈퇴 성공
+      }
+  }

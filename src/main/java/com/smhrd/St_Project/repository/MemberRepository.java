@@ -15,5 +15,5 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String> {
 	static void save(String userId) {		
 		
 	}
-
+	
 }
