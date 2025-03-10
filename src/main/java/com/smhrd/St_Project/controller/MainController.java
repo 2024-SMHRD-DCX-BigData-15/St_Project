@@ -16,5 +16,12 @@ public class MainController {
 	public String login() {
 		return "register";
 	}
+	
+	// 메인 대시보드 페이지 이동
+	@GetMapping("/maindashboard")
+	public String maindashboard() {
+		return "maindashboard";
+	}
+
 
 }
