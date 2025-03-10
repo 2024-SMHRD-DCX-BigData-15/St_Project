@@ -42,19 +42,32 @@ public class MemberController {
         return "login"; // 회원가입 후 로그인 페이지로 이동
     }
 
-	// 로그인 기능 구현
-	@PostMapping("/login.do")
-	public String login(@RequestParam String id, @RequestParam String pw, HttpSession session) {
+    @PostMapping("/login.do")
+    public String login(@RequestParam(required = false) String id, 
+                        @RequestParam(required = false) String pw, 
+                        HttpSession session) {
 
-		MemberEntity member = memberService.login(id, pw);
-		if (member != null) {
-			session.setAttribute("loginUser", member);
-			return "redirect:/maindashboard";
-		} else {
-			// 로그인 실패시 alert 창 띄우기
-			return "redirect:/login?error=true";
-		}
-	}
+        // id 또는 pw 값이 없는 경우 예외 처리
+        if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
+            System.out.println("로그인 실패: ID 또는 비밀번호가 비어있음");
+            return "redirect:/login?error=missing_credentials";
+        }
+
+        System.out.println("로그인 요청: ID=" + id + ", PW=" + pw);
+
+        MemberEntity member = memberService.login(id, pw);
+
+        if (member != null) {
+            session.setAttribute("loginUser", member);
+            System.out.println("로그인 성공: " + id);
+            return "redirect:/maindashboard";
+        } else {
+            System.out.println("로그인 실패: 사용자 없음");
+            return "redirect:/login?error=true";
+        }
+    }
+
+
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {

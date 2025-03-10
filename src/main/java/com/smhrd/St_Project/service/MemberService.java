@@ -15,15 +15,11 @@ public class MemberService {
       MemberRepository memberRepository;
       
    // 회원가입 기능 (비밀번호 암호화 적용)
-      public String register(MemberEntity member) {
-          // 비밀번호를 SHA-256으로 암호화
-          String encryptedPw = PasswordEncryptor.encryptSHA256(member.getUserPw());
-          member.setUserPw(encryptedPw);
-          
-          // 저장
-          memberRepository.save(member);
-          return "회원가입 성공";
-      }
+      public void register(MemberEntity member) {
+    	    // 클라이언트에서 이미 해싱한 비밀번호를 전달했으므로, 추가 해싱 없이 저장
+    	    memberRepository.save(member);
+    	}
+
       
       // 아이디 중복체크 기능
       public boolean isUserIdExists(String id) {
@@ -37,8 +33,19 @@ public class MemberService {
       
    // 로그인 기능 (암호화된 비밀번호 검증)
       public MemberEntity login(String id, String pw) {
-          String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
-          return memberRepository.findByUserIdAndUserPw(id, encryptedPw);
-      }
+    	    if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
+    	        System.out.println("로그인 실패: ID 또는 PW가 null 또는 비어 있음");
+    	        return null;
+    	    }
+
+    	    System.out.println("로그인 시도: ID=" + id + ", PW=" + pw);
+
+    	    String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
+
+    	    System.out.println("암호화된 PW: " + encryptedPw);
+
+    	    return memberRepository.findByUserIdAndUserPw(id, encryptedPw);
+    	}
+
      
 }

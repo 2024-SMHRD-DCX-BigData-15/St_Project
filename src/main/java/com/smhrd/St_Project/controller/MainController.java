@@ -19,10 +19,16 @@ public class MainController {
 	}
 	
 	// 회원가입 페이지 이동
-	@PostMapping("/maindashboard")
+	@GetMapping("/maindashboard")
 	public String maindashboard() {
 		return "maindashboard";
 	}
+	
+	@GetMapping("/login")
+	public String loginPage() {
+	    return "login";
+	}
+
 		
 
 }
