@@ -1,4 +1,4 @@
-/* 기본 리셋zzzzzz */
+/* 기본 리셋 */
 * {
   margin: 0;
   padding: 0;
@@ -53,7 +53,7 @@ body {
   margin: 0;
   padding: 10px 0;
   font-family: 'Arial', sans-serif;
-  background-color: #1a2530;
+  background-color: #1e213a;
   border-radius: 5px;
   width: 100%;
   display: inline-block;
@@ -65,12 +65,7 @@ body {
   gap: 15px;
 }
 
-.user-avatar img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
+
 
 .user-name {
   font-size: 13px;
@@ -198,13 +193,18 @@ body {
 .sidebar {
   position: fixed;
   top: 0;
-  right: -250px; /* 사이드바는 오른쪽에서 숨겨짐 */
+  left: -250px; /* 사이드바는 왼쪽에서 숨겨짐 */
   width: 250px;
   height: 100%;
   background-color: #252c41;
-  transition: right 0.3s ease;
+  transition: left 0.3s ease; /* right에서 left로 변경 */
   padding-top: 20px;
   z-index: 1000;
+}
+
+/* 사이드바 열기 및 닫기 */
+.sidebar.open {
+  left: 0; /* 왼쪽에서 열림 */
 }
 
 .sidebar-header {
@@ -245,23 +245,7 @@ body {
   transition: 0.4s;
 }
 
-/* 사이드바 스타일 */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -250px; /* 사이드바는 왼쪽에서 숨겨짐 */
-  width: 250px;
-  height: 100%;
-  background-color: #252c41;
-  transition: left 0.3s ease; /* right에서 left로 변경 */
-  padding-top: 20px;
-  z-index: 1000;
-}
 
-/* 사이드바 열기 및 닫기 */
-.sidebar.open {
-  left: 0; /* 왼쪽에서 열림 */
-}
 
 .hamburger-menu.open .bar:nth-child(1) {
   opacity: 1;
@@ -274,4 +258,5 @@ body {
 .hamburger-menu.open .bar:nth-child(3) {
   opacity: 1;
 }
+
 
