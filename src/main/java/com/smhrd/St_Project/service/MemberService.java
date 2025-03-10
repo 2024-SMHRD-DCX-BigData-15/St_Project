@@ -125,5 +125,25 @@ public class MemberService {
 
           System.out.println("=== 3분 이상 지난 탈퇴 회원 삭제 완료 ===");
       }
+      
+      // 계정 복구 기능 추가
+      public boolean recoverMember(String id, String pw) {
+          String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
+          MemberEntity member = memberRepository.findByUserIdAndUserPw(id, encryptedPw);
+
+          if (member == null || member.getUserStatus() == 'N') {
+              System.out.println("계정 복구 실패: 존재하지 않거나 이미 활성화된 계정");
+              return false;
+          }
+
+          // 계정 복구 처리
+          member.setUserStatus('N');  // 정상 상태로 변경
+          member.setDeletedAt(null);  // 삭제 날짜 초기화
+          memberRepository.save(member);
+
+          System.out.println("계정 복구 완료: " + id);
+          return true;
+      }
+
 
 }

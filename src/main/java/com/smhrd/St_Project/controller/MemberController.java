@@ -146,6 +146,19 @@ public class MemberController {
         // 탈퇴 후 홈 페이지로 리다이렉트
         return "redirect:/";
     }
+    
+    @PostMapping("/recover")
+    public String recoverMember(@RequestParam String id, @RequestParam String pw, Model model) {
+        boolean isRecovered = memberService.recoverMember(id, pw);
+
+        if (isRecovered) {
+            model.addAttribute("message", "계정이 성공적으로 복구되었습니다. 로그인해주세요.");
+            return "redirect:/login";
+        } else {
+            model.addAttribute("message", "계정 복구 실패: 아이디 또는 비밀번호를 확인해주세요.");
+            return "redirect:/relogin?error=true";
+        }
+    }
 
 
     // 로그아웃 처리
