@@ -49,7 +49,7 @@ public class MemberController {
 		MemberEntity member = memberService.login(id, pw);
 		if (member != null) {
 			session.setAttribute("loginUser", member);
-			return "redirect:/";
+			return "redirect:/maindashboard";
 		} else {
 			// 로그인 실패시 alert 창 띄우기
 			return "redirect:/login?error=true";
