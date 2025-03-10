@@ -60,13 +60,14 @@ public class MemberController {
         if (member != null) {
             session.setAttribute("loginUser", member);
             System.out.println("로그인 성공: " + id);
+            // 세션에 저장된 로그인 사용자 정보 출력 (디버깅용)
+            System.out.println("세션에 저장된 로그인 사용자: " + session.getAttribute("loginUser"));
             return "redirect:/maindashboard";
         } else {
             System.out.println("로그인 실패: 사용자 없음");
             return "redirect:/login?error=true";
         }
     }
-
 
 
 	@GetMapping("/logout")

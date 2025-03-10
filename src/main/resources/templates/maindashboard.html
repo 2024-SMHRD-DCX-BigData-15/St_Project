@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">	
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">	
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,8 +34,17 @@
         <header class="header">
           <h1 class="page-title">새우양식관제시스템</h1>
           <div class="user-info">
-            <span class="user-name">김성권</span>
-          </div>
+          
+          
+          <div th:if="${session.loginUser != null}">
+    		<p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
+		  </div>
+		<div th:if="${session.loginUser == null}">
+		    <p>로그인해주세요.</p>
+		</div>
+		
+		
+		 </div>
         </header>
 
         <!-- 수조 관리 시스템 -->
