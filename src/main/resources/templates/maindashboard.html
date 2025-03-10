@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">	
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">   
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,14 +37,14 @@
           
           
           <div th:if="${session.loginUser != null}">
-    		<p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
-		  </div>
-		<div th:if="${session.loginUser == null}">
-		    <p>로그인해주세요.</p>
-		</div>
-		
-		
-		 </div>
+          <p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
+        </div>
+      <div th:if="${session.loginUser == null}">
+          <p>로그인해주세요.</p>
+      </div>
+      
+      
+       </div>
         </header>
 
         <!-- 수조 관리 시스템 -->
