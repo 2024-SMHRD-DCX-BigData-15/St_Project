@@ -40,4 +40,8 @@ public class MemberEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AlarmEntity> alarms;
+    
+    @Column(name = "deleted_at", nullable = true)
+    private Timestamp deletedAt;
+
 }
