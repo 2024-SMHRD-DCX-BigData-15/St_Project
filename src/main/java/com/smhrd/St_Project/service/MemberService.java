@@ -1,5 +1,8 @@
 package com.smhrd.St_Project.service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +53,25 @@ public class MemberService {
     	}
 
       
-      // 회원정보 수정
-      public MemberService(MemberRepository memberRepository) {
-          this.memberRepository = memberRepository;
+      
+      public void updateMember(MemberEntity member) {
+          memberRepository.save(member);  // DB에 업데이트
       }
 
+      public String encryptPassword(String password) {
+          try {
+              MessageDigest md = MessageDigest.getInstance("SHA-256");
+              byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+              StringBuilder sb = new StringBuilder();
+              for (byte b : hashedBytes) {
+                  sb.append(String.format("%02x", b));
+              }
+              return sb.toString();
+          } catch (NoSuchAlgorithmException e) {
+              throw new RuntimeException("암호화 오류", e);
+          }
+      }
+    	    
       // findDetail 메서드 추가
       public Optional<MemberEntity> findDetail(String id) {
           return memberRepository.findById(id);

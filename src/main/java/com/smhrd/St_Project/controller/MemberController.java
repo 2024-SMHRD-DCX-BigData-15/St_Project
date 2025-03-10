@@ -25,70 +25,101 @@ public class MemberController {
 	MemberService memberService;
 
 	// 회원가입 기능 (비밀번호 암호화 적용)
-    @PostMapping("/register.do")
-    public String register(@RequestParam String id, @RequestParam String pw, 
-                           @RequestParam String name, @RequestParam String add, 
-                           @RequestParam String phone, @RequestParam char status, 
-                           @RequestParam char role, @RequestParam Timestamp joinedat) {
+	@PostMapping("/register.do")
+	public String register(@RequestParam String id, @RequestParam String pw, @RequestParam String name,
+			@RequestParam String add, @RequestParam String phone, @RequestParam char status, @RequestParam char role,
+			@RequestParam Timestamp joinedat) {
 
-        MemberEntity member = new MemberEntity();
-        member.setUserId(id);
-        member.setUserPw(pw); // 암호화는 Service에서 처리
-        member.setUserName(name);
-        member.setUserAdd(add);
-        member.setUserPhone(phone);
-        member.setUserStatus(status);
-        member.setUserRole(role);
-        member.setJoinedAt(joinedat);
+		MemberEntity member = new MemberEntity();
+		member.setUserId(id);
+		member.setUserPw(pw); // 암호화는 Service에서 처리
+		member.setUserName(name);
+		member.setUserAdd(add);
+		member.setUserPhone(phone);
+		member.setUserStatus(status);
+		member.setUserRole(role);
+		member.setJoinedAt(joinedat);
 
-        memberService.register(member);
+		memberService.register(member);
 
-        return "login"; // 회원가입 후 로그인 페이지로 이동
-    }
+		return "login"; // 회원가입 후 로그인 페이지로 이동
+	}
 
-    @PostMapping("/login.do")
-    public String login(@RequestParam(required = false) String id, 
-                        @RequestParam(required = false) String pw, 
-                        HttpSession session) {
+	@PostMapping("/login.do")
+	public String login(@RequestParam(required = false) String id, @RequestParam(required = false) String pw,
+			HttpSession session) {
 
-        // id 또는 pw 값이 없는 경우 예외 처리
-        if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
-            System.out.println("로그인 실패: ID 또는 비밀번호가 비어있음");
-            return "redirect:/login?error=missing_credentials";
-        }
+		// id 또는 pw 값이 없는 경우 예외 처리
+		if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
+			System.out.println("로그인 실패: ID 또는 비밀번호가 비어있음");
+			return "redirect:/login?error=missing_credentials";
+		}
 
-        System.out.println("로그인 요청: ID=" + id + ", PW=" + pw);
+		System.out.println("로그인 요청: ID=" + id + ", PW=" + pw);
 
-        MemberEntity member = memberService.login(id, pw);
+		MemberEntity member = memberService.login(id, pw);
 
-        if (member != null) {
-            session.setAttribute("loginUser", member);
-            System.out.println("로그인 성공: " + id);
-            // 세션에 저장된 로그인 사용자 정보 출력 (디버깅용)
-            System.out.println("세션에 저장된 로그인 사용자: " + session.getAttribute("loginUser"));
-            return "redirect:/maindashboard";
-        } else {
-            System.out.println("로그인 실패: 사용자 없음");
-            return "redirect:/login?error=true";
-        }
-    }
-    
-    // 생성자를 통해 MemberService를 주입받음
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+		if (member != null) {
+			session.setAttribute("loginUser", member);
+			System.out.println("로그인 성공: " + id);
+			// 세션에 저장된 로그인 사용자 정보 출력 (디버깅용)
+			System.out.println("세션에 저장된 로그인 사용자: " + session.getAttribute("loginUser"));
+			return "redirect:/maindashboard";
+		} else {
+			System.out.println("로그인 실패: 사용자 없음");
+			return "redirect:/login?error=true";
+		}
+	}
 
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable String id, Model model) {
-        // memberService 객체를 통해 findDetail 메서드 호출
-        Optional<MemberEntity> member = memberService.findDetail(id);
+	// 생성자를 통해 MemberService를 주입받음
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
-        // Optional을 사용하여 값을 안전하게 처리
-        member.ifPresent(memberEntity -> model.addAttribute("member", memberEntity));
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable String id, Model model) {
+		// memberService 객체를 통해 findDetail 메서드 호출
+		Optional<MemberEntity> member = memberService.findDetail(id);
 
-        // "edit" 뷰로 전달
-        return "edit";
-    }
+		// Optional을 사용하여 값을 안전하게 처리
+		member.ifPresent(memberEntity -> model.addAttribute("member", memberEntity));
+
+		// "edit" 뷰로 전달
+		return "edit";
+	}
+
+	@PostMapping("/update")
+	public String updateProfile(@RequestParam String id, 
+	                            @RequestParam String pw, 
+	                            @RequestParam String name,
+	                            @RequestParam String add, 
+	                            @RequestParam String phone, 
+	                            HttpSession session) {
+
+	    // 현재 로그인된 사용자 가져오기
+	    MemberEntity member = (MemberEntity) session.getAttribute("loginUser");
+
+	    if (member != null && member.getUserId().equals(id)) {
+	        // 비밀번호가 변경되었을 경우 암호화하여 저장
+	        if (pw != null && !pw.isEmpty()) {
+	            String encryptedPw = memberService.encryptPassword(pw);
+	            member.setUserPw(encryptedPw);
+	        }
+
+	        // 입력된 정보로 기존 정보 업데이트
+	        member.setUserName(name);
+	        member.setUserAdd(add);
+	        member.setUserPhone(phone);
+
+	        // 서비스에서 업데이트 처리
+	        memberService.updateMember(member);
+
+	        // 세션 업데이트
+	        session.setAttribute("loginUser", member);
+	    }
+
+	    return "redirect:/maindashboard"; // 업데이트 후 대시보드로 이동
+	}
 
 
 	@GetMapping("/logout")
