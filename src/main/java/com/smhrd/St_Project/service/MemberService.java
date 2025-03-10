@@ -108,7 +108,7 @@ public class MemberService {
     	    return true;
     	}
 
-
+      // 탈퇴 버튼 클릭 후 일정 시간 이후 계정 삭제
       @Scheduled(fixedRate = 180000) // 3분마다 실행
       @Transactional
       public void deleteInactiveUsers() {

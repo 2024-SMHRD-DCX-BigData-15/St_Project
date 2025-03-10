@@ -22,6 +22,12 @@ public class MainController {
 		return "register";
 	}
 	
+	// 계정복구 페이지 이동
+	@GetMapping("/relogin")
+	public String relogin() {
+		return "relogin";
+	}
+	
 	// 메인대시보드 페이지 이동
 	@GetMapping("/maindashboard")
 	public String showMainDashboard(HttpSession session) {
