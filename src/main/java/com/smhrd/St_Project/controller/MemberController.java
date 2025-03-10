@@ -132,9 +132,12 @@ public class MemberController {
 
     // 회원 탈퇴 처리
     @PostMapping("/delete")
-    public String deleteMember(@RequestParam String userId, @RequestParam String userPw, Model model) {
+    public String deleteMember(@RequestParam String id, @RequestParam String pw, Model model) {
+        // 디버깅: 요청된 아이디와 비밀번호 확인
+        System.out.println("회원 탈퇴 요청: 아이디 = " + id + ", 비밀번호 = " + pw);
+
         // 탈퇴 처리 서비스 호출
-        boolean isDeleted = memberService.deleteMember(userId, userPw);
+        boolean isDeleted = memberService.deleteMember(id, pw);
 
         // 탈퇴 처리 결과에 따른 메시지 설정
         String message = isDeleted ? "회원 탈퇴가 완료되었습니다." : "아이디 또는 비밀번호가 잘못되었습니다.";
@@ -143,6 +146,7 @@ public class MemberController {
         // 탈퇴 후 홈 페이지로 리다이렉트
         return "redirect:/";
     }
+
 
     // 로그아웃 처리
     @GetMapping("/logout")

@@ -41,19 +41,35 @@ public class MemberService {
       
    // 로그인 기능 (암호화된 비밀번호 검증)
       public MemberEntity login(String id, String pw) {
-    	    if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
-    	        System.out.println("로그인 실패: ID 또는 PW가 null 또는 비어 있음");
-    	        return null;
-    	    }
+          if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
+              System.out.println("로그인 실패: ID 또는 PW가 null 또는 비어 있음");
+              return null;
+          }
 
-    	    System.out.println("로그인 시도: ID=" + id + ", PW=" + pw);
+          System.out.println("로그인 시도: ID=" + id + ", PW=" + pw);
 
-    	    String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
+          // 비밀번호를 SHA-256으로 암호화
+          String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
 
-    	    System.out.println("암호화된 PW: " + encryptedPw);
+          System.out.println("암호화된 PW: " + encryptedPw);
 
-    	    return memberRepository.findByUserIdAndUserPw(id, encryptedPw);
-    	}
+          // 사용자 조회 (아이디와 암호화된 비밀번호로 비교)
+          MemberEntity member = memberRepository.findByUserIdAndUserPw(id, encryptedPw);
+
+          if (member == null) {
+              System.out.println("로그인 실패: 아이디 또는 비밀번호가 잘못됨");
+              return null;
+          }
+
+          // 탈퇴 여부 체크: userStatus가 'Y'이면 로그인 실패 처리
+          if (member.getUserStatus() == 'Y') {
+              System.out.println("로그인 실패: 해당 계정은 탈퇴 상태입니다.");
+              return null;
+          }
+
+          System.out.println("로그인 성공: 아이디=" + member.getUserId());
+          return member;
+      }
 
       
       
@@ -95,18 +111,25 @@ public class MemberService {
       }
       
       // 회원 탈퇴 처리
-      @Transactional
       public boolean deleteMember(String id, String pw) {
-          // 1. 사용자 정보 확인
-          MemberEntity member = memberRepository.findById(id).orElse(null);
-          if (member == null || !member.getUserPw().equals(pw)) {
-              return false; // 아이디 또는 비밀번호 불일치
+          // 비밀번호를 SHA-256으로 암호화
+          String encryptedPw = PasswordEncryptor.encryptSHA256(pw);
+          System.out.println("암호화된 비밀번호: " + encryptedPw);
+
+          // 사용자 조회 (아이디와 암호화된 비밀번호로 비교)
+          MemberEntity member = memberRepository.findByUserIdAndUserPw(id, encryptedPw);
+          if (member == null) {
+              // 사용자 정보가 없으면 탈퇴 실패
+              System.out.println("탈퇴 실패: 아이디 또는 비밀번호가 잘못됨");
+              return false;
           }
 
-          // 2. 탈퇴 처리 (userStatus를 'Y'로 설정)
-          member.setUserStatus('Y'); // 탈퇴 상태로 변경
-          memberRepository.save(member); // 업데이트 후 저장
+          // 탈퇴 처리 (userStatus를 'Y'로 변경)
+          member.setUserStatus('Y');
+          memberRepository.save(member);  // 변경 사항 저장
 
-          return true; // 탈퇴 성공
+          System.out.println("사용자 탈퇴 완료: " + member.getUserId());
+
+          return true;  // 탈퇴 완료
       }
   }
