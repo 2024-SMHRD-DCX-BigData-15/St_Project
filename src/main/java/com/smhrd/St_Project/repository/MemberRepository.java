@@ -11,4 +11,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String> {
 	// 로그인 기능
 	MemberEntity findByUserIdAndUserPw(String userId, String userPw);
 
+	// 회원 정보 수정 기능
+	static void save(String userId) {		
+		
+	}
+
 }
