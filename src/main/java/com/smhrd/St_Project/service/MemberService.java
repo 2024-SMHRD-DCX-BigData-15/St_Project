@@ -1,5 +1,7 @@
 package com.smhrd.St_Project.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +49,29 @@ public class MemberService {
     	    return memberRepository.findByUserIdAndUserPw(id, encryptedPw);
     	}
 
+      
+      // 회원정보 수정
+      public MemberService(MemberRepository memberRepository) {
+          this.memberRepository = memberRepository;
+      }
+
+      // findDetail 메서드 추가
+      public Optional<MemberEntity> findDetail(String id) {
+          return memberRepository.findById(id);
+      }
+
+      // 기존의 findMemberById 메서드도 그대로 사용할 수 있습니다.
+      public void findMemberById(String id) {
+          Optional<MemberEntity> member = memberRepository.findById(id);
+          
+          if (member.isPresent()) {
+              // 회원 정보가 존재하는 경우 처리
+              MemberEntity memberEntity = member.get();
+              System.out.println(memberEntity);
+          } else {
+              // 회원이 존재하지 않음
+              System.out.println("Member not found");
+          }
+      }
      
 }

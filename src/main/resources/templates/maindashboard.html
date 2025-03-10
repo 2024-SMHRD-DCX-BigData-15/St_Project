@@ -15,7 +15,7 @@
           <h2>메뉴</h2>
         </div>
         <ul class="sidebar-menu">
-          <li><a href="#">수조 관리 시스템 1</a></li>
+          <li><a href="/edit/{id}">회원 관리 설정</a></li>
           <li><a href="#">수조 관리 시스템 2</a></li>
           <li><a href="#">수조 관리 시스템 3</a></li>
           <li><a href="#">수조 관리 시스템 4</a></li>
@@ -37,7 +37,7 @@
           
           
           <div th:if="${session.loginUser != null}">
-          <p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
+          <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
         </div>
       <div th:if="${session.loginUser == null}">
           <p>로그인해주세요.</p>

@@ -1,14 +1,18 @@
 package com.smhrd.St_Project.controller;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.smhrd.St_Project.service.MemberService;
+import com.smhrd.St_Project.entity.MemberEntity;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -67,6 +71,23 @@ public class MemberController {
             System.out.println("로그인 실패: 사용자 없음");
             return "redirect:/login?error=true";
         }
+    }
+    
+    // 생성자를 통해 MemberService를 주입받음
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable String id, Model model) {
+        // memberService 객체를 통해 findDetail 메서드 호출
+        Optional<MemberEntity> member = memberService.findDetail(id);
+
+        // Optional을 사용하여 값을 안전하게 처리
+        member.ifPresent(memberEntity -> model.addAttribute("member", memberEntity));
+
+        // "edit" 뷰로 전달
+        return "edit";
     }
 
 
