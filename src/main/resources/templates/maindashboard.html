@@ -113,7 +113,7 @@
             });
         });
         
-        // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
+     // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
         document.querySelectorAll('.toggle-menu').forEach(menu => {
           menu.addEventListener('click', function() {
             const subMenu = this.nextElementSibling; // 클릭된 항목 바로 다음의 ul.sub-menu
@@ -132,6 +132,7 @@
             }
           });
         });
+
         
         /**
          * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가

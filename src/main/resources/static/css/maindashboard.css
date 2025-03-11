@@ -40,7 +40,7 @@ body {
 .header {
   position: fixed; /* 상단 고정 */
   top: 20px; 
-  right: 180px;
+  left: 25%; /* 화면의 가로 중앙에 위치 */
   width: 100%; /* 전체 너비 차지 */
   background-color: #1e213a; /* 배경 색 유지 */
   padding: 15px 30px; /* 여백 설정 */
@@ -48,6 +48,7 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 1000; /* 다른 요소들 위에 표시 */
+  gap: 90px;
 }
 
 /* header가 고정되었으므로 main-content에 여백 추가 */
@@ -58,7 +59,6 @@ body {
 .header .user-info {
   display: flex;
   align-items: center; /* 세로 가운데 정렬 */
-  justify-content: flex-end; /* 오른쪽 정렬 */
   width: 100%;
 }
 
@@ -102,7 +102,6 @@ body {
   border-radius: 5px;
   width: 100%;
   display: inline-block;
-  margin-left: 720px;
 }
 
 .user-info {
