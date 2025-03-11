@@ -38,20 +38,30 @@ body {
 }
 
 .header {
+  position: fixed; /* 상단 고정 */
+  top: 20px; 
+  right: 180px;
+  width: 100%; /* 전체 너비 차지 */
+  background-color: #1e213a; /* 배경 색 유지 */
+  padding: 15px 30px; /* 여백 설정 */
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
   align-items: center;
-  width: 100%; /* header의 너비를 100%로 설정 */
+  z-index: 1000; /* 다른 요소들 위에 표시 */
 }
 
-/* header에서 user-info를 flexbox로 배치 */
+/* header가 고정되었으므로 main-content에 여백 추가 */
+.main-content {
+  padding-top: 120px; /* header 높이만큼 여백 추가 (80px + padding 15px) */
+}
+
 .header .user-info {
   display: flex;
   align-items: center; /* 세로 가운데 정렬 */
   justify-content: flex-end; /* 오른쪽 정렬 */
-  width: 100%; /* 가로 전체를 차지하도록 */
+  width: 100%;
 }
+
 
 /* user-name과 logout-btn 사이에 간격을 주기 위한 스타일 */
 .header .user-name {
@@ -60,7 +70,6 @@ body {
   flex-grow: 0; 
 }
 
-/* 로그아웃 버튼 스타일 */
 .logout-btn {
   background-color: #7a4dff; /* 배경 색 */
   color: white;
@@ -70,8 +79,14 @@ body {
   cursor: pointer;
   font-size: 13px;
   transition: background-color 0.3s ease;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px; /* 버튼 높이 설정 */
+  line-height: normal; /* 기본 라인 높이 제거 */
+  white-space: nowrap;
 }
-
 
 .page-title {
   text-align: center;
@@ -87,7 +102,7 @@ body {
   border-radius: 5px;
   width: 100%;
   display: inline-block;
-  margin-left: 380px;
+  margin-left: 720px;
 }
 
 .user-info {
