@@ -41,20 +41,18 @@
           <h1 class="page-title">양식관제시스템</h1>
           <div class="user-info">
           
-          
           <div th:if="${session.loginUser != null}">
-          <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
-        </div>
-        <button class="logout-btn">로그아웃</button>
-      <div th:if="${session.loginUser == null}">
-          <p>로그인해주세요.</p>
-      </div>
-      
-      
-       </div>
+            <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
+          </div>
+          <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
+          
+          <div th:if="${session.loginUser == null}">
+            <p>로그인해주세요.</p>
+          </div>
+          </div>
         </header>
 
-        <!-- 수조 관리 시스템 zzzzz-->
+        <!-- 수조 관리 시스템 -->
         <section class="control-center">
           <div class="control-item">
             <h4>수조관리시스템 1</h4>
@@ -64,9 +62,7 @@
             </div>
             <div class="alarm-log-container" id="alarm-log-1">
               <h5>수조 1 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-1">
-                <!-- 수조 1의 알람 로그가 여기에 동적으로 추가됩니다 -->
-              </div>
+              <div class="alarm-log-content" id="alarm-log-content-1"></div>
             </div>
           </div>
 
@@ -78,9 +74,7 @@
             </div>
             <div class="alarm-log-container" id="alarm-log-2">
               <h5>수조 2 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-2">
-                <!-- 수조 2의 알람 로그가 여기에 동적으로 추가됩니다 -->
-              </div>
+              <div class="alarm-log-content" id="alarm-log-content-2"></div>
             </div>
           </div>
 
@@ -92,9 +86,7 @@
             </div>
             <div class="alarm-log-container" id="alarm-log-3">
               <h5>수조 3 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-3">
-                <!-- 수조 3의 알람 로그가 여기에 동적으로 추가됩니다 -->
-              </div>
+              <div class="alarm-log-content" id="alarm-log-content-3"></div>
             </div>
           </div>
 
@@ -106,9 +98,7 @@
             </div>
             <div class="alarm-log-container" id="alarm-log-4">
               <h5>수조 4 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-4">
-                <!-- 수조 4의 알람 로그가 여기에 동적으로 추가됩니다 -->
-              </div>
+              <div class="alarm-log-content" id="alarm-log-content-4"></div>
             </div>
           </div>
         </section>
@@ -116,27 +106,53 @@
     </div>
 
     <script>
-            document.getElementById('hamburger-menu').addEventListener('click', function() {
-        // 사이드바 열기/닫기 토글
-        document.getElementById('sidebar').classList.toggle('open');
-        
-        // 햄버거 메뉴 애니메이션
-        this.classList.toggle('open');
-      });
-            
-            document.querySelectorAll('.toggle-menu').forEach(item => {
-                item.addEventListener('click', function () {
-                  const subMenu = this.nextElementSibling;
-                  if (subMenu.style.display === "block") {
-                    subMenu.style.display = "none";
-                  } else {
-                    subMenu.style.display = "block";
-                  }
-                });
-              });
+        /**
+         * 🔹 로그아웃 함수 (쿠키 삭제 후 서버 요청)
+         */
+        function handleLogout() {
+            console.log("🚀 로그아웃 요청");
 
+            // ✅ 자동 로그인 관련 쿠키 삭제
+            deleteCookie("autoLoginId");
+            deleteCookie("autoLoginPw");
+
+            // ✅ 로그아웃 요청 보내기
+            fetch("/logout", { method: "GET" })
+                .then(() => {
+                    alert("로그아웃 완료!");
+                    window.location.href = "/login"; // 로그인 페이지로 이동
+                });
+        }
+
+        /**
+         * 🔹 쿠키 삭제 함수
+         */
+        function deleteCookie(name) {
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+        }
+
+        /**
+         * 🔹 햄버거 메뉴 클릭 이벤트
+         */
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+            this.classList.toggle('open');
+        });
+
+        /**
+         * 🔹 사이드 메뉴 토글 이벤트
+         */
+        document.querySelectorAll('.toggle-menu').forEach(item => {
+            item.addEventListener('click', function () {
+                const subMenu = this.nextElementSibling;
+                if (subMenu.style.display === "block") {
+                    subMenu.style.display = "none";
+                } else {
+                    subMenu.style.display = "block";
+                }
+            });
+        });
     </script>
 
-    
   </body>
 </html>
