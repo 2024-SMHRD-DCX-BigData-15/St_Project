@@ -9,24 +9,31 @@
   </head>
   <body>
     <div class="wrapper">
-      <!-- 사이드바 -->
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2>메뉴</h2>
-        </div>
-        <ul class="sidebar-menu">
-          <li>
-            <a href="javascript:void(0)" class="toggle-menu">수조 관리 시스템 1</a>
-            <ul class="sub-menu">
-              <li><a href="/edit/{id}">회원 수정</a></li>
-              <li><a href="/delete">회원 탈퇴</a></li>
-            </ul>
-            <li><a href="#">수조 관리 시스템 2</a></li>
-            <li><a href="#">수조 관리 시스템 3</a></li>
-            <li><a href="#">수조 관리 시스템 4</a></li>
-          </li>
-        </ul>
-      </div>
+       <!-- 사이드바 -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>메뉴</h2>
+  </div>
+  <ul class="sidebar-menu">
+    <!-- 수조 관리 시스템 -->
+    <li>
+      <a href="javascript:void(0)" class="toggle-menu">수조 관리</a>
+      <ul class="sub-menu">
+        <li><a href="#">수조 정보 등록</a></li>
+        <li><a href="#">수조 정보 수정</a></li>
+      </ul>
+    </li>
+
+    <!-- 회원 정보 관리 -->
+    <li>
+      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+      <ul class="sub-menu">
+        <li><a href="#">회원 정보 수정</a></li>
+        <li><a href="#">회원 탈퇴</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
 
       <!-- 햄버거 메뉴 아이콘 -->
       <div class="hamburger-menu" id="hamburger-menu">
@@ -152,6 +159,28 @@
                 }
             });
         });
+        
+        // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
+        document.querySelectorAll('.toggle-menu').forEach(menu => {
+          menu.addEventListener('click', function() {
+            const subMenu = this.nextElementSibling; // 클릭된 항목 바로 다음의 ul.sub-menu
+
+            // 이미 열려 있는 경우 숨기기
+            if (subMenu.classList.contains('open')) {
+              subMenu.classList.remove('open');
+            } else {
+              // 다른 메뉴들은 닫히게 함
+              document.querySelectorAll('.sub-menu').forEach(menu => {
+                menu.classList.remove('open');
+              });
+
+              // 클릭된 메뉴만 열기
+              subMenu.classList.add('open');
+            }
+          });
+        });
+
+        
     </script>
 
   </body>
