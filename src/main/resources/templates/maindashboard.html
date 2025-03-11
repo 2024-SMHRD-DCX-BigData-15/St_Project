@@ -61,53 +61,7 @@
 
         <!-- 수조 관리 시스템 -->
         <section class="control-center">
-          <div class="control-item">
-            <h4>수조관리시스템 1</h4>
-            <div class="tank-info" onclick="window.location.href = 'dashboarddetail';"> 
-              <p>AI 허브 데이터: [수조 관련 정보 1]</p>
-              <canvas id="chart-1"></canvas>
-            </div>
-            <div class="alarm-log-container" id="alarm-log-1">
-              <h5>수조 1 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-1"></div>
-            </div>
-          </div>
-
-          <div class="control-item">
-            <h4>수조관리시스템 2</h4>
-            <div class="tank-info" onclick="window.location.href = 'dashboarddetail';">
-              <p>AI 허브 데이터: [수조 관련 정보 2]</p>
-              <canvas id="chart-2"></canvas>
-            </div>
-            <div class="alarm-log-container" id="alarm-log-2">
-              <h5>수조 2 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-2"></div>
-            </div>
-          </div>
-
-          <div class="control-item">
-            <h4>수조관리시스템 3</h4>
-            <div class="tank-info" onclick="window.location.href = 'dashboarddetail';">
-              <p>AI 허브 데이터: [수조 관련 정보 3]</p>
-              <canvas id="chart-3"></canvas>
-            </div>
-            <div class="alarm-log-container" id="alarm-log-3">
-              <h5>수조 3 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-3"></div>
-            </div>
-          </div>
-
-          <div class="control-item">
-            <h4>수조관리시스템 4</h4>
-            <div class="tank-info" onclick="window.location.href = '/dashboarddetail';">
-              <p>AI 허브 데이터: [수조 관련 정보 4]</p>
-              <canvas id="chart-4"></canvas>
-            </div>
-            <div class="alarm-log-container" id="alarm-log-4">
-              <h5>수조 4 알람 로그</h5>
-              <div class="alarm-log-content" id="alarm-log-content-4"></div>
-            </div>
-          </div>
+          <div class="control-item"></div>
         </section>
       </main>
     </div>
@@ -213,14 +167,15 @@
         	            tankDiv.classList.add('control-item');
         	            tankDiv.innerHTML = `
         	                <h4>수조관리시스템 (ID: ${tank.tankIdx})</h4>
-        	                <div class="tank-info">
+        	                <div class="tank-info" onclick="window.location.href = '/dashboarddetail';">
         	                    <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
         	                    <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
         	                    <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
         	                    <p><strong>품종:</strong> ${tank.fishType}</p>
         	                    <p><strong>사육 개시일:</strong> ${tank.startedAt}</p>
-        	                    <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
         	                </div>
+        	                <div class="alarm-log-container" id="alarm-log-1">
+                            <h5>수조 1 알람 로그</h5>
         	            `;
         	            tankContainer.appendChild(tankDiv);
         	        });
