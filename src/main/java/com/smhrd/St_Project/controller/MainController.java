@@ -57,6 +57,11 @@ public class MainController {
 	public String tank() {
 		return "tank";
 	}
+	
+	@GetMapping("/tankedit")
+	public String tankedit() {
+		return "tankedit";
+	}
 		
 
 }
