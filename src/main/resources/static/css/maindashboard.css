@@ -87,6 +87,7 @@ body {
   border-radius: 5px;
   width: 100%;
   display: inline-block;
+  margin-left: 380px;
 }
 
 .user-info {
