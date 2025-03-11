@@ -52,6 +52,11 @@ public class MainController {
 	    return "login";
 	}
 
+	
+	@GetMapping("/tank")
+	public String tank() {
+		return "tank";
+	}
 		
 
 }
