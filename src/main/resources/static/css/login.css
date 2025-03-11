@@ -104,6 +104,19 @@
     box-sizing: border-box;
 }
 
+/* 자동완성 스타일 오버라이드 */
+.sign-in-screen .input-field-text:-webkit-autofill,
+.sign-in-screen .input-field-text:-webkit-autofill:hover,
+.sign-in-screen .input-field-text:-webkit-autofill:focus,
+.sign-in-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important; /* 배경색 변화 방지 */
+    -webkit-text-fill-color: #ffffff !important; /* 텍스트 색상 유지 */
+    transition: background-color 5000s ease-in-out 0s; /* 배경색 전환 방지 */
+}
+
+
 .sign-in-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
