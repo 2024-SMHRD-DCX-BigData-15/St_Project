@@ -45,6 +45,7 @@
           <div th:if="${session.loginUser != null}">
           <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
         </div>
+        <button class="logout-btn">로그아웃</button>
       <div th:if="${session.loginUser == null}">
           <p>로그인해주세요.</p>
       </div>
