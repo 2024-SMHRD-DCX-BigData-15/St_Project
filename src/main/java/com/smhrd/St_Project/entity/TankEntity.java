@@ -1,11 +1,10 @@
 package com.smhrd.St_Project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,36 +12,52 @@ import java.util.List;
 @Table(name = "t_tank")
 public class TankEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ 자동 증가 설정 추가
-	@Column(name = "tank_idx", nullable = false)
-	private Long tankIdx;// PK (INT UNSIGNED)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ tank_idx 자동 증가 설정
+    @Column(name = "tank_idx", nullable = false)
+    private Long tankIdx;  // PK
 
-	@ManyToOne(fetch = FetchType.LAZY) // ✅ LAZY 로딩 적용
+    @ManyToOne(fetch = FetchType.LAZY) // ✅ LAZY 로딩 적용
     @JoinColumn(name = "user_id", nullable = false)
-    private MemberEntity user;  // FK (VARCHAR(50))
+    @JsonIgnore  // ✅ 무한 루프 방지
+    private MemberEntity user;  // FK
 
     @Column(name = "tank_width", precision = 12, scale = 1)
-    private BigDecimal tankWidth;  // 수조 직경 (DECIMAL(12,1))
+    private BigDecimal tankWidth;
 
     @Column(name = "tank_height", precision = 12, scale = 1)
-    private BigDecimal tankHeight;  // 수조 높이 (DECIMAL(12,1))
+    private BigDecimal tankHeight;
 
     @Column(name = "tank_location", length = 255)
-    private String tankLocation;  // 수조 위치 (VARCHAR(255))
+    private String tankLocation;
 
     @Column(name = "fish_type", length = 255)
-    private String fishType;  // 품종 (VARCHAR(255))
+    private String fishType;
 
     @Column(name = "started_at")
-    private LocalDate startedAt;  // 사육개시일 (DATE)
+    private LocalDate startedAt;
 
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // ✅ 무한 루프 방지
     private List<TankDataEntity> tankData;
 
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // ✅ 무한 루프 방지
     private List<EnvEntity> environments;
 
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // ✅ 무한 루프 방지
     private List<AlarmEntity> alarms;
+
+    @Override
+    public String toString() {
+        return "TankEntity{" +
+                "tankIdx=" + tankIdx +
+                ", tankWidth=" + tankWidth +
+                ", tankHeight=" + tankHeight +
+                ", tankLocation='" + tankLocation + '\'' +
+                ", fishType='" + fishType + '\'' +
+                ", startedAt=" + startedAt +
+                '}';
+    }
 }
