@@ -138,21 +138,6 @@
           }
       }
   };
-
-  /**
-   * 🔹 로그아웃 시 쿠키 삭제
-   */
-  function logout() {
-      deleteCookie("autoLoginId");
-      deleteCookie("autoLoginPw");
-
-      fetch("/api/auth/logout", { method: "POST" })
-          .then(() => {
-              alert("로그아웃 완료!");
-              window.location.href = "/login";
-          });
-  }
-
   </script>
 </body>
 </html>
