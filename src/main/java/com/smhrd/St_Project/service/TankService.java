@@ -75,24 +75,38 @@ public class TankService {
         return tanks;
     }
 
+    /**
+     * 🔹 특정 tankIdx로 수조 정보 조회
+     */
+    public TankEntity getTankById(Long tankIdx) {
+        return tankRepository.findById(tankIdx).orElse(null);
+    }
+    
 	
-	public void updateTank(TankEntity tank) {
-	    TankEntity existingTank = tankRepository.findById(tank.getTankIdx())
-	            .orElseThrow(() -> new IllegalArgumentException("해당 수조가 없습니다. ID: " + tank.getTankIdx()));
+    /**
+     * 🔹 수조 정보 업데이트
+     */
+    public void updateTank(Long tankIdx, BigDecimal tankWidth, BigDecimal tankHeight, String tankLocation, String fishType, LocalDate startedAt) {
+        if (tankIdx == null) {
+            logger.error("❌ 수조 ID가 null입니다. 업데이트 불가능.");
+            return;
+        }
 
-	    // 기존 데이터 수정
-	    existingTank.setTankWidth(tank.getTankWidth());
-	    existingTank.setTankHeight(tank.getTankHeight());
-	    existingTank.setTankLocation(tank.getTankLocation());
-	    existingTank.setFishType(tank.getFishType());
-	    existingTank.setStartedAt(tank.getStartedAt());
+        Optional<TankEntity> existingTankOpt = tankRepository.findById(tankIdx);
 
-	    tankRepository.save(existingTank);
-	}
+        if (existingTankOpt.isPresent()) {
+            TankEntity existingTank = existingTankOpt.get();
+            existingTank.setTankWidth(tankWidth);
+            existingTank.setTankHeight(tankHeight);
+            existingTank.setTankLocation(tankLocation);
+            existingTank.setFishType(fishType);
+            existingTank.setStartedAt(startedAt);
 
-	public static TankEntity getTankById(Long tankIdx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+            tankRepository.save(existingTank); // 업데이트 수행
+            logger.info("✅ 수조 정보 수정 완료: {}", tankIdx);
+        } else {
+            logger.error("❌ 해당 수조 정보를 찾을 수 없습니다: {}", tankIdx);
+        }
+    }
 
-}
+    }
