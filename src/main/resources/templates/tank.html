@@ -62,7 +62,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="add-btn" onclick="window.location.href = '/maindashboard';">추가</button>
+                        <button type="submit" class="add-btn">추가</button>
                         <button type="reset" class="cancel-btn">취소</button>
                     </div>
                 </form>
@@ -109,18 +109,21 @@
         	        if (response.ok) {
         	            alert("✅ 수조 추가 완료!");
         	            console.log("✅ 서버 응답: 수조 추가 성공");
-        	            
-        	            // ✅ 메인 대시보드의 수조 목록을 새로고침 (비동기 데이터 갱신)
-        	            window.opener.loadTanks(userId);
-        	            window.close(); // 현재 창 닫기
+
+        	            // ✅ 메인 대시보드의 수조 목록을 즉시 갱신
+        	            if (window.opener && !window.opener.closed) {
+        	                window.opener.loadTanks(userId);
+        	            }
+
+        	            // ✅ 대시보드로 이동
+        	            window.location.href = "/maindashboard";
         	        } else {
         	            let errorText = await response.text();
-        	            alert("❌ 수조 추가 실패!");
-        	            console.error("❌ 서버 응답:", errorText);
+        	            alert("❌ 수조 추가 실패!\n" + errorText);
         	        }
         	    } catch (error) {
         	        console.error("🚨 서버 요청 중 오류 발생:", error);
-        	        alert("❌ 서버 오류 발생!");
+        	        alert("❌ 서버 오류 발생! 다시 시도해주세요.");
         	    }
         	});
     </script>
