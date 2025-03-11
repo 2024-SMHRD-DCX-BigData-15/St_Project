@@ -149,14 +149,17 @@
                     let tankDiv = document.createElement('div');
                     tankDiv.classList.add('control-item');
                     tankDiv.innerHTML = `
-                        <h4>수조관리시스템 (ID: ${tank.tankIdx})</h4>
+                        <h4>수조관리시스템 (ID: ${tank.tankIdx})
+                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
+                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+                        </h4>
+                        
                         <div class="tank-info">
                             <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
                             <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
                             <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
                             <p><strong>품종:</strong> ${tank.fishType}</p>
-                            <p><strong>사육 개시일:</strong> ${tank.startedAt}</p>
-                            <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+                            <p><strong>사육 개시일:</strong> ${tank.startedAt}</p> 
                         </div>
                         <div class="alarm-log-container" id="alarm-log-1">
                         <h5>수조 알람 로그</h5>
