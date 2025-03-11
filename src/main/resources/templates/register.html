@@ -17,8 +17,10 @@
           <form action="register.do" method="post" id="registerForm">
             <div class="input-group">
               <label for="userId" class="text-1">아이디</label>
-              <input type="text" id="userId" name="id" class="input-field-text" placeholder="아이디를 입력하세요" required />
-              <button type="button" id="checkIdBtn" onclick="checkId()" class="check-btn">중복 체크</button>
+              <div class="input-with-button"> <!-- 새로운 컨테이너 추가 -->
+                <input type="text" id="userId" name="id" class="input-field-text" placeholder="아이디를 입력하세요" required />
+                <button type="button" id="checkIdBtn" onclick="checkId()" class="check-btn">중복 체크</button>
+              </div>
               <small id="idMessage"></small>
             </div>
             
@@ -127,19 +129,16 @@
 
     // 폼 제출 전에 비밀번호 해싱
     document.getElementById("registerForm").addEventListener("submit", async function (event) {
-      event.preventDefault(); // 기본 제출 방지
+      event.preventDefault();
 
       const passwordInput = document.getElementById("password");
       const passwordConfirmInput = document.getElementById("passwordConfirm");
 
-      // 비밀번호 해싱
       const hashedPassword = await hashPassword(passwordInput.value);
 
-      // 원래 비밀번호 값 제거
       passwordInput.value = hashedPassword;
       passwordConfirmInput.value = hashedPassword;
 
-      // 폼 제출
       this.submit();
     });
   </script>

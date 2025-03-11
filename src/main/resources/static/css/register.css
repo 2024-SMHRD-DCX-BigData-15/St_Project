@@ -3,185 +3,180 @@
     align-items: center;
     justify-content: center;
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    overflow-y: auto;
     background-color: transparent;
-  }
-  
-  .sign-in-screen .overlap-group1 {
-    height: 100%;
-    width: 100%;
-    position: relative;
-  }
-  
-  .sign-in-screen .main-dashboard {
+}
+
+.sign-in-screen .main-dashboard {
     align-items: center;
     justify-content: center;
     background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
     display: flex;
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  .sign-in-screen .inputs {
-    align-items: flex-start;
+    position: relative;
+}
+
+.sign-in-screen .inputs {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    min-height: 558px;
-    width: 354px;
-    max-width: 90%; /* 반응형 추가 */
-  }
-  
-  /* 제목 스타일 */
-  .sign-in-screen .title {
+    width: 100%;
+    max-width: 354px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 제목 스타일 */
+.sign-in-screen .title {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100px;
+    min-height: 60px;
     text-align: center;
     width: 100%;
-  }
-  
-  .sign-in-screen .text-21 {
+}
+
+.sign-in-screen .text-21 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
-    font-size: 30px;
+    font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 39px;
-    min-height: 39px;
+    line-height: 1.2;
     white-space: nowrap;
-    margin-bottom: 6px;
-  }
-  
-  
-  /* 작은 화면에서 글씨 크기 줄이기 */
-  @media (max-width: 768px) {
-    .sign-in-screen .text-21 {
-        font-size: 8vw;
-    }
-  }
-  
-  /* 입력 그룹 스타일 */
-  .sign-in-screen .input-group {
-    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+/* 입력 그룹 스타일 */
+.sign-in-screen .input-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-top: 10px;
-    min-height: 75px;
-    width: 100%; /* 반응형 변경 */
-  }
-  
-  .sign-in-screen .text-1 {
+    gap: 4px;
+    margin-top: 8px;
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sign-in-screen .text-1 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
-    font-size: 14px;
+    font-size: clamp(10px, 2vw, 14px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 19.6px;
-    margin-left: 4.5px;
-    min-height: 20px;
+    line-height: 1.4;
+    margin-left: 0;
     white-space: nowrap;
-  }
-  
-  .sign-in-screen .input-field-text {
+    text-align: left; /* 라벨 왼쪽 정렬 */
+}
+
+/* 입력 필드와 버튼을 한 줄에 배치 */
+.sign-in-screen .input-with-button {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 입력 필드와 버튼 사이 간격 */
+    width: 100%;
+}
+
+.sign-in-screen .input-field-text {
     -webkit-backdrop-filter: blur(42px) brightness(100%);
     backdrop-filter: blur(42px) brightness(100%);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
     border: 2px solid;
     border-color: transparent;
     border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
-    border-radius: 20px;
-    height: 54px;
-    padding: 0 20px;
-    width: 100%;
+    border-radius: 16px;
+    height: 40px;
+    padding: 0 12px;
+    width: 100%; /* 입력 필드 폭 조정 */
+    flex-grow: 1; /* 남은 공간 채우기 */
     color: #ffffff;
-    font-size: 16px;
+    font-size: clamp(12px, 2vw, 16px);
     background: transparent;
     outline: none;
     box-sizing: border-box;
-  }
-  
-  .sign-in-screen .input-field-text::placeholder {
+}
+
+.sign-in-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
-  }
-  
-  /* 자동완성 스타일 오버라이드 */
-  .sign-in-screen .input-field-text:-webkit-autofill,
-  .sign-in-screen .input-field-text:-webkit-autofill:hover,
-  .sign-in-screen .input-field-text:-webkit-autofill:focus,
-  .sign-in-screen .input-field-text:-webkit-autofill:active {
+}
+
+/* 자동완성 스타일 오버라이드 */
+.sign-in-screen .input-field-text:-webkit-autofill,
+.sign-in-screen .input-field-text:-webkit-autofill:hover,
+.sign-in-screen .input-field-text:-webkit-autofill:focus,
+.sign-in-screen .input-field-text:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
     box-shadow: 0 0 0 1000px transparent inset !important;
     background-color: transparent !important;
     -webkit-text-fill-color: #ffffff !important;
     transition: background-color 5000s ease-in-out 0s;
 }
-  
-  
-  /* 중복 체크 버튼 스타일 */
-  .sign-in-screen .check-btn {
+
+/* 중복 체크 버튼 스타일 */
+.sign-in-screen .check-btn {
     background-color: #0075ff;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: clamp(10px, 1.5vw, 12px);
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 5px;
-  }
-  
-  .sign-in-screen .check-btn:hover {
+    flex-shrink: 0; /* 버튼 크기 고정 */
+}
+
+.sign-in-screen .check-btn:hover {
     background-color: #005bb5;
-  }
-  
-  /* 메시지 스타일 */
-  .sign-in-screen #idMessage,
-  .sign-in-screen #pwMessage {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  .sign-in-screen .text-success {
+}
+
+/* 메시지 스타일 */
+.sign-in-screen #idMessage,
+.sign-in-screen #pwMessage {
+    font-size: clamp(8px, 1.2vw, 10px);
+    margin-top: 4px;
+    text-align: left; /* 메시지도 왼쪽 정렬 */
+}
+
+.sign-in-screen .text-success {
     color: #28a745;
-  }
-  
-  .sign-in-screen .text-danger {
+}
+
+.sign-in-screen .text-danger {
     color: #dc3545;
-  }
-  
-  /* 회원가입 버튼 */
-  .sign-in-screen .button-base_login {
+}
+
+/* 회원가입 버튼 */
+.sign-in-screen .button-base_login {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
     background-color: #0075ff;
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
-    height: 45px;
+    height: 36px;
     justify-content: center;
-    margin-top: 36px;
+    margin-top: 16px;
     padding: 0;
-    position: relative;
-    width: 350px;
-    max-width: 100%; /* 반응형 */
+    width: 100%;
+    max-width: 300px;
     cursor: pointer;
     box-sizing: border-box;
-  }
-  
-  .sign-in-screen .button-body {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sign-in-screen .button-body {
     background-color: #0075ff;
     color: white;
-    padding: 12px 20px;
+    padding: 8px 12px;
     border: none;
-    border-radius: 12px;
-    font-size: 20px;
+    border-radius: 10px;
+    font-size: clamp(14px, 2vw, 18px);
     transition: background-color 0.3s ease;
     display: flex;
     justify-content: center;
@@ -189,39 +184,56 @@
     width: 100%;
     cursor: pointer;
     box-sizing: border-box;
-  }
-  
-  .sign-in-screen .button-body:hover {
+}
+
+.sign-in-screen .button-body:hover {
     background-color: #005bb5;
-  }
-  
-  .sign-in-screen .text {
+}
+
+.sign-in-screen .text {
     font-family: "Abel", Helvetica;
-    font-size: 20px;
+    font-size: clamp(14px, 2vw, 18px);
     font-weight: 400;
     color: #ffffff;
     letter-spacing: 0;
     line-height: normal;
-  }
-  
-  /* 하단 텍스트와 링크 */
-  .sign-in-screen .text-14 {
+}
+
+/* 하단 텍스트와 링크 */
+.sign-in-screen .text-14 {
     color: #a0aec0;
     font-family: "Abel", Helvetica;
-    font-size: 14px;
+    font-size: clamp(10px, 1.5vw, 12px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 19.6px;
-    margin-top: 20px;
+    line-height: 1.4;
+    margin-top: 12px;
     text-align: center;
     white-space: nowrap;
-  }
-  
-  .sign-in-screen .signup-link {
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sign-in-screen .signup-link {
     color: #0075ff;
     text-decoration: none;
-  }
-  
-  .sign-in-screen .signup-link:hover {
+}
+
+.sign-in-screen .signup-link:hover {
     text-decoration: underline;
-  }
+}
+
+/* 모바일 반응형 추가 */
+@media (max-height: 600px) {
+    .sign-in-screen .inputs {
+        padding: 10px;
+    }
+    .sign-in-screen .input-group {
+        margin-top: 6px;
+    }
+    .sign-in-screen .button-base_login {
+        margin-top: 12px;
+    }
+}
