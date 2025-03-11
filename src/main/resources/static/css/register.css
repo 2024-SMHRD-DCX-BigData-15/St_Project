@@ -59,6 +59,14 @@
     margin-bottom: 6px;
   }
   
+  
+  /* 작은 화면에서 글씨 크기 줄이기 */
+  @media (max-width: 768px) {
+    .sign-in-screen .text-21 {
+        font-size: 8vw;
+    }
+  }
+  
   /* 입력 그룹 스타일 */
   .sign-in-screen .input-group {
     align-items: flex-start;
@@ -103,6 +111,19 @@
   .sign-in-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
   }
+  
+  /* 자동완성 스타일 오버라이드 */
+  .sign-in-screen .input-field-text:-webkit-autofill,
+  .sign-in-screen .input-field-text:-webkit-autofill:hover,
+  .sign-in-screen .input-field-text:-webkit-autofill:focus,
+  .sign-in-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+  
   
   /* 중복 체크 버튼 스타일 */
   .sign-in-screen .check-btn {
