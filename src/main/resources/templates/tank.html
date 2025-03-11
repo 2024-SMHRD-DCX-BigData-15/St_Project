@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수조 추가</title>
+    <link rel="stylesheet" href="/css/tank.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- 사이드바 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>메뉴</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#">홈</a></li>
+                <li><a href="#">대시보드</a></li>
+                <li><a href="#">설정</a></li>
+            </ul>
+        </div>
+
+        <!-- 햄버거 메뉴 -->
+        <div class="hamburger-menu" id="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="page-title">수조 추가</h1>
+            </header>
+
+            <!-- 수조 추가 폼 -->
+            <section class="tank-form-container">
+                <form class="tank-form">
+                    <div class="form-group">
+                        <label for="tank-diameter">수조 직경 (m)</label>
+                        <input type="number" id="tank-diameter" name="tank-diameter" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tank-height">수조 높이 (m)</label>
+                        <input type="number" id="tank-height" name="tank-height" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tank-location">수조 위치</label>
+                        <input type="text" id="tank-location" name="tank-location">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="species">품종</label>
+                        <input type="text" id="species" name="species">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start-date">사육 개시일</label>
+                        <input type="date" id="start-date" name="start-date">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="add-btn">추가</button>
+                        <button type="reset" class="cancel-btn">취소</button>
+                    </div>
+                </form>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+            this.classList.toggle('open');
+        });
+    </script>
+</body>
+</html>
