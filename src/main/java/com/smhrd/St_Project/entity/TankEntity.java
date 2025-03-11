@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -12,11 +13,12 @@ import java.util.List;
 @Table(name = "t_tank")
 public class TankEntity {
 
-    @Id
-    @Column(name = "tank_idx", nullable = false)
-    private Long tankIdx;  // PK (INT UNSIGNED)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ 자동 증가 설정 추가
+	@Column(name = "tank_idx", nullable = false)
+	private Long tankIdx;// PK (INT UNSIGNED)
 
-    @ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY) // ✅ LAZY 로딩 적용
     @JoinColumn(name = "user_id", nullable = false)
     private MemberEntity user;  // FK (VARCHAR(50))
 
@@ -33,7 +35,7 @@ public class TankEntity {
     private String fishType;  // 품종 (VARCHAR(255))
 
     @Column(name = "started_at")
-    private Date startedAt;  // 사육개시일 (DATE)
+    private LocalDate startedAt;  // 사육개시일 (DATE)
 
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TankDataEntity> tankData;

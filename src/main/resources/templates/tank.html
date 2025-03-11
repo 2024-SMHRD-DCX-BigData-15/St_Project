@@ -76,6 +76,61 @@
             document.getElementById('sidebar').classList.toggle('open');
             this.classList.toggle('open');
         });
+        
+        /**
+         * 🔹 수조 추가 버튼 클릭 시 데이터 저장 후 대시보드로 이동
+         */
+         document.querySelector('.tank-form').addEventListener('submit', async function(event) {
+             event.preventDefault(); // 기본 제출 방지
+
+             let userId = `[[${session.loginUser?.userId}]]`; // ✅ 세션에서 사용자 ID 가져오기
+             let tankWidth = document.getElementById('tank-diameter').value;
+             let tankHeight = document.getElementById('tank-height').value;
+             let tankLocation = document.getElementById('tank-location').value;
+             let fishType = document.getElementById('species').value;
+             let startedAt = document.getElementById('start-date').value;
+
+             // 🔹 콘솔 로그로 입력값 확인
+             console.log("🚀 수조 추가 요청:");
+             console.log("📌 사용자 ID:", userId);
+             console.log("📌 직경:", tankWidth, "m");
+             console.log("📌 높이:", tankHeight, "m");
+             console.log("📌 위치:", tankLocation);
+             console.log("📌 품종:", fishType);
+             console.log("📌 개시일:", startedAt);
+
+             let requestData = {
+                 userId: userId,
+                 tankWidth: parseFloat(tankWidth),
+                 tankHeight: parseFloat(tankHeight),
+                 tankLocation: tankLocation,
+                 fishType: fishType,
+                 startedAt: startedAt
+             };
+
+             try {
+                 let response = await fetch("/tank/add", {
+                     method: "POST",
+                     headers: { "Content-Type": "application/json" }, // ✅ JSON 형식으로 전송
+                     body: JSON.stringify(requestData)
+                 });
+
+                 console.log("📡 서버 응답 상태 코드:", response.status);
+
+                 if (response.ok) {
+                     alert("✅ 수조 추가 완료!");
+                     console.log("✅ 서버 응답: 수조 추가 성공");
+                     window.location.href = "/maindashboard"; // 대시보드로 이동
+                 } else {
+                     let errorText = await response.text();
+                     alert("❌ 수조 추가 실패!");
+                     console.error("❌ 서버 응답:", errorText);
+                 }
+             } catch (error) {
+                 console.error("🚨 서버 요청 중 오류 발생:", error);
+                 alert("❌ 서버 오류 발생!");
+             }
+         });
     </script>
 </body>
 </html>
