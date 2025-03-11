@@ -178,6 +178,14 @@
             let userId = `[[${session.loginUser?.userId}]]`;
             loadTanks(userId);
         };
+        
+        /**
+         * 🔹 수조 수정 페이지로 이동하는 함수
+         */
+        function editTank(tankIdx) {
+            console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`); // ✅ 디버깅 로그 추가
+            window.location.href = `/tank/edit/${tankIdx}`; // ✅ 수정 페이지로 이동
+        }
     </script>
 
   </body>

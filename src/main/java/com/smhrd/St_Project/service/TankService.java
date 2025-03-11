@@ -74,4 +74,24 @@ public class TankService {
 
         return tanks;
     }
+
+	public TankEntity getTankById(Long tankIdx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void updateTank(TankEntity tank) {
+	    TankEntity existingTank = tankRepository.findById(tank.getTankIdx())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 수조가 없습니다. ID: " + tank.getTankIdx()));
+
+	    // 기존 데이터 수정
+	    existingTank.setTankWidth(tank.getTankWidth());
+	    existingTank.setTankHeight(tank.getTankHeight());
+	    existingTank.setTankLocation(tank.getTankLocation());
+	    existingTank.setFishType(tank.getFishType());
+	    existingTank.setStartedAt(tank.getStartedAt());
+
+	    tankRepository.save(existingTank);
+	}
+
 }
