@@ -75,10 +75,6 @@ public class TankService {
         return tanks;
     }
 
-	public TankEntity getTankById(Long tankIdx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public void updateTank(TankEntity tank) {
 	    TankEntity existingTank = tankRepository.findById(tank.getTankIdx())
@@ -92,6 +88,11 @@ public class TankService {
 	    existingTank.setStartedAt(tank.getStartedAt());
 
 	    tankRepository.save(existingTank);
+	}
+
+	public static TankEntity getTankById(Long tankIdx) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

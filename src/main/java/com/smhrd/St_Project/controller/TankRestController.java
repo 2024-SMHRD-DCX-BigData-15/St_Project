@@ -70,13 +70,6 @@ public class TankRestController {
         );
     }
     
-    @GetMapping("/edit/{tankIdx}")
-    public String editTankPage(@PathVariable("tankIdx") Long tankIdx, Model model) {
-        // 해당 tankIdx의 정보를 가져오기
-        TankEntity tank = tankService.getTankById(tankIdx);
-        model.addAttribute("tank", tank);
-        
-        return "tankedit"; // tankEdit.html 뷰 반환
-    }
+    
 
 }
