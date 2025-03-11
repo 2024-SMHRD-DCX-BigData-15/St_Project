@@ -11,3 +11,4 @@ import java.util.List;
 public interface TankRepository extends JpaRepository<TankEntity, Long> {
     List<TankEntity> findByUser(MemberEntity user); // 특정 사용자의 수조 리스트 조회
 }
+//
