@@ -144,6 +144,38 @@ public class MemberService {
           System.out.println("계정 복구 완료: " + id);
           return true;
       }
+      
+
+      // 🔹 ID로 사용자 조회 (비밀번호는 Java에서 비교)
+      public MemberEntity freelogin(String id, String rawPw) {
+    	    Optional<MemberEntity> optionalMember = memberRepository.findById(id);
+
+    	    if (optionalMember.isPresent()) {
+    	        MemberEntity member = optionalMember.get();
+
+    	        // 🔹 비밀번호가 null인지 확인
+    	        if (member.getUserPw() == null) {
+    	            System.out.println("❌ DB에 저장된 비밀번호 없음!");
+    	            return null;
+    	        }
+
+    	        // 🔹 사용자가 입력한 비밀번호를 SHA-256으로 암호화
+    	        String hashedPw = PasswordEncryptor.encryptSHA256(rawPw);
+    	        System.out.println("🔹 입력된 비밀번호 해시값: " + hashedPw);
+    	        System.out.println("🔹 DB 저장된 비밀번호 해시값: " + member.getUserPw());
+
+    	        // 🔹 올바르게 비교 수행
+    	        if (hashedPw.equals(member.getUserPw())) {
+    	            return member; // ✅ 로그인 성공
+    	        } else {
+    	            System.out.println("❌ 비밀번호 불일치");
+    	        }
+    	    }
+
+    	    System.out.println("❌ 로그인 실패: 사용자 ID 없음");
+    	    return null; // 로그인 실패
+    	}
+
 
 
 }

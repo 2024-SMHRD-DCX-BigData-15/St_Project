@@ -52,88 +52,106 @@
 
   <script>
   /**
-   * 🔹 로그인 시 SHA-256 암호화 후 전송
-   * - 자동 로그인 선택 시 LocalStorage에 ID/PW 저장 (암호화된 비밀번호)
+   * 🔹 로그인 시 서버로 평문 비밀번호 전송 (서버에서 SHA-256 암호화)
+   * - 자동 로그인 선택 시 쿠키에 ID/PW 저장 (평문 비밀번호)
    */
-   async function handleLogin() {
-	    let userId = document.getElementById("userId").value;
-	    let password = document.getElementById("password").value;
-	    let autoLogin = document.getElementById("autoLoginToggle").checked;
+  async function handleLogin() {
+      let userId = document.getElementById("userId").value;
+      let password = document.getElementById("password").value;
+      let autoLogin = document.getElementById("autoLoginToggle").checked; // 자동 로그인 체크 여부
 
-	    if (userId === "" || password === "") {
-	        alert("아이디와 비밀번호를 입력하세요.");
-	        return false;
-	    }
+      if (userId === "" || password === "") {
+          alert("아이디와 비밀번호를 입력하세요.");
+          return false;
+      }
 
-	    // SHA-256 암호화
-	    let encryptedPw = await encryptSHA256(password);
-	    console.log("🔒 암호화된 PW:", encryptedPw);
+      console.log("🔹 로그인 시도 - ID:", userId);
 
-	    // 자동 로그인 시 LocalStorage 저장 (암호화된 PW 저장)
-	    if (autoLogin) {
-	        localStorage.setItem("autoLogin", "true");
-	        localStorage.setItem("savedUserId", userId);
-	        localStorage.setItem("savedPassword", encryptedPw); // ✅ 암호화된 비밀번호 저장
-	    } else {
-	        localStorage.removeItem("autoLogin");
-	        localStorage.removeItem("savedUserId");
-	        localStorage.removeItem("savedPassword");
-	    }
+      // 🔹 자동 로그인 체크 시 평문 비밀번호를 쿠키에 저장
+      if (autoLogin) {
+          setCookie("autoLoginId", userId, 7);  // 7일 동안 유지
+          setCookie("autoLoginPw", password, 7);
+      } else {
+          deleteCookie("autoLoginId");
+          deleteCookie("autoLoginPw");
+      }
 
-	    // 서버로 암호화된 비밀번호 전송
-	    document.getElementById("password").value = encryptedPw;
-	    return true; // 폼 제출 진행
-	}
+      return true; // 폼 제출 진행
+  }
 
+  /**
+   * 🔹 쿠키 설정 함수 (SameSite 및 Secure 속성 추가)
+   */
+  function setCookie(name, value, days) {
+      let date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/;SameSite=Strict;Secure`;
+  }
 
+  /**
+   * 🔹 쿠키 가져오기 함수
+   */
+  function getCookie(name) {
+      let cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+          let [key, value] = cookie.split("=");
+          if (key === name) return value;
+      }
+      return null;
+  }
 
-    /**
-     * 🔹 SHA-256 암호화 함수
-     * - 입력된 문자열을 SHA-256으로 해싱
-     */
-    async function encryptSHA256(text) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(text);
-      const hash = await crypto.subtle.digest("SHA-256", data);
-      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
-    }
+  /**
+   * 🔹 쿠키 삭제 함수
+   */
+  function deleteCookie(name) {
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+  }
 
-    /**
-     * 🔹 자동 로그인 확인 및 적용
-     * - LocalStorage에서 저장된 ID/PW 불러와 자동 로그인 수행
-     */
-     window.onload = async function () {
-    	    let autoLogin = localStorage.getItem("autoLogin");
+  /**
+   * 🔹 자동 로그인 확인 및 적용
+   */
+  window.onload = async function () {
+      let savedId = getCookie("autoLoginId");
+      let savedPw = getCookie("autoLoginPw"); // ✅ 평문 비밀번호 가져오기 (암호화 안 함)
 
-    	    if (autoLogin === "true") {
-    	        let savedId = localStorage.getItem("savedUserId");
-    	        let savedPw = localStorage.getItem("savedPassword"); // ✅ 이미 암호화된 비밀번호 가져오기
+      console.log("🚀 자동 로그인 체크 - ID:", savedId);
 
-    	        if (savedId && savedPw) {
-    	            console.log("🚀 자동 로그인 시도...");
+      if (savedId && savedPw) {
+          console.log("🚀 자동 로그인 시도...");
 
-    	            let response = await fetch("/api/auto-login", {
-    	                method: "POST",
-    	                headers: { "Content-Type": "application/json" },
-    	                body: JSON.stringify({ id: savedId, pw: savedPw }) // ✅ 암호화된 PW 그대로 전송
-    	            });
+          let response = await fetch("/api/auto-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: savedId, pw: savedPw }) // ✅ 평문 비밀번호 그대로 전송
+          });
 
-    	            let result = await response.text();
-    	            if (result === "SUCCESS") {
-    	                console.log("✅ 자동 로그인 성공");
-    	                alert("자동 로그인 완료!");
-    	                window.location.href = "/dashboard";
-    	            } else {
-    	                console.log("❌ 자동 로그인 실패");
-    	                alert("자동 로그인 실패! 다시 로그인하세요.");
-    	                localStorage.removeItem("autoLogin");
-    	                localStorage.removeItem("savedUserId");
-    	                localStorage.removeItem("savedPassword");
-    	            }
-    	        }
-    	    }
-    	};
+          let result = await response.text();
+          if (result === "SUCCESS") {
+              console.log("✅ 자동 로그인 성공");
+              alert("자동 로그인 완료!");
+              window.location.href = "/maindashboard";
+          } else {
+              console.log("❌ 자동 로그인 실패");
+              alert("자동 로그인 실패! 다시 로그인하세요.");
+              deleteCookie("autoLoginId");
+              deleteCookie("autoLoginPw");
+          }
+      }
+  };
 
+  /**
+   * 🔹 로그아웃 시 쿠키 삭제
+   */
+  function logout() {
+      deleteCookie("autoLoginId");
+      deleteCookie("autoLoginPw");
+
+      fetch("/api/auth/logout", { method: "POST" })
+          .then(() => {
+              alert("로그아웃 완료!");
+              window.location.href = "/login";
+          });
+  }
 
   </script>
 </body>
