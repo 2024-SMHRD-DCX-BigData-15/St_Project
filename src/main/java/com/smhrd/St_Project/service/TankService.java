@@ -6,14 +6,17 @@ import com.smhrd.St_Project.repository.MemberRepository;
 import com.smhrd.St_Project.repository.TankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class TankService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TankService.class); // ✅ Logger 선언
 
     @Autowired
     private TankRepository tankRepository;
@@ -24,33 +27,31 @@ public class TankService {
     /**
      * 🔹 수조 추가 기능
      */
-    public TankEntity addTank(String userId, BigDecimal tankWidth, BigDecimal tankHeight,
+    public TankEntity addTank(String userId, BigDecimal tankWidth, BigDecimal tankHeight, 
                               String tankLocation, String fishType, LocalDate startedAt) {
-        // ✅ 사용자 찾기 (존재 여부 확인)
         Optional<MemberEntity> userOpt = memberRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            System.out.println("❌ 오류: 사용자를 찾을 수 없습니다. userId=" + userId);
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId);
+            throw new IllegalArgumentException("❌ 사용자를 찾을 수 없습니다: " + userId);
         }
         MemberEntity user = userOpt.get();
-        System.out.println("✅ 사용자 확인 완료: " + user.getUserId());
 
-        // ✅ 새로운 수조 객체 생성
+        // ✅ 필수 필드 검증
+        if (fishType == null || fishType.isEmpty()) {
+            throw new IllegalArgumentException("❌ 품종(fish_type)은 필수 입력 값입니다.");
+        }
+
+        // ✅ 수조 엔터티 생성
         TankEntity tank = new TankEntity();
         tank.setUser(user);
-        tank.setTankWidth(tankWidth);
-        tank.setTankHeight(tankHeight);
-        tank.setTankLocation(tankLocation);
+        tank.setTankWidth(tankWidth != null ? tankWidth : BigDecimal.ZERO);
+        tank.setTankHeight(tankHeight != null ? tankHeight : BigDecimal.ZERO);
+        tank.setTankLocation(tankLocation != null ? tankLocation : "미지정");
         tank.setFishType(fishType);
-        tank.setStartedAt(startedAt);
+        tank.setStartedAt(startedAt != null ? startedAt : LocalDate.now());
 
-        System.out.println("📌 새로운 수조 생성: " + tank);
+        logger.info("✅ 최종 저장될 수조 데이터: {}", tank); // ✅ Logger 객체로 변경
 
-        // ✅ DB에 저장 (tankIdx 자동 생성됨)
-        TankEntity savedTank = tankRepository.save(tank);
-        System.out.println("✅ 수조 추가 완료! tankIdx=" + savedTank.getTankIdx());
-
-        return savedTank;
+        return tankRepository.save(tank);
     }
 
     /**
@@ -60,18 +61,17 @@ public class TankService {
         // ✅ 사용자 찾기 (존재 여부 확인)
         Optional<MemberEntity> userOpt = memberRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            System.out.println("❌ 오류: 사용자를 찾을 수 없습니다. userId=" + userId);
+            logger.error("❌ 오류: 사용자를 찾을 수 없습니다. userId={}", userId);
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId);
         }
 
         MemberEntity user = userOpt.get();
-        System.out.println("✅ 사용자 확인 완료: " + user.getUserId());
+        logger.info("✅ 사용자 확인 완료: {}", user.getUserId());
 
         // ✅ 해당 사용자의 수조 목록 가져오기
         List<TankEntity> tanks = tankRepository.findByUser(user);
-        System.out.println("✅ 수조 목록 조회 완료! 총 개수: " + tanks.size());
+        logger.info("✅ 수조 목록 조회 완료! 총 개수: {}", tanks.size());
 
         return tanks;
     }
 }
-//

@@ -44,7 +44,6 @@ public class TankController {
      */
     @PostMapping("/add")
     public TankEntity addTank(@RequestBody TankEntity tank, HttpSession session) {
-        // ✅ 세션에서 사용자 정보 가져오기
         MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
 
         if (loginUser == null) {
@@ -53,19 +52,20 @@ public class TankController {
         }
 
         logger.info("✅ {} 사용자의 수조 추가 요청", loginUser.getUserId());
-        logger.debug("📌 입력 데이터: 직경={}, 높이={}, 위치={}, 품종={}, 개시일={}",
-                tank.getTankWidth(), tank.getTankHeight(), tank.getTankLocation(),
-                tank.getFishType(), tank.getStartedAt());
+        logger.debug("📌 받은 데이터: {}", tank);
 
-        // 수조 추가 처리
+        // ✅ 필수 필드 검증
+        if (tank.getFishType() == null || tank.getFishType().isEmpty()) {
+            throw new IllegalArgumentException("❌ 품종(fish_type)은 필수 입력 값입니다.");
+        }
+
         return tankService.addTank(
-                loginUser.getUserId(),
-                tank.getTankWidth(),
-                tank.getTankHeight(),
-                tank.getTankLocation(),
-                tank.getFishType(),
-                tank.getStartedAt()
+            loginUser.getUserId(),
+            tank.getTankWidth(),
+            tank.getTankHeight(),
+            tank.getTankLocation(),
+            tank.getFishType(),
+            tank.getStartedAt()
         );
     }
 }
-//

@@ -180,57 +180,61 @@
           });
         });
         
-         /**
-          * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가
-          */
+        /**
+         * 🔹 수조 추가 후 대시보드를 업데이트하는 함수
+         */
+        function updateDashboard() {
+            console.log("📢 새로운 수조 추가됨, 대시보드 업데이트 실행...");
+
+            let userIdElement = document.querySelector(".user-info p");
+            let userId = userIdElement ? userIdElement.textContent.trim() : null;
+
+            if (userId) {
+                console.log("✅ 로그인된 사용자 ID:", userId);
+                loadTanks(userId); // ✅ 최신 수조 데이터 불러오기
+            } else {
+                console.warn("⚠️ 사용자 ID를 찾을 수 없어 수조 목록을 불러올 수 없음.");
+            }
+        }
+
+        /**
+         * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가
+         */
          async function loadTanks(userId) {
-             try {
-                 let response = await fetch(`/tank/list?userId=${userId}`);
-                 let tanks = await response.json();
+        	    try {
+        	        let response = await fetch(`/tank/list?userId=${userId}`);
+        	        let tanks = await response.json();
 
-                 let tankContainer = document.querySelector('.control-center');
-                 tankContainer.innerHTML = ""; // 기존 데이터 초기화
+        	        let tankContainer = document.querySelector('.control-center');
+        	        tankContainer.innerHTML = ""; // 기존 데이터 초기화
 
-                 tanks.forEach(tank => {
-                     let tankDiv = document.createElement('div');
-                     tankDiv.classList.add('control-item');
-                     tankDiv.innerHTML = `
-                         <h4>수조관리시스템 (ID: ${tank.tankIdx})</h4>
-                         <div class="tank-info">
-                             <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
-                             <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
-                             <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
-                             <p><strong>품종:</strong> ${tank.fishType}</p>
-                             <p><strong>사육 개시일:</strong> ${tank.startedAt}</p>
-                             <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
-                         </div>
-                     `;
-                     tankContainer.appendChild(tankDiv);
-                 });
-             } catch (error) {
-                 console.error("Error:", error);
-                 alert("❌ 데이터 로드 실패!");
-             }
-         }
+        	        tanks.forEach(tank => {
+        	            let tankDiv = document.createElement('div');
+        	            tankDiv.classList.add('control-item');
+        	            tankDiv.innerHTML = `
+        	                <h4>수조관리시스템 (ID: ${tank.tankIdx})</h4>
+        	                <div class="tank-info">
+        	                    <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
+        	                    <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
+        	                    <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
+        	                    <p><strong>품종:</strong> ${tank.fishType}</p>
+        	                    <p><strong>사육 개시일:</strong> ${tank.startedAt}</p>
+        	                    <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+        	                </div>
+        	            `;
+        	            tankContainer.appendChild(tankDiv);
+        	        });
+        	    } catch (error) {
+        	        console.error("Error:", error);
+        	        alert("❌ 데이터 로드 실패!");
+        	    }
+        	}
 
-         /**
-          * 🔹 수조 삭제 기능
-          */
-         async function deleteTank(tankIdx) {
-             try {
-                 let response = await fetch(`/tank/delete/${tankIdx}`, { method: "DELETE" });
-                 if (response.ok) {
-                     alert("✅ 수조 삭제 완료!");
-                     location.reload();
-                 } else {
-                     alert("❌ 삭제 실패!");
-                 }
-             } catch (error) {
-                 console.error("Error:", error);
-                 alert("❌ 서버 오류 발생!");
-             }
-         }
-        
+        	// ✅ 페이지 로드 시 자동 실행
+        	window.onload = function () {
+        	    let userId = `[[${session.loginUser?.userId}]]`;
+        	    loadTanks(userId);
+        	};
     </script>
 
   </body>
