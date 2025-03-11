@@ -14,7 +14,7 @@
             <div class="text-21">로그인</div>
           </div>
 
-          <form action="login.do" method="post" id="loginForm" onsubmit="return validateForm()">
+          <form action="login.do" method="post" id="loginForm" onsubmit="return handleLogin()">
             <div class="input-group">
               <label for="userId" class="text-1">아이디</label>
               <input type="text" id="userId" name="id" class="input-field-text" placeholder="아이디를 입력하세요" required />
@@ -25,18 +25,18 @@
               <input type="password" id="password" name="pw" class="input-field-text" placeholder="비밀번호를 입력하세요" required />
             </div>
 
-            <!-- 로그인 저장하기 추가 -->
+            <!-- 🔹 자동 로그인 스위치 추가 -->
             <div class="remember-me">
               <label class="switch-base">
-                <input type="checkbox" id="saveToggle" name="saveLogin" />
+                <input type="checkbox" id="autoLoginToggle" name="autoLogin" />
                 <div class="ellipse-1"></div>
               </label>
-              <div class="text-15"> 저장하기</div>
+              <div class="text-15"> 자동 로그인</div>
             </div>
 
             <div class="button-base_login">
               <button type="submit" id="loginBtn" class="button-body">
-                <div class="text" >로그인</div>
+                <div class="text">로그인</div>
               </button>
             </div>
           </form>
@@ -49,43 +49,92 @@
       </div>
     </div>
   </div>
-<!-- 깃 수정 용 -->
+
   <script>
-    // 로그인 폼 검증
-    function validateForm() {
-      var userId = document.getElementById("userId").value;
-      var password = document.getElementById("password").value;
+  /**
+   * 🔹 로그인 시 SHA-256 암호화 후 전송
+   * - 자동 로그인 선택 시 LocalStorage에 ID/PW 저장 (암호화된 비밀번호)
+   */
+   async function handleLogin() {
+	    let userId = document.getElementById("userId").value;
+	    let password = document.getElementById("password").value;
+	    let autoLogin = document.getElementById("autoLoginToggle").checked;
 
-      // 아이디 비어있는지 확인
-      if (userId === "") {
-        alert("아이디를 입력해주세요.");
-        return false;
-      }
+	    if (userId === "" || password === "") {
+	        alert("아이디와 비밀번호를 입력하세요.");
+	        return false;
+	    }
 
-      // 비밀번호 비어있는지 확인
-      if (password === "") {
-        alert("비밀번호를 입력해주세요.");
-        return false;
-      }
+	    // SHA-256 암호화
+	    let encryptedPw = await encryptSHA256(password);
+	    console.log("🔒 암호화된 PW:", encryptedPw);
 
-      return true;
+	    // 자동 로그인 시 LocalStorage 저장 (암호화된 PW 저장)
+	    if (autoLogin) {
+	        localStorage.setItem("autoLogin", "true");
+	        localStorage.setItem("savedUserId", userId);
+	        localStorage.setItem("savedPassword", encryptedPw); // ✅ 암호화된 비밀번호 저장
+	    } else {
+	        localStorage.removeItem("autoLogin");
+	        localStorage.removeItem("savedUserId");
+	        localStorage.removeItem("savedPassword");
+	    }
+
+	    // 서버로 암호화된 비밀번호 전송
+	    document.getElementById("password").value = encryptedPw;
+	    return true; // 폼 제출 진행
+	}
+
+
+
+    /**
+     * 🔹 SHA-256 암호화 함수
+     * - 입력된 문자열을 SHA-256으로 해싱
+     */
+    async function encryptSHA256(text) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    // 로그인 저장 스위치 효과
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggle = document.getElementById("saveToggle");
-      const switchBase = document.querySelector(".switch-base");
+    /**
+     * 🔹 자동 로그인 확인 및 적용
+     * - LocalStorage에서 저장된 ID/PW 불러와 자동 로그인 수행
+     */
+     window.onload = async function () {
+    	    let autoLogin = localStorage.getItem("autoLogin");
 
-      switchBase.addEventListener("click", function () {
-        toggle.checked = !toggle.checked;
+    	    if (autoLogin === "true") {
+    	        let savedId = localStorage.getItem("savedUserId");
+    	        let savedPw = localStorage.getItem("savedPassword"); // ✅ 이미 암호화된 비밀번호 가져오기
 
-        if (toggle.checked) {
-          switchBase.style.backgroundColor = "#0075ff";
-        } else {
-          switchBase.style.backgroundColor = "#ccc";
-        }
-      });
-    });
+    	        if (savedId && savedPw) {
+    	            console.log("🚀 자동 로그인 시도...");
+
+    	            let response = await fetch("/api/auto-login", {
+    	                method: "POST",
+    	                headers: { "Content-Type": "application/json" },
+    	                body: JSON.stringify({ id: savedId, pw: savedPw }) // ✅ 암호화된 PW 그대로 전송
+    	            });
+
+    	            let result = await response.text();
+    	            if (result === "SUCCESS") {
+    	                console.log("✅ 자동 로그인 성공");
+    	                alert("자동 로그인 완료!");
+    	                window.location.href = "/dashboard";
+    	            } else {
+    	                console.log("❌ 자동 로그인 실패");
+    	                alert("자동 로그인 실패! 다시 로그인하세요.");
+    	                localStorage.removeItem("autoLogin");
+    	                localStorage.removeItem("savedUserId");
+    	                localStorage.removeItem("savedPassword");
+    	            }
+    	        }
+    	    }
+    	};
+
+
   </script>
 </body>
 </html>
