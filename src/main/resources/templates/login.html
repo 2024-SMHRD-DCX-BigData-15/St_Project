@@ -138,6 +138,30 @@
           }
       }
   };
+  
+  /**
+   * 스위치 배경색 변경
+   */
+  document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("autoLoginToggle");
+      const switchBase = document.querySelector(".switch-base");
+
+      // 초기 상태 설정
+      if (toggle.checked) {
+          switchBase.style.backgroundColor = "#0075ff";
+      } else {
+          switchBase.style.backgroundColor = "#ccc";
+      }
+
+      // 체크 상태 변경 시 배경색 업데이트
+      toggle.addEventListener("change", function () {
+          if (toggle.checked) {
+              switchBase.style.backgroundColor = "#0075ff";
+          } else {
+              switchBase.style.backgroundColor = "#ccc";
+          }
+      });
+  });
   </script>
 </body>
 </html>
