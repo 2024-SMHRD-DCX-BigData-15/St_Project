@@ -68,6 +68,11 @@ public class MainController {
 	public String alarmHistory() {
 		return "alarmHistory";
 	}
+	
+	@RequestMapping("/alarmHistory2")
+	public String alarmHistory2() {
+		return "alarmHistory2";
+	}
 		
 
 }

@@ -1,12 +1,12 @@
 /* 기본 설정 */
 body {
     margin: 0;
-    height: 100vh; /* 전체 화면 높이 */
-    overflow: hidden; /* 불필요한 스크롤 방지 */
+    height: 100vh;
+    overflow: hidden;
 }
 
 .container-center-horizontal {
-    height: 100%; /* 부모 요소가 전체 높이를 차지 */
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,8 +17,8 @@ body {
     justify-content: center;
     display: flex;
     width: 100vw;
-    height: 100vh; /* 화면 전체 높이 */
-    overflow-y: auto; /* 내용이 길어질 경우 스크롤 */
+    height: 100vh;
+    overflow-y: auto;
     background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
 }
 
@@ -27,7 +27,7 @@ body {
     justify-content: center;
     display: flex;
     width: 100%;
-    height: 100%; /* 부모 높이에 맞춤 */
+    height: 100%;
     position: relative;
 }
 
@@ -127,7 +127,7 @@ body {
 /* 테이블 스타일 */
 .alarm-dashboard-screen .alarm-table {
     width: 100%;
-    overflow-x: auto; /* 모바일에서 테이블 스크롤 가능 */
+    overflow-x: auto;
 }
 
 .alarm-dashboard-screen table {
