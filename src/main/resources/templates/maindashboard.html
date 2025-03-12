@@ -137,41 +137,56 @@
         /**
          * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가
          */
-        async function loadTanks(userId) {
-            try {
-                let response = await fetch(`/tank/list?userId=${userId}`);
-                let tanks = await response.json();
+         async function loadTanks(userId) {
+        	    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
 
-                let tankContainer = document.querySelector('.control-center');
-                tankContainer.innerHTML = ""; // 기존 데이터 초기화
+        	    try {
+        	        let response = await fetch(`/tank/list?userId=${userId}`);
 
-                tanks.forEach(tank => {
-                    let tankDiv = document.createElement('div');
-                    tankDiv.classList.add('control-item');
-                    tankDiv.innerHTML = `
-                        <h4>수조관리시스템 (ID: ${tank.tankIdx})
-                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
-                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
-                        </h4>
-                        
-                        <div class="tank-info" onclick="window.location.href='/dashboarddetail'" >
-                            <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
-                            <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
-                            <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
-                            <p><strong>품종:</strong> ${tank.fishType}</p>
-                            <p><strong>사육 개시일:</strong> ${tank.startedAt}</p> 
-                        </div>
-                        <div class="alarm-log-container" id="alarm-log-1" onclick = "window.location.href='/alarmHistory'">
-                        <h5>수조 알람 로그</h5>
-                        
-                    `;
-                    tankContainer.appendChild(tankDiv);
-                });
-            } catch (error) {
-                console.error("Error:", error);
-                alert("❌ 데이터 로드 실패!");
-            }
-        }
+        	        if (!response.ok) {
+        	            throw new Error(`서버 응답 오류: ${response.status}`);
+        	        }
+
+        	        let tanks = await response.json();
+        	        console.log("✅ 수조 데이터 응답:", tanks); // ✅ 수조 데이터 로그
+
+        	        let tankContainer = document.querySelector('.control-center');
+        	        tankContainer.innerHTML = ""; // 기존 데이터 초기화
+
+        	        tanks.forEach(tank => {
+        	            console.log(`📌 확인 중: tankIdx=${tank.tankIdx}, tank_delete=${tank.tank_delete}`); // ✅ 개별 수조 상태 확인
+
+        	            if (tank.tank_delete === "N") { // 🔹 tank_delete가 "N"인 것만 표시
+        	                let tankDiv = document.createElement('div');
+        	                tankDiv.classList.add('control-item');
+        	                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+
+        	                tankDiv.innerHTML = `
+        	                    <h4>수조관리시스템 (ID: ${tank.tankIdx})
+        	                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
+        	                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+        	                    </h4>
+        	                    <div class="tank-info" onclick="window.location.href='/dashboarddetail'">
+        	                        <p><strong>수조 직경:</strong> ${tank.tankWidth} m</p>
+        	                        <p><strong>수조 높이:</strong> ${tank.tankHeight} m</p>
+        	                        <p><strong>수조 위치:</strong> ${tank.tankLocation}</p>
+        	                        <p><strong>품종:</strong> ${tank.fishType}</p>
+        	                        <p><strong>사육 개시일:</strong> ${tank.startedAt}</p>
+        	                    </div>
+        	                    <div class="alarm-log-container" id="alarm-log-1" onclick = "window.location.href='/alarmHistory'">
+                                <h5>수조 알람 로그</h5>
+        	                `;
+
+        	                tankContainer.appendChild(tankDiv);
+        	                console.log(`✅ 화면에 추가됨: tankIdx=${tank.tankIdx}`); // ✅ 화면에 추가 로그
+        	            }
+        	        });
+
+        	    } catch (error) {
+        	        console.error("❌ 오류 발생:", error);
+        	        alert("❌ 수조 데이터를 불러오지 못했습니다!");
+        	    }
+        	}
 
         // ✅ 페이지 로드 시 자동 실행
         window.onload = function () {
@@ -185,6 +200,37 @@
         function editTank(tankIdx) {
             console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`); // ✅ 디버깅 로그 추가
             window.location.href = `/tank/edit/${tankIdx}`; // ✅ 수정 페이지로 이동
+        }
+        
+        /**
+         * 🔹 수조 삭제 함수
+         */
+        async function deleteTank(tankIdx) {
+            console.log(`🚀 삭제 버튼 클릭됨: tankIdx=${tankIdx}`); // ✅ 버튼 클릭 확인
+
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+
+            try {
+                console.log(`📡 서버에 삭제 요청 보냄... tankIdx=${tankIdx}`); // ✅ 요청 보내기 전 로그
+                
+                let response = await fetch(`/tank/delete/${tankIdx}`, { method: "PUT" });
+
+                if (!response.ok) {
+                    throw new Error(`서버 응답 오류: ${response.status}`);
+                }
+
+                let result = await response.text();
+                console.log(`✅ 서버 응답: ${result}`); // ✅ 서버 응답 로그
+                
+                alert("✅ 수조 삭제 완료!");
+                
+                // ✅ 화면에서 해당 수조 삭제
+                document.getElementById(`tank-${tankIdx}`).remove();
+                console.log(`🧹 화면에서 수조 제거 완료! tankIdx=${tankIdx}`); // ✅ 화면에서 삭제 확인
+            } catch (error) {
+                console.error("❌ 삭제 중 오류 발생:", error);
+                alert("❌ 삭제 실패!");
+            }
         }
     </script>
 

@@ -71,6 +71,20 @@ public class TankRestController {
             tank.getStartedAt()
         );
     }
- 
+    // 🔹 특정 수조를 "삭제 상태(Y)"로 변경하는 API
+    @PutMapping("/delete/{tankIdx}")
+    public ResponseEntity<String> deleteTank(@PathVariable Long tankIdx) {
+        System.out.println("🚀 DELETE 요청 수신: tankIdx = " + tankIdx); // ✅ 디버깅 로그
+
+        boolean deleted = tankService.deleteTank(tankIdx);
+
+        if (deleted) {
+            System.out.println("✅ 수조 삭제 성공! tankIdx = " + tankIdx); // ✅ 삭제 성공 로그
+            return ResponseEntity.ok("✅ 수조 삭제 성공");
+        } else {
+            System.out.println("❌ 수조 삭제 실패! tankIdx = " + tankIdx + " (해당 ID 없음)"); // ❌ 오류 로그
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ 해당 수조를 찾을 수 없음");
+        }
+    }
 
 }

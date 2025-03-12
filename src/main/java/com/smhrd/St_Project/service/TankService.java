@@ -112,22 +112,23 @@ public class TankService {
         }
     }
     
-    /**
-     * 🔹 특정 수조 삭제 (tank_delete = 'Y'로 변경)
-     */
-    @Transactional
+    // 🔹 수조 삭제 (tank_delete = 'Y'로 변경)
     public boolean deleteTank(Long tankIdx) {
-        Optional<TankEntity> tankOpt = tankRepository.findById(tankIdx);
+        System.out.println("🔍 삭제할 수조 찾는 중... tankIdx = " + tankIdx); // ✅ 디버깅 로그
 
-        if (tankOpt.isPresent()) {
-            TankEntity tank = tankOpt.get();
-            tank.setTank_delete("Y"); // ✅ 'Y'로 변경
-            tankRepository.save(tank); // ✅ DB 반영
-            System.out.println("✅ 삭제 완료: tankIdx=" + tankIdx);
+        Optional<TankEntity> tankOptional = tankRepository.findById(tankIdx);
+        
+        if (tankOptional.isPresent()) {
+            TankEntity tank = tankOptional.get();
+            System.out.println("✅ 수조 찾음! 삭제 처리 진행 tankIdx = " + tankIdx); // ✅ 찾았을 때 로그
+            
+            tank.setTank_delete("Y"); // ✅ 삭제 상태로 변경
+            tankRepository.save(tank);
+            System.out.println("✅ 수조 삭제 완료! tankIdx = " + tankIdx); // ✅ 삭제 완료 로그
             return true;
         } else {
-            System.out.println("❌ 삭제 실패: tankIdx=" + tankIdx + " (존재하지 않음)");
-            return false;
+            System.out.println("❌ 수조 찾을 수 없음! tankIdx = " + tankIdx); // ❌ 오류 로그
+            return false; 
         }
     }
 }
