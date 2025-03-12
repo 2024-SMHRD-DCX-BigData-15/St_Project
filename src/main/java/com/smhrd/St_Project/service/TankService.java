@@ -4,6 +4,9 @@ import com.smhrd.St_Project.entity.MemberEntity;
 import com.smhrd.St_Project.entity.TankEntity;
 import com.smhrd.St_Project.repository.MemberRepository;
 import com.smhrd.St_Project.repository.TankRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -108,5 +111,23 @@ public class TankService {
             logger.error("❌ 해당 수조 정보를 찾을 수 없습니다: {}", tankIdx);
         }
     }
+    
+    /**
+     * 🔹 특정 수조 삭제 (tank_delete = 'Y'로 변경)
+     */
+    @Transactional
+    public boolean deleteTank(Long tankIdx) {
+        Optional<TankEntity> tankOpt = tankRepository.findById(tankIdx);
 
+        if (tankOpt.isPresent()) {
+            TankEntity tank = tankOpt.get();
+            tank.setTank_delete("Y"); // ✅ 'Y'로 변경
+            tankRepository.save(tank); // ✅ DB 반영
+            System.out.println("✅ 삭제 완료: tankIdx=" + tankIdx);
+            return true;
+        } else {
+            System.out.println("❌ 삭제 실패: tankIdx=" + tankIdx + " (존재하지 않음)");
+            return false;
+        }
     }
+}

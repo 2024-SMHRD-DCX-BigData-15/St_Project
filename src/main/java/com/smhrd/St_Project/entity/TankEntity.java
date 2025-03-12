@@ -48,6 +48,10 @@ public class TankEntity {
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // ✅ 무한 루프 방지
     private List<AlarmEntity> alarms;
+    
+    // 추가된 필드 (삭제 여부)
+    @Column(name = "tank_delete", nullable = false)
+    private String tank_delete = "N"; // 기본값은 false로 설정
 
     @Override
     public String toString() {
@@ -58,6 +62,7 @@ public class TankEntity {
                 ", tankLocation='" + tankLocation + '\'' +
                 ", fishType='" + fishType + '\'' +
                 ", startedAt=" + startedAt +
+                ", tank_delete='" + tank_delete + '\'' +  // 삭제 여부 추가
                 '}';
     }
 }
