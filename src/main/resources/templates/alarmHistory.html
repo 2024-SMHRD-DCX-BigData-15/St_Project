@@ -53,8 +53,8 @@
                     <th>데이터 이름</th>
                     <th>값</th>
                     <th>상태</th>
-                    <th>확인 여부</th>
                     <th>지속 시간</th>
+                    <th>확인 여부</th>
                   </tr>
                 </thead>
                 <tbody id="alarmLog"></tbody>
@@ -144,8 +144,8 @@
           <td>${escapeHTML(log.dataName)}</td>
           <td>${escapeHTML(log.value)}</td>
           <td>${escapeHTML(log.status)}</td>
-          <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
           <td>${escapeHTML(log.duration)}</td>
+          <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
         `;
         row.querySelector(".action").addEventListener("click", () => confirmLog(alarmLogs.indexOf(log)));
         alarmLogTable.appendChild(row);
@@ -249,8 +249,8 @@
         dataName,
         value,
         status,
-        action: "미확인",
         duration: "0분",
+        action: "미확인",
         createdAt: now.getTime()
       };
 
