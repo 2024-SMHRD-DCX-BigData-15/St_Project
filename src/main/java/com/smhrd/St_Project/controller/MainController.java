@@ -3,6 +3,7 @@ package com.smhrd.St_Project.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.smhrd.St_Project.entity.MemberEntity;
 
@@ -10,6 +11,12 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MainController {
+	
+	@RequestMapping("/alarmHistory")
+	public String alarmHistory() {
+		return "alarmHistory";
+	}
+	
 
 	@GetMapping("/")
 	public String main() {
