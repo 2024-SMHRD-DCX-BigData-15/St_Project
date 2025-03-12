@@ -12,12 +12,6 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class MainController {
 	
-	@RequestMapping("/alarmHistory")
-	public String alarmHistory() {
-		return "alarmHistory";
-	}
-	
-
 	@GetMapping("/")
 	public String main() {
 		return "login";
@@ -68,6 +62,11 @@ public class MainController {
 	@GetMapping("/tankedit")
 	public String tankedit() {
 		return "tankedit";
+	}
+	
+	@RequestMapping("/alarmHistory")
+	public String alarmHistory() {
+		return "alarmHistory";
 	}
 		
 
