@@ -23,11 +23,6 @@
                 <option value="암모니아">암모니아</option>
                 <option value="아질산">아질산</option>
               </select>
-              <select class="filter-dropdown" id="statusFilter">
-                <option value="">전체 상태</option>
-                <option value="warning">경고만</option>
-                <option value="resolved">정상만</option>
-              </select>
               <label class="sound-toggle">
                 <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
               </label>
@@ -48,8 +43,8 @@
           </section>
 
           <!-- 알람 로그 -->
-          <section class="section">
-            <h2 class="section-title">로그</h2>
+          <section class="section" id="logSection">
+            <h2 class="section-title" id="logSectionTitle">로그</h2>
             <div class="alarm-table">
               <table>
                 <thead>
@@ -73,8 +68,8 @@
           </section>
 
           <!-- 알람 히스토리 -->
-          <section class="section">
-            <h2 class="section-title">히스토리</h2>
+          <section class="section" id="historySection">
+            <h2 class="section-title" id="historySectionTitle">히스토리</h2>
             <div class="alarm-table">
               <table>
                 <thead>
@@ -119,7 +114,6 @@
 
     // 필터링 변수
     let dataTypeFilter = "";
-    let statusFilter = "";
 
     // DOM 요소 캐싱
     const alarmLogTable = document.getElementById("alarmLog");
@@ -133,16 +127,18 @@
       return div.innerHTML;
     };
 
-    // 알람 로그 렌더링
+    // 알람 로그 렌더링 (경고만 표시)
     function renderAlarmLog(logs = alarmLogs) {
       alarmLogTable.innerHTML = "";
+      const filteredLogs = logs.filter(log => log.status === "⚠️ 경고")
+        .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
       const start = (currentLogPage - 1) * logsPerPage;
       const end = start + logsPerPage;
-      const paginatedLogs = logs.slice(start, end);
+      const paginatedLogs = filteredLogs.slice(start, end);
 
       paginatedLogs.forEach((log, index) => {
         const row = document.createElement("tr");
-        if (log.status === "⚠️ 경고") row.classList.add("warning");
+        row.classList.add("warning");
         row.innerHTML = `
           <td>${escapeHTML(log.timestamp)}</td>
           <td>${escapeHTML(log.dataName)}</td>
@@ -157,30 +153,33 @@
 
       document.getElementById("logPage").textContent = currentLogPage;
       document.getElementById("prevLog").disabled = currentLogPage === 1;
-      document.getElementById("nextLog").disabled = end >= logs.length;
+      document.getElementById("nextLog").disabled = end >= filteredLogs.length;
     }
 
-    // 알람 히스토리 렌더링
+    // 알람 히스토리 렌더링 (경고만 표시)
     function renderAlarmHistory(history = alarmHistory) {
       alarmHistoryTable.innerHTML = "";
+      const filteredHistory = history.filter(hist => hist.message.includes("이상 감지"))
+        .filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
       const start = (currentHistoryPage - 1) * historyPerPage;
       const end = start + historyPerPage;
-      const paginatedHistory = history.slice(start, end);
+      const paginatedHistory = filteredHistory.slice(start, end);
 
-      paginatedHistory.forEach(hist => {
+      paginatedHistory.forEach((hist, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${escapeHTML(hist.date)}</td>
           <td>${escapeHTML(hist.time)}</td>
           <td>${escapeHTML(hist.message)}</td>
-          <td class="status ${hist.status === '안 읽음' ? 'unread' : 'read'}">${escapeHTML(hist.status)}</td>
+          <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
         `;
+        row.querySelector(".action").addEventListener("click", () => confirmHistory(index));
         alarmHistoryTable.appendChild(row);
       });
 
       document.getElementById("historyPage").textContent = currentHistoryPage;
       document.getElementById("prevHistory").disabled = currentHistoryPage === 1;
-      document.getElementById("nextHistory").disabled = end >= history.length;
+      document.getElementById("nextHistory").disabled = end >= filteredHistory.length;
     }
 
     // 요약 통계 업데이트
@@ -188,37 +187,24 @@
       const warningCount = alarmLogs.filter(log => log.status === "⚠️ 경고").length;
       const today = new Date().toISOString().slice(0, 10);
       const todayWarningCount = alarmHistory.filter(hist => hist.date === today && hist.message.includes("이상 감지")).length;
-      const unconfirmedCount = alarmLogs.filter(log => log.action === "미확인").length;
+      const unconfirmedCount = alarmLogs.filter(log => log.action === "미확인" && log.status === "⚠️ 경고").length;
 
       document.getElementById("warningCount").textContent = warningCount;
       document.getElementById("todayWarningCount").textContent = todayWarningCount;
       document.getElementById("unconfirmedCount").textContent = unconfirmedCount;
     }
 
-    // 필터링 적용 함수
-    function applyFilters() {
-      let filteredLogs = [...alarmLogs];
-      let filteredHistory = [...alarmHistory];
+    // 로그 섹션 업데이트
+    function updateLogSection() {
+      currentLogPage = 1; // 페이지 초기화
+      renderAlarmLog();
+      updateSummaryStats();
+    }
 
-      if (dataTypeFilter) {
-        filteredLogs = filteredLogs.filter(log => log.dataName === dataTypeFilter);
-        filteredHistory = filteredHistory.filter(hist => hist.message.includes(dataTypeFilter));
-      }
-
-      if (statusFilter) {
-        if (statusFilter === "warning") {
-          filteredLogs = filteredLogs.filter(log => log.status === "⚠️ 경고");
-          filteredHistory = filteredHistory.filter(hist => hist.message.includes("이상 감지"));
-        } else if (statusFilter === "resolved") {
-          filteredLogs = filteredLogs.filter(log => log.status === "정상");
-          filteredHistory = filteredHistory.filter(hist => hist.status === "읽음");
-        }
-      }
-
-      currentLogPage = 1;
-      currentHistoryPage = 1;
-      renderAlarmLog(filteredLogs);
-      renderAlarmHistory(filteredHistory);
+    // 히스토리 섹션 업데이트
+    function updateHistorySection() {
+      currentHistoryPage = 1; // 페이지 초기화
+      renderAlarmHistory();
       updateSummaryStats();
     }
 
@@ -226,14 +212,14 @@
     document.getElementById("prevLog").addEventListener("click", () => {
       if (currentLogPage > 1) {
         currentLogPage--;
-        applyFilters();
+        renderAlarmLog();
       }
     });
 
     document.getElementById("nextLog").addEventListener("click", () => {
-      if (currentLogPage * logsPerPage < alarmLogs.length) {
+      if (currentLogPage * logsPerPage < alarmLogs.filter(log => log.status === "⚠️ 경고").length) {
         currentLogPage++;
-        applyFilters();
+        renderAlarmLog();
       }
     });
 
@@ -241,19 +227,21 @@
     document.getElementById("prevHistory").addEventListener("click", () => {
       if (currentHistoryPage > 1) {
         currentHistoryPage--;
-        applyFilters();
+        renderAlarmHistory();
       }
     });
 
     document.getElementById("nextHistory").addEventListener("click", () => {
-      if (currentHistoryPage * historyPerPage < alarmHistory.length) {
+      if (currentHistoryPage * historyPerPage < alarmHistory.filter(hist => hist.message.includes("이상 감지")).length) {
         currentHistoryPage++;
-        applyFilters();
+        renderAlarmHistory();
       }
     });
 
     // 알람 로그 추가 및 24시간 필터링
     function addAlarmLog(dataName, value, status) {
+      if (status !== "⚠️ 경고") return;
+
       const now = new Date();
       const timestamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
       const log = {
@@ -269,12 +257,11 @@
       alarmLogs = alarmLogs.filter(l => now.getTime() - l.createdAt <= 24 * 60 * 60 * 1000);
       alarmLogs.unshift(log);
 
-      if (status === "⚠️ 경고") {
-        addToHistory(`${dataName} 이상 감지 (${value})`);
-        playAlarmSound();
-      }
+      addToHistory(`${dataName} 이상 감지 (${value})`);
+      playAlarmSound();
 
-      applyFilters();
+      updateLogSection();
+      updateHistorySection();
     }
 
     // 알람 소리 재생
@@ -283,7 +270,6 @@
       const audio = document.getElementById("alarmSound");
       if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
     }
-    
 
     // 로그 확인 처리
     async function confirmLog(index) {
@@ -293,20 +279,39 @@
         const histIndex = alarmHistory.findIndex(h => h.message === `${log.dataName} 이상 감지 (${log.value})`);
         if (histIndex !== -1) {
           alarmHistory[histIndex].status = "읽음";
-        } else {
-          addToHistory(`${log.dataName} 이상 감지 (${log.value})`, "읽음");
         }
         alarmLogs.splice(index, 1);
         try {
           await fetch('/api/alarms/confirm', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ logId: index }) // 실제 logId 필요
+            body: JSON.stringify({ logId: index }) // 백엔드에서 ID 제공 시 log.id로 변경
           });
         } catch (error) {
           console.error('확인 처리 실패:', error);
+          alert('로그 확인 처리에 실패했습니다.');
         }
-        applyFilters();
+        updateLogSection();
+        updateHistorySection();
+      }
+    }
+
+    // 히스토리 확인 처리
+    async function confirmHistory(index) {
+      const hist = alarmHistory[index];
+      if (hist.status === "안 읽음") {
+        hist.status = "읽음";
+        try {
+          await fetch('/api/history/confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ histId: index }) // 백엔드에서 ID 제공 시 hist.id로 변경
+          });
+        } catch (error) {
+          console.error('히스토리 확인 처리 실패:', error);
+          alert('히스토리 확인 처리에 실패했습니다.');
+        }
+        updateHistorySection();
       }
     }
 
@@ -319,19 +324,20 @@
         message,
         status
       });
-      applyFilters();
     }
 
-    // API 데이터 가져오기 (예시)
+    // API 데이터 가져오기
     async function fetchAlarmData() {
       loadingDiv.style.display = "block";
       try {
         const response = await fetch('/api/alarms');
+        if (!response.ok) throw new Error('API 응답 오류');
         const data = await response.json();
         data.forEach(({ dataName, value, status }) => addAlarmLog(dataName, value, status));
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
         addAlarmLog('시스템', '데이터 로드 실패', '⚠️ 경고');
+        // alert('알람 데이터를 불러오지 못했습니다.'); // 제거됨
       } finally {
         loadingDiv.style.display = "none";
       }
@@ -341,41 +347,19 @@
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
         dataTypeFilter = e.target.value;
-        currentLogPage = 1;
-        currentHistoryPage = 1;
-        applyFilters();
+        updateLogSection();
+        updateHistorySection();
       });
 
-      document.getElementById("statusFilter").addEventListener("change", (e) => {
-        statusFilter = e.target.value;
-        currentLogPage = 1;
-        currentHistoryPage = 1;
-        applyFilters();
-      });
+      updateLogSection();
+      updateHistorySection();
 
-      alarmHistoryTable.addEventListener("click", (e) => {
-        const row = e.target.closest("tr");
-        if (!row) return;
-        const statusCell = row.querySelector(".status");
-        if (statusCell && statusCell.classList.contains("unread")) {
-          statusCell.classList.remove("unread");
-          statusCell.classList.add("read");
-          statusCell.textContent = "읽음";
-          const index = (currentHistoryPage - 1) * historyPerPage + Array.from(row.parentNode.children).indexOf(row);
-          alarmHistory[index].status = "읽음";
-          applyFilters();
-        }
-      });
-
-      renderAlarmLog();
-      renderAlarmHistory();
-      updateSummaryStats();
-
-      // 주기적 데이터 체크 (API 호출로 대체 가능)
       setInterval(fetchAlarmData, 5000);
     });
 
-    // 데이터 기준 (정상 범위)
+    
+    // 더미 데이터와 테스트 함수 (백엔드 연동 후 제거 예정)
+    
     const thresholds = {
       ph: { min: 6.5, max: 8.0, unit: "" },
       do: { min: 5, max: 10, unit: "mg/L" },
@@ -385,7 +369,6 @@
       nitrite: { min: 0, max: 0.2, unit: "ppm" }
     };
 
-    // 더미 데이터 (테스트용)
     const dataPoints = {
       labels: ["14:00", "14:10", "14:20", "14:30", "14:40"],
       datasets: [
@@ -398,7 +381,6 @@
       ]
     };
 
-    // 데이터 이상 감지 및 알람 (더미 데이터 테스트용)
     function checkDataAlarm() {
       const latestData = dataPoints.datasets.map(ds => ds.data[ds.data.length - 1]);
       const labels = dataPoints.datasets.map(ds => ds.label.split(" ")[0]);
@@ -408,12 +390,14 @@
         const key = keys[index];
         const { min, max, unit } = thresholds[key];
         const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
-        addAlarmLog(labels[index], `${value}${unit}`, status);
+        if (status === "⚠️ 경고") {
+          addAlarmLog(labels[index], `${value}${unit}`, status);
+        }
       });
     }
 
-    // 주기적 데이터 체크 (테스트용, API로 대체 가능)
     setInterval(checkDataAlarm, 5000);
+    /**/
   </script>
 </body>
 </html>
