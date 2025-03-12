@@ -38,23 +38,44 @@ body {
 }
 
 .header {
-  position: absolute; /* 상단 고정 */
+  position: relative; /* 고정되지 않고, 문서 흐름에 따라 위치 */
   top: 20px; 
-  left: 25%; /* 화면의 가로 중앙에 위치 */
-  width: 100%; /* 전체 너비 차지 */
+  left: 28%; /* 화면의 가로 중앙에 위치 */
+  width: auto; /* 너비를 auto로 설정하여 가로 스크롤 방지 */
   background-color: #1e213a; /* 배경 색 유지 */
   padding: 15px 30px; /* 여백 설정 */
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000; /* 다른 요소들 위에 표시 */
-  gap: 90px;
+  gap: 220px;
 }
 
-/* header가 고정되었으므로 main-content에 여백 추가 */
+/* header의 위치를 고려하여 main-content의 여백을 적절히 조정 */
 .main-content {
-  padding-top: 120px; /* header 높이만큼 여백 추가 (80px + padding 15px) */
+ /* header 높이만큼 여백 추가 (80px + padding 15px) */
+  width: 100%; /* 전체 너비 차지 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
 }
+
+/* 페이지 제목 */
+.page-title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  padding: 10px 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #1e213a;
+  border-radius: 5px;
+  width: 100%;
+  display: inline-block;
+}
+
+
 
 .header .user-info {
   display: flex;
@@ -88,21 +109,6 @@ body {
   white-space: nowrap;
 }
 
-.page-title {
-  text-align: center;
-  font-size: 36px;
-  font-weight: bold;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin: 0;
-  padding: 10px 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #1e213a;
-  border-radius: 5px;
-  width: 100%;
-  display: inline-block;
-}
 
 .user-info {
   display: flex;
