@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <link rel="stylesheet" href="css/alarmHistory.css" />
+  <link rel="stylesheet" href="/css/alarmHistory.css" />
   <title>알람 대시보드</title>
 </head>
 <body>
@@ -283,6 +283,7 @@
       const audio = document.getElementById("alarmSound");
       if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
     }
+    
 
     // 로그 확인 처리
     async function confirmLog(index) {
