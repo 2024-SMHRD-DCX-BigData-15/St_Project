@@ -32,6 +32,11 @@
          <li><a href="/delete">회원 탈퇴</a></li>
       </ul>
     </li>
+    
+    <!-- 알람 히스토리 -->
+    <li>
+      <a href="" class="toggle-menu">알람 히스토리</a>
+    </li>
   </ul>
 </div>
 
@@ -46,11 +51,24 @@
       <main class="main-content">
         <header class="header">
           <h1 class="page-title">양식관제시스템</h1>
+          
+          
           <div class="user-info">
           
+              <!-- 알림 아이콘 -->
+	        <div class="notification-container">
+	          <button class="notification-icon" onclick="toggleNotifications()">
+	            🔔 <!-- SVG 아이콘으로 변경 가능 -->
+	          </button>
+	          <div class="notification-log" id="notificationLog">
+	            <!-- 실제 알림 데이터가 있으면 여기에 동적으로 추가 -->
+	          </div>
+	        </div>
+	          
           <div th:if="${session.loginUser != null}">
             <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
           </div>
+
           <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
           
           <div th:if="${session.loginUser == null}">
@@ -112,6 +130,13 @@
                 }
             });
         });
+        
+        // 알림 로그
+		        function toggleNotifications() {
+		  var log = document.getElementById("notificationLog");
+		  log.style.display = log.style.display === "block" ? "none" : "block";
+		}
+
         
      // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
         document.querySelectorAll('.toggle-menu').forEach(menu => {

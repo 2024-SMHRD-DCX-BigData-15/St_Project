@@ -28,14 +28,7 @@ body {
   height: 100%; /* 화면 전체 높이 */
 }
 
-/* 메인 콘텐츠 */
-.main-content {
-  padding: 30px;
-  width: 100%; /* 너비를 100%로 설정 */
-  max-width: 1200px; /* 최대 너비 설정 */
-  overflow-y: auto;
-  box-sizing: border-box;
-}
+
 
 .icon {
   width: 20px;
@@ -51,6 +44,14 @@ body {
 }
 
 
+/* 메인 콘텐츠 */
+.main-content {
+  padding: 30px;
+  width: 100%; /* 너비를 100%로 설정 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
 
 .header {
   display: flex;
@@ -76,13 +77,54 @@ body {
 
 
 
+.header .user-info {
+  display: flex;
+  align-items: center; /* 세로 가운데 정렬 */
+  width: 100%;
+}
+
+
+/* user-name과 logout-btn 사이에 간격을 주기 위한 스타일 */
+.header .user-name {
+  margin-right: 15px; /* 이름과 로그아웃 버튼 사이의 간격 */
+  font-size: 13px;
+  flex-grow: 0; 
+}
+
+.logout-btn {
+  background-color: #7a4dff; /* 배경 색 */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px; /* 버튼 높이 설정 */
+  line-height: normal; /* 기본 라인 높이 제거 */
+  white-space: nowrap;
+}
+
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+
+
 .user-name {
   font-size: 13px;
   color: #ffffff;
   margin-top: 5px;
   margin-bottom: 5px;
-  white-space: nowrap;
 }
+
 
 /* 대시보드 카드 */
 .dashboard-cards {

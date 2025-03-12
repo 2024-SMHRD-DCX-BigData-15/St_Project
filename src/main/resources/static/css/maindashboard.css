@@ -17,6 +17,7 @@ body {
   min-height: 100vh;
   margin: 0; /* 기본 여백을 제거 */
   overflow-x: auto; /* 수평 스크롤을 자동으로 생성 */
+  overflow-x: hidden; /* 세로 스크롤 방지 */
 }
 
 /* 페이지 레이아웃을 위한 wrapper */
@@ -26,6 +27,7 @@ body {
   justify-content: center; /* 가로 중앙 정렬 */
   align-items: flex-start; /* 세로로는 위에 맞추기 */
   height: 100%; /* 화면 전체 높이 */
+  margin-top: 80px; /* 헤더 높이만큼 여백 추가 */
 }
 
 /* 메인 콘텐츠 */
@@ -35,29 +37,64 @@ body {
   max-width: 1200px; /* 최대 너비 설정 */
   overflow-y: auto;
   box-sizing: border-box;
+  padding-top: 80px; /* 헤더 높이만큼 여백 추가 */
 }
 
+/* 헤더 */
 .header {
-  position: relative; /* 고정되지 않고, 문서 흐름에 따라 위치 */
-  top: 20px; 
-  left: 28%; /* 화면의 가로 중앙에 위치 */
-  width: auto; /* 너비를 auto로 설정하여 가로 스크롤 방지 */
-  background-color: #1e213a; /* 배경 색 유지 */
-  padding: 15px 30px; /* 여백 설정 */
+  position: absolute; /* 고정되지 않음 (스크롤에 따라 내려감) */
+  top: 0;
+  left: 50%;
+  transform: translateX(-23.5%); /* 가운데 정렬 */
+  width: 100%;
+  max-width: 1200px; /* 필요하면 설정 */
+  background-color: #1e213a;
+  padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000; /* 다른 요소들 위에 표시 */
-  gap: 220px;
+  z-index: 1000;
+  gap: 150px;
 }
 
-/* header의 위치를 고려하여 main-content의 여백을 적절히 조정 */
-.main-content {
- /* header 높이만큼 여백 추가 (80px + padding 15px) */
-  width: 100%; /* 전체 너비 차지 */
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-icon {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.notification-log {
+  display: none;
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 200px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 100;
+}
+
+.notification-log p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
 /* 페이지 제목 */
 .page-title {
   text-align: center;
@@ -354,5 +391,8 @@ body {
 .hamburger-menu.open .bar:nth-child(3) {
   opacity: 1;
 }
+
+
+
 
 
