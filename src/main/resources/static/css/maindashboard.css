@@ -38,7 +38,7 @@ body {
 }
 
 .header {
-  position: fixed; /* 상단 고정 */
+  position: absolute; /* 상단 고정 */
   top: 20px; 
   left: 25%; /* 화면의 가로 중앙에 위치 */
   width: 100%; /* 전체 너비 차지 */
