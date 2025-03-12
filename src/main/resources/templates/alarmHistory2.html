@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="css/alarmHistory2.css" />
+  <title>알람 히스토리</title>
+</head>
+<body>
+  <div class="container-center-horizontal">
+    <div class="alarm-dashboard-screen screen">
+      <main class="main-dashboard">
+        <section class="content">
+          <header class="title">
+            <h1 class="text-21">알람 히스토리</h1>
+            <div class="filter-section">
+              <select class="filter-dropdown" id="dataTypeFilter">
+                <option value="">전체 데이터</option>
+                <option value="산성도">산성도</option>
+                <option value="용존산소">용존산소</option>
+                <option value="수온">수온</option>
+                <option value="염도">염도</option>
+                <option value="암모니아">암모니아</option>
+                <option value="아질산">아질산</option>
+              </select>
+              <label class="sound-toggle">
+                <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
+              </label>
+            </div>
+          </header>
+
+          <!-- 로딩 스피너 -->
+          <div id="loading" class="loading">로딩 중...</div>
+
+          <!-- 알람 히스토리 -->
+          <section class="section" id="historySection">
+            <h2 class="section-title" id="historySectionTitle">히스토리</h2>
+            <div class="alarm-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>수조 번호</th>
+                    <th>날짜</th>
+                    <th>시간</th>
+                    <th>내용</th>
+                    <th>상태</th>
+                  </tr>
+                </thead>
+                <tbody id="alarmHistory"></tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button id="prevHistory" class="page-btn">이전</button>
+              <span id="historyPage">1</span>
+              <button id="nextHistory" class="page-btn">다음</button>
+            </div>
+          </section>
+
+          <footer class="text-14">
+            <a href="/maindashboard" class="back-link">대시보드로 돌아가기</a>
+          </footer>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- 알람 소리 -->
+  <audio id="alarmSound" src="/static/sounds/alarm.mp3" preload="auto"></audio>
+
+  <script>
+    // 알람 히스토리 데이터 저장
+    let alarmHistory = [];
+    let currentHistoryPage = 1;
+    const historyPerPage = 5;
+
+    // 필터링 변수
+    let dataTypeFilter = "";
+
+    // DOM 요소 캐싱
+    const alarmHistoryTable = document.getElementById("alarmHistory");
+    const loadingDiv = document.getElementById("loading");
+
+    // XSS 방지 기본 함수
+    const escapeHTML = (str) => {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    };
+
+    // 알람 히스토리 렌더링
+    function renderAlarmHistory(history = alarmHistory) {
+      alarmHistoryTable.innerHTML = "";
+      // 필터링: 데이터 타입 필터만 적용 (기본적으로 모든 데이터 표시)
+      const filteredHistory = history.filter(hist => {
+        return !dataTypeFilter || hist.message.includes(dataTypeFilter);
+      });
+      const start = (currentHistoryPage - 1) * historyPerPage;
+      const end = start + historyPerPage;
+      const paginatedHistory = filteredHistory.slice(start, end);
+
+      paginatedHistory.forEach((hist, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${escapeHTML(hist.tankNumber)}</td>
+          <td>${escapeHTML(hist.date)}</td>
+          <td>${escapeHTML(hist.time)}</td>
+          <td>${escapeHTML(hist.message)}</td>
+          <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
+        `;
+        row.querySelector(".action").addEventListener("click", () => confirmHistory(index));
+        alarmHistoryTable.appendChild(row);
+      });
+
+      document.getElementById("historyPage").textContent = currentHistoryPage;
+      document.getElementById("prevHistory").disabled = currentHistoryPage === 1;
+      document.getElementById("nextHistory").disabled = end >= filteredHistory.length;
+    }
+
+    // 히스토리 섹션 업데이트
+    function updateHistorySection() {
+      currentHistoryPage = 1; // 페이지 초기화
+      renderAlarmHistory();
+    }
+
+    // 페이지 이동 (히스토리)
+    document.getElementById("prevHistory").addEventListener("click", () => {
+      if (currentHistoryPage > 1) {
+        currentHistoryPage--;
+        renderAlarmHistory();
+      }
+    });
+
+    document.getElementById("nextHistory").addEventListener("click", () => {
+      if (currentHistoryPage * historyPerPage < alarmHistory.length) {
+        currentHistoryPage++;
+        renderAlarmHistory();
+      }
+    });
+
+    // 히스토리에 추가 (수조 번호 추가)
+    function addToHistory(message, tankNumber = "T1", status = "안 읽음") {
+      const now = new Date();
+      alarmHistory.unshift({
+        date: now.toISOString().slice(0, 10),
+        time: now.toTimeString().slice(0, 5),
+        tankNumber,
+        message,
+        status
+      });
+      playAlarmSound();
+      updateHistorySection();
+    }
+
+    // 알람 소리 재생
+    function playAlarmSound() {
+      const soundToggle = document.getElementById("soundToggle");
+      const audio = document.getElementById("alarmSound");
+      if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
+    }
+
+    // 히스토리 확인 처리
+    async function confirmHistory(index) {
+      const hist = alarmHistory[index];
+      if (hist.status === "안 읽음") {
+        hist.status = "읽음";
+        try {
+          await fetch('/api/history/confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ histId: index }) // 백엔드에서 ID 제공 시 hist.id로 변경
+          });
+        } catch (error) {
+          console.error('히스토리 확인 처리 실패:', error);
+          alert('히스토리 확인 처리에 실패했습니다.');
+        }
+        updateHistorySection();
+      }
+    }
+
+    // API 데이터 가져오기 (수조 번호 포함 가정)
+    async function fetchAlarmData() {
+      loadingDiv.style.display = "block";
+      try {
+        const response = await fetch('/api/history');
+        if (!response.ok) throw new Error('API 응답 오류');
+        const data = await response.json();
+        alarmHistory = []; // 초기화 후 새 데이터로 채움
+        data.forEach(({ message, tankNumber, status }) => addToHistory(message, tankNumber, status));
+      } catch (error) {
+        console.error('데이터 가져오기 실패:', error);
+        addToHistory('시스템 오류 감지', 'T1', '⚠️ 경고');
+      } finally {
+        loadingDiv.style.display = "none";
+      }
+    }
+
+    // 이벤트 리스너 설정
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
+        dataTypeFilter = e.target.value;
+        updateHistorySection();
+      });
+
+      fetchAlarmData();
+      setInterval(fetchAlarmData, 10000); // 10초로 조정하여 흔들림 감소
+    });
+
+    // 더미 데이터와 테스트 함수 (백엔드 연동 후 제거 예정)
+    const thresholds = {
+      ph: { min: 6.5, max: 8.0, unit: "" },
+      do: { min: 5, max: 10, unit: "mg/L" },
+      temp: { min: 20, max: 25, unit: "°C" },
+      salinity: { min: 30, max: 35, unit: "ppt" },
+      ammonia: { min: 0, max: 0.1, unit: "ppm" },
+      nitrite: { min: 0, max: 0.2, unit: "ppm" }
+    };
+
+    const dataPoints = {
+      labels: ["14:00", "14:10", "14:20", "14:30", "14:40"],
+      datasets: [
+        { label: "산성도 (pH)", data: [7.0, 7.1, 7.2, 7.3, 6.4] },
+        { label: "용존산소 (mg/L)", data: [6.5, 6.8, 7.0, 6.2, 5.8] },
+        { label: "수온 (°C)", data: [22, 23, 24, 26, 28] },
+        { label: "염도 (ppt)", data: [32, 33, 32, 34, 35] },
+        { label: "암모니아 (ppm)", data: [0.05, 0.06, 0.07, 0.08, 0.12] },
+        { label: "아질산 (ppm)", data: [0.1, 0.15, 0.18, 0.2, 0.25] }
+      ]
+    };
+
+    function checkDataAlarm() {
+      const latestData = dataPoints.datasets.map(ds => ds.data[ds.data.length - 1]);
+      const labels = dataPoints.datasets.map(ds => ds.label.split(" ")[0]);
+      const keys = ["ph", "do", "temp", "salinity", "ammonia", "nitrite"];
+
+      latestData.forEach((value, index) => {
+        const key = keys[index];
+        const { min, max, unit } = thresholds[key];
+        const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
+        if (status === "⚠️ 경고") {
+          addToHistory(`${labels[index]} 이상 감지 (${value}${unit})`, "T1");
+        }
+      });
+    }
+
+    setInterval(checkDataAlarm, 10000); // 10초로 조정하여 흔들림 감소
+  </script>
+</body>
+</html>

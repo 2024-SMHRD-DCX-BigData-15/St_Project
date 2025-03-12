@@ -1,0 +1,245 @@
+/* 기본 설정 */
+body {
+    margin: 0;
+    height: 100vh; /* 전체 화면 높이 */
+    overflow: hidden; /* 불필요한 스크롤 방지 */
+}
+
+.container-center-horizontal {
+    height: 100%; /* 부모 요소가 전체 높이를 차지 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.alarm-dashboard-screen {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100vw;
+    height: 100vh; /* 화면 전체 높이 */
+    overflow-y: auto; /* 내용이 길어질 경우 스크롤 */
+    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+}
+
+.alarm-dashboard-screen .main-dashboard {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    height: 100%; /* 부모 높이에 맞춤 */
+    position: relative;
+}
+
+.alarm-dashboard-screen .content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 제목 스타일 */
+.alarm-dashboard-screen .title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 60px;
+    text-align: center;
+    width: 100%;
+}
+
+.alarm-dashboard-screen .text-21 {
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    margin-bottom: 8px;
+}
+
+/* 필터링 및 검색 섹션 */
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* 드롭다운 스타일 */
+.filter-dropdown {
+    background-color: #0f1535;
+    border: 0.5px solid #e2e8f04c;
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 14px;
+    color: #ffffff;
+    width: 200px;
+}
+
+.filter-dropdown option {
+    background-color: #0f1535;
+    color: #ffffff;
+}
+
+/* 소리 토글 스타일 */
+.sound-toggle {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+/* 로딩 스타일 */
+.loading {
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: none;
+}
+
+/* 섹션 스타일 */
+.alarm-dashboard-screen .section {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.alarm-dashboard-screen .section-title {
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: clamp(16px, 3vw, 24px);
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* 테이블 스타일 */
+.alarm-dashboard-screen .alarm-table {
+    width: 100%;
+    overflow-x: auto; /* 모바일에서 테이블 스크롤 가능 */
+}
+
+.alarm-dashboard-screen table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.alarm-dashboard-screen th,
+.alarm-dashboard-screen td {
+    padding: 12px 15px;
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: clamp(12px, 2vw, 16px);
+    text-align: left;
+}
+
+.alarm-dashboard-screen #alarmHistory th,
+.alarm-dashboard-screen #alarmHistory td {
+    width: 20%; /* 5열로 나눔 (수조 번호, 날짜, 시간, 내용, 상태) */
+}
+
+.alarm-dashboard-screen tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.alarm-dashboard-screen tr:last-child {
+    border-bottom: none;
+}
+
+.alarm-dashboard-screen .action.unconfirmed {
+    color: #ffc107;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.alarm-dashboard-screen .action.confirmed {
+    color: #28a745;
+    text-align: center;
+}
+
+/* 페이지네이션 스타일 */
+.alarm-dashboard-screen .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.alarm-dashboard-screen .page-btn {
+    background-color: #0075ff;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: "Abel", Helvetica;
+    font-size: clamp(10px, 1.5vw, 14px);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.alarm-dashboard-screen .page-btn:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.alarm-dashboard-screen .page-btn:hover:not(:disabled) {
+    background-color: #005bb5;
+}
+
+/* 하단 링크 */
+.alarm-dashboard-screen .text-14 {
+    color: #a0aec0;
+    font-family: "Abel", Helvetica;
+    font-size: clamp(10px, 1.5vw, 12px);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.4;
+    margin-top: 20px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.alarm-dashboard-screen .back-link {
+    color: #0075ff;
+    text-decoration: none;
+}
+
+.alarm-dashboard-screen .back-link:hover {
+    text-decoration: underline;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+    .alarm-dashboard-screen .content {
+        padding: 10px;
+    }
+    .alarm-dashboard-screen th,
+    .alarm-dashboard-screen td {
+        padding: 8px 10px;
+        font-size: clamp(10px, 2vw, 14px);
+    }
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filter-dropdown {
+        width: 100%;
+    }
+}
