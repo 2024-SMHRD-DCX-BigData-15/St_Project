@@ -54,16 +54,7 @@
           
           
           <div class="user-info">
-          
-              <!-- 알림 아이콘 -->
-	        <div class="notification-container">
-	          <button class="notification-icon" onclick="toggleNotifications()">
-	            🔔 <!-- SVG 아이콘으로 변경 가능 -->
-	          </button>
-	          <div class="notification-log" id="notificationLog">
-	            <!-- 실제 알림 데이터가 있으면 여기에 동적으로 추가 -->
-	          </div>
-	        </div>
+
 	          
           <div th:if="${session.loginUser != null}">
             <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
@@ -187,7 +178,7 @@
         	                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
 
         	                tankDiv.innerHTML = `
-        	                    <h4>수조관리시스템 (ID: ${tank.tankIdx})
+        	                    <h4>수조관리시스템 (${tank.tankIdx}번 수조)
         	                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
         	                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
         	                    </h4>

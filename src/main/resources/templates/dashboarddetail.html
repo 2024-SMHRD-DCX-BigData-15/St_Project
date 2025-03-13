@@ -39,19 +39,13 @@
         <header class="header">
           <h1 class="page-title">세부관제시스템</h1>
           
-          <!-- 알림 아이콘 -->
-	        <div class="notification-container">
-	          <button class="notification-icon" onclick="toggleNotifications()">
-	            🔔 <!-- SVG 아이콘으로 변경 가능 -->
-	          </button>
-	          <div class="notification-log" id="notificationLog">
-	            <!-- 실제 알림 데이터가 있으면 여기에 동적으로 추가 -->
-	          </div>
-	        </div>
+          <div class="user-info">
+          
             <div th:if="${session.loginUser != null}">
     		<p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
 		  </div>
 		    <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
+          </div>
           </div>
         </header>
 
@@ -63,7 +57,6 @@
             <div class="data-container">
               <canvas id="chart-1"></canvas>
             </div>
-            <button class="btn btn-warning">알림 보기</button>
           </div>
 
           <!-- 두 번째 카드 - 용존산소 -->
@@ -72,7 +65,6 @@
             <div class="data-container">
               <canvas id="chart-2"></canvas>
             </div>
-            <button class="btn btn-info">알림 보기</button>
           </div>
 
           <!-- 세 번째 카드 - 수온 -->
@@ -81,7 +73,6 @@
             <div class="data-container">
               <canvas id="chart-3"></canvas>
             </div>
-            <button class="btn btn-primary">알림 보기</button>
           </div>
 
           <!-- 네 번째 카드 - 염도 -->
@@ -90,7 +81,6 @@
             <div class="data-container">
               <canvas id="chart-4"></canvas>
             </div>
-            <button class="btn btn-success">알림 보기</button>
           </div>
 
           <!-- 다섯 번째 카드 - 암모니아 -->
@@ -99,7 +89,6 @@
             <div class="data-container">
               <canvas id="chart-5"></canvas>
             </div>
-            <button class="btn btn-danger">알림 보기</button>
           </div>
 
           <!-- 여섯 번째 카드 - 아질산 -->
@@ -108,7 +97,6 @@
             <div class="data-container">
               <canvas id="chart-6"></canvas>
             </div>
-            <button class="btn btn-secondary">알림 보기</button>
           </div>
         </section>
 
@@ -139,6 +127,13 @@
       // 햄버거 메뉴 애니메이션
       this.classList.toggle('open');
     });
+          
+       // 알림 로그
+	        function toggleNotifications() {
+	  var log = document.getElementById("notificationLog");
+	  log.style.display = log.style.display === "block" ? "none" : "block";
+	}
+
 
     </script>
 

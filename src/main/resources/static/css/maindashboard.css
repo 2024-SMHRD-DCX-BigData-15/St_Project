@@ -45,7 +45,7 @@ body {
   position: absolute; /* 고정되지 않음 (스크롤에 따라 내려감) */
   top: 0;
   left: 50%;
-  transform: translateX(-23.5%); /* 가운데 정렬 */
+  transform: translateX(-22%); /* 가운데 정렬 */
   width: 100%;
   max-width: 1200px; /* 필요하면 설정 */
   background-color: #1e213a;
@@ -54,7 +54,7 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  gap: 150px;
+  gap: 200px;
 }
 
 
