@@ -71,7 +71,23 @@
   </div>
   
   <script>
-   
+    // 비밀번호 확인
+    document.getElementById("passwordConfirm").addEventListener("input", function () {
+      const pw = document.getElementById("password").value;
+      const pwConfirm = this.value;
+      const pwMessage = document.getElementById("pwMessage");
+
+      if (pw === pwConfirm) {
+        pwMessage.textContent = "비밀번호가 일치합니다.";
+        pwMessage.classList.add("text-success");
+        pwMessage.classList.remove("text-danger");
+      } else {
+        pwMessage.textContent = "비밀번호가 일치하지 않습니다.";
+        pwMessage.classList.add("text-danger");
+        pwMessage.classList.remove("text-success");
+      }
+    });
+
   </script>
 </body>
 </html>
