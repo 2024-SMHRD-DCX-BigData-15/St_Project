@@ -3,36 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수조 수정</title>
+    <title>수조 정보 수정</title>
     <link rel="stylesheet" href="/css/tankedit.css">
 </head>
-<body>
+<body style="margin: 0">
     <div class="wrapper">
         <!-- 사이드바 -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <h2>메뉴</h2>
-  </div>
-  <ul class="sidebar-menu">
-    <!-- 수조 관리 시스템 -->
-    <li>
-      <a href="javascript:void(0)" class="toggle-menu">수조 관리</a>
-      <ul class="sub-menu">
-        <li><a href="/tank">수조 정보 등록</a></li>
-        <li><a href="/tankedit">수조 정보 수정</a></li>
-      </ul>
-    </li>
-
-    <!-- 회원 정보 관리 -->
-    <li>
-      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-      <ul class="sub-menu">
-        <li><a href="/edit/{id}">회원 정보 수정</a></li>
-         <li><a href="/delete">회원 탈퇴</a></li>
-      </ul>
-    </li>
-  </ul>
-</div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>메뉴</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#">홈</a></li>
+                <li><a href="#">대시보드</a></li>
+                <li><a href="#">설정</a></li>
+            </ul>
+        </div>
 
         <!-- 햄버거 메뉴 -->
         <div class="hamburger-menu" id="hamburger-menu">
@@ -42,55 +28,101 @@
         </div>
 
         <!-- 메인 콘텐츠 -->
-        <main class="main-content">
-            <header class="header">
-                <h1 class="page-title">수조 수정</h1>
-            </header>
+        <div class="container-center-horizontal">
+            <div class="tank-screen screen">
+                <div class="main-dashboard">
+                    <div class="inputs">
+                        <div class="title">
+                            <div class="text-21">수조 정보 수정</div>
+                        </div>
 
-            <!-- 수조 수정 폼 -->
-            <section class="tank-form-container">
-                <form class="tank-form" action="/tank/update" method="post">
-				    <input type="hidden" name="tank_idx" th:value="${tank.tankIdx}" /> <!-- tank_idx 추가 -->
-				    
-				    <div class="form-group">
-				        <label for="tank-diameter">수조 직경 (m)</label>
-				        <input type="number" id="tank-diameter" name="tank_width" min="0" th:value="${tank.tankWidth}">
-				    </div>
-				
-				    <div class="form-group">
-				        <label for="tank-height">수조 높이 (m)</label>
-				        <input type="number" id="tank-height" name="tank_height" min="0" th:value="${tank.tankHeight}">
-				    </div>
-				
-				    <div class="form-group">
-				        <label for="tank-location">수조 위치</label>
-				        <input type="text" id="tank-location" name="tank_location" th:value="${tank.tankLocation}">
-				    </div>
-				
-				    <div class="form-group">
-				        <label for="species">품종</label>
-				        <input type="text" id="species" name="fish_type" th:value="${tank.fishType}">
-				    </div>
-				
-				    <div class="form-group">
-				        <label for="start-date">사육 개시일</label>
-				        <input type="date" id="start-date" name="started_at" th:value="${tank.startedAt}">
-				    </div>
-				
-				    <div class="form-actions">
-				        <button type="submit" class="save-btn">저장</button>
-				        <button type="reset" class="cancel-btn">취소</button>
-				    </div>
-				</form>
+                        <form class="tank-form" action="/tank/update" method="post">
+                            <input type="hidden" name="tank_idx" th:value="${tank.tankIdx}" />
 
-            </section>
-        </main>
+                            <div class="input-group">
+                                <label for="tank-diameter" class="text-1">수조 직경 (m)</label>
+                                <input type="number" id="tank-diameter" name="tank_width" class="input-field-text" min="0" th:value="${tank.tankWidth}" placeholder="수조 직경을 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="tank-height" class="text-1">수조 높이 (m)</label>
+                                <input type="number" id="tank-height" name="tank_height" class="input-field-text" min="0" th:value="${tank.tankHeight}" placeholder="수조 높이를 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="tank-location" class="text-1">수조 위치</label>
+                                <input type="text" id="tank-location" name="tank_location" class="input-field-text" th:value="${tank.tankLocation}" placeholder="수조 위치를 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="species" class="text-1">품종</label>
+                                <input type="text" id="species" name="fish_type" class="input-field-text" th:value="${tank.fishType}" placeholder="품종을 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="start-date" class="text-1">사육 개시일</label>
+                                <input type="date" id="start-date" name="started_at" class="input-field-text" th:value="${tank.startedAt}" placeholder="사육 개시일을 입력하세요" required>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="button-base_login save-btn">
+                                    <div class="text">저장</div>
+                                </button>
+                                <button type="reset" class="button-base_login cancel-btn">
+                                    <div class="text">취소</div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         document.getElementById('hamburger-menu').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('open');
             this.classList.toggle('open');
+        });
+
+        document.querySelector('.tank-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            let tankIdx = document.querySelector('input[name="tank_idx"]').value;
+            let tankWidth = document.getElementById('tank-diameter').value;
+            let tankHeight = document.getElementById('tank-height').value;
+            let tankLocation = document.getElementById('tank-location').value;
+            let fishType = document.getElementById('species').value;
+            let startedAt = document.getElementById('start-date').value;
+
+            let requestData = {
+                tankIdx: tankIdx,
+                tankWidth: parseFloat(tankWidth),
+                tankHeight: parseFloat(tankHeight),
+                tankLocation: tankLocation,
+                fishType: fishType,
+                startedAt: startedAt
+            };
+
+            try {
+                let response = await fetch("/tank/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    alert("수조 정보 수정 완료!");
+                    console.log("서버 응답: 수정 성공");
+                    window.location.href = "/maindashboard";
+                } else {
+                    let errorText = await response.text();
+                    alert("수정 실패!\n" + errorText);
+                }
+            } catch (error) {
+                console.error("서버 요청 중 오류 발생:", error);
+                alert("서버 오류 발생! 다시 시도해주세요.");
+            }
         });
     </script>
 </body>
