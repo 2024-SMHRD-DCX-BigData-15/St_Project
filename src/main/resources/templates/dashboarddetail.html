@@ -8,25 +8,37 @@
     <title>관제센터 대시보드</title>
   </head>
   <body>
-       <!-- 사이드바 -->
-       <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2>메뉴</h2>
-        </div>
-        <ul class="sidebar-menu">
-          <li>
-            <a href="javascript:void(0)" class="toggle-menu">수조 관리 시스템 1</a>
-            <ul class="sub-menu">
-              <li><a href="/edit/{id}">회원 수정</a></li>
-              <li><a href="/delete">회원 탈퇴</a></li>
-            </ul>
-            <li><a href="#">수조 관리 시스템 2</a></li>
-            <li><a href="#">수조 관리 시스템 3</a></li>
-            <li><a href="#">수조 관리 시스템 4</a></li>
-          </li>
-        </ul>
-      </div>
+  
+      <!-- 사이드바 -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>메뉴</h2>
+  </div>
+  <ul class="sidebar-menu">
+    <!-- 수조 관리 시스템 -->
+    <li>
+      <a href="javascript:void(0)" class="toggle-menu">수조 관리</a>
+      <ul class="sub-menu">
+        <li><a href="/tank">수조 정보 등록</a></li>
+        <li><a href="/tankedit">수조 정보 수정</a></li>
+      </ul>
+    </li>
 
+    <!-- 회원 정보 관리 -->
+    <li>
+      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+      <ul class="sub-menu">
+        <li><a href="/edit/{id}">회원 정보 수정</a></li>
+         <li><a href="/delete">회원 탈퇴</a></li>
+      </ul>
+    </li>
+    
+    <!-- 알람 히스토리 -->
+    <li>
+      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
+    </li>
+  </ul>
+</div>
       <!-- 햄버거 메뉴 아이콘 -->
       <div class="hamburger-menu" id="hamburger-menu">
         <div class="bar"></div>
@@ -53,7 +65,7 @@
         <section class="dashboard-cards">
           <!-- 첫 번째 카드 - 산성도 -->
           <div class="card card-ph">
-            <h3>산성도</h3>
+            <h4>산성도</h4>
             <div class="data-container">
               <canvas id="chart-1"></canvas>
             </div>
@@ -61,7 +73,7 @@
 
           <!-- 두 번째 카드 - 용존산소 -->
           <div class="card card-oxygen">
-            <h3>용존산소</h3>
+            <h4>용존산소</h4>
             <div class="data-container">
               <canvas id="chart-2"></canvas>
             </div>
@@ -69,7 +81,7 @@
 
           <!-- 세 번째 카드 - 수온 -->
           <div class="card card-temperature">
-            <h3>수온</h3>
+            <h4>수온</h4>
             <div class="data-container">
               <canvas id="chart-3"></canvas>
             </div>
@@ -77,7 +89,7 @@
 
           <!-- 네 번째 카드 - 염도 -->
           <div class="card card-salinity">
-            <h3>염도</h3>
+            <h4>염도</h4>
             <div class="data-container">
               <canvas id="chart-4"></canvas>
             </div>
@@ -85,7 +97,7 @@
 
           <!-- 다섯 번째 카드 - 암모니아 -->
           <div class="card card-ammonia">
-            <h3>암모니아</h3>
+            <h4>암모니아</h4>
             <div class="data-container">
               <canvas id="chart-5"></canvas>
             </div>
@@ -93,7 +105,7 @@
 
           <!-- 여섯 번째 카드 - 아질산 -->
           <div class="card card-nitrite">
-            <h3>아질산</h3>
+            <h4>아질산</h4>
             <div class="data-container">
               <canvas id="chart-6"></canvas>
             </div>
@@ -104,15 +116,6 @@
         <section class="dashboard-cards">
 		    <div class="tank-info">
 			    <h4>수조정보</h4>
-			    <p><strong>수조 ID:</strong> <span th:text="${selectedTank?.tankIdx ?: '정보 없음'}"></span></p>
-			    <p><strong>직경:</strong> <span th:text="${selectedTank?.tankWidth ?: '정보 없음'}"></span> cm</p>
-			    <p><strong>높이:</strong> <span th:text="${selectedTank?.tankHeight ?: '정보 없음'}"></span> cm</p>
-			    <p><strong>위치:</strong> <span th:text="${selectedTank?.tankLocation ?: '정보 없음'}"></span></p>
-			    <p><strong>품종:</strong> <span th:text="${selectedTank?.fishType ?: '정보 없음'}"></span></p>
-			    <p><strong>사육 개시일:</strong> 
-			    <span th:text="${selectedTank?.startedAt != null ? #temporals.format(selectedTank.startedAt, 'yyyy-MM-dd') : '정보 없음'}"></span>
-			</p>
-
 			    <canvas id="tank-data"></canvas>
 			</div>
           <div class="card card-graph">
@@ -127,20 +130,79 @@
     </div>
 
         <script>
-          document.getElementById('hamburger-menu').addEventListener('click', function() {
-      // 사이드바 열기/닫기 토글
-      document.getElementById('sidebar').classList.toggle('open');
-      
-      // 햄버거 메뉴 애니메이션
-      this.classList.toggle('open');
-    });
-          
-       // 알림 로그
-	        function toggleNotifications() {
-	  var log = document.getElementById("notificationLog");
-	  log.style.display = log.style.display === "block" ? "none" : "block";
-	}
+        /**
+         * 🔹 로그아웃 함수 (쿠키 삭제 후 서버 요청)
+         */
+        function handleLogout() {
+            console.log("🚀 로그아웃 요청");
 
+            // ✅ 자동 로그인 관련 쿠키 삭제
+            deleteCookie("autoLoginId");
+            deleteCookie("autoLoginPw");
+
+            // ✅ 로그아웃 요청 보내기
+            fetch("/logout", { method: "GET" })
+                .then(() => {
+                    alert("로그아웃 완료!");
+                    window.location.href = "/login"; // 로그인 페이지로 이동
+                });
+        }
+
+        /**
+         * 🔹 쿠키 삭제 함수
+         */
+        function deleteCookie(name) {
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+        }
+
+        /**
+         * 🔹 햄버거 메뉴 클릭 이벤트
+         */
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+            this.classList.toggle('open');
+        });
+
+        /**
+         * 🔹 사이드 메뉴 토글 이벤트
+         */
+        document.querySelectorAll('.toggle-menu').forEach(item => {
+            item.addEventListener('click', function () {
+                const subMenu = this.nextElementSibling;
+                if (subMenu.style.display === "block") {
+                    subMenu.style.display = "none";
+                } else {
+                    subMenu.style.display = "block";
+                }
+            });
+        });
+        
+        // 알림 로그
+		        function toggleNotifications() {
+		  var log = document.getElementById("notificationLog");
+		  log.style.display = log.style.display === "block" ? "none" : "block";
+		}
+
+        
+     // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
+        document.querySelectorAll('.toggle-menu').forEach(menu => {
+          menu.addEventListener('click', function() {
+            const subMenu = this.nextElementSibling; // 클릭된 항목 바로 다음의 ul.sub-menu
+
+            // 이미 열려 있는 경우 숨기기
+            if (subMenu.classList.contains('open')) {
+              subMenu.classList.remove('open');
+            } else {
+              // 다른 메뉴들은 닫히게 함
+              document.querySelectorAll('.sub-menu').forEach(menu => {
+                menu.classList.remove('open');
+              });
+
+              // 클릭된 메뉴만 열기
+              subMenu.classList.add('open');
+            }
+          });
+        });
 
     </script>
 

@@ -1,40 +1,181 @@
-/* 기본 리셋 */
-* {
-    margin: 0;
-    padding: 0;
+/* 정보 수정 페이지 기본 설정 */
+.edit-screen {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+.edit-screen .main-dashboard {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+    display: flex;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.edit-screen .inputs {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    width: 354px;
+    max-width: 90%;
+    gap: 20px;
+}
+
+/* 제목 스타일 */
+.edit-screen .title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    text-align: center;
+    width: 100%;
+}
+
+.edit-screen .text-21 {
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 39px;
+    min-height: 39px;
+    white-space: nowrap;
+    margin-bottom: 6px;
+}
+
+/* 폼 스타일 */
+.edit-screen .edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* 입력 그룹 스타일 */
+.edit-screen .input-group {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+    min-height: 75px;
+    width: 100%;
+}
+
+.edit-screen .text-1 {
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 19.6px;
+    margin-left: 4.5px;
+    min-height: 20px;
+    white-space: nowrap;
+}
+
+.edit-screen .input-field-text {
+    -webkit-backdrop-filter: blur(42px) brightness(100%);
+    backdrop-filter: blur(42px) brightness(100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
+    border: 2px solid;
+    border-color: transparent;
+    border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
+    border-radius: 20px;
+    height: 54px;
+    padding: 0 20px;
+    width: 100%;
+    color: #ffffff;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
     box-sizing: border-box;
 }
 
-/* 전체 페이지 스타일 */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #1e213a;
-    color: #ffffff;
-    line-height: 1.5;
+.edit-screen .input-field-text[readonly] {
+    background: rgba(255, 255, 255, 0.1);
+    cursor: not-allowed;
+}
+
+.edit-screen .input-field-text::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* 버튼 스타일 */
+.edit-screen .form-actions {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    width: 100%;
+    margin-top: 36px;
+    gap: 10px;
+}
+
+.edit-screen .button-base_login {
+    -webkit-backdrop-filter: blur(120px) brightness(100%);
+    backdrop-filter: blur(120px) brightness(100%);
+    border-radius: 12px;
+    display: flex;
+    height: 45px;
+    justify-content: center;
+    align-items: center;
+    width: 48%;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+.edit-screen .save-btn {
+    background-color: #0075ff;
+}
+
+.edit-screen .cancel-btn {
+    background-color: #ccc;
+}
+
+.edit-screen .save-btn:hover {
+    background-color: #005bb5;
+}
+
+.edit-screen .cancel-btn:hover {
+    background-color: #999;
+}
+
+.edit-screen .text {
+    font-family: "Abel", Helvetica;
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+/* 사이드바 & 햄버거 */
+.wrapper {
+    position: relative;
+    height: 100vh;
     overflow: hidden;
 }
 
-/* 레이아웃 */
-.wrapper {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-}
-
-/* 사이드바 스타일 */
 .sidebar {
     position: fixed;
     top: 0;
     left: -250px;
     width: 250px;
     height: 100%;
-    background-color: #252c41;
-    transition: left 0.3s ease;
-    padding-top: 20px;
+    background-color: #333;
+    transition: 0.3s;
     z-index: 1000;
 }
 
@@ -43,147 +184,73 @@ body {
 }
 
 .sidebar-header {
-    text-align: center;
-    color: #fff;
+    padding: 20px;
+    background-color: #444;
+    color: white;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
-}
-
-.sidebar-menu li {
-    padding: 10px;
-    text-align: center;
+    margin: 0;
 }
 
 .sidebar-menu li a {
-    color: #fff;
-    text-decoration: none;
     display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
 }
 
-/* 햄버거 메뉴 스타일 */
+.sidebar-menu .sub-menu {
+    display: none;
+    padding-left: 20px;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #555;
+}
+
 .hamburger-menu {
     position: fixed;
     top: 20px;
     left: 20px;
-    cursor: pointer;
     z-index: 1100;
+    cursor: pointer;
 }
 
 .hamburger-menu .bar {
     width: 30px;
-    height: 5px;
+    height: 3px;
     background-color: #fff;
     margin: 6px 0;
-    transition: 0.4s;
+    transition: 0.3s;
 }
 
 .hamburger-menu.open .bar:nth-child(1) {
-    opacity: 1;
+    transform: rotate(-45deg) translate(-6px, 6px);
 }
 
 .hamburger-menu.open .bar:nth-child(2) {
-    opacity: 1;
+    opacity: 0;
 }
 
 .hamburger-menu.open .bar:nth-child(3) {
-    opacity: 1;
+    transform: rotate(45deg) translate(-6px, -6px);
 }
 
-/* 메인 콘텐츠 */
-.main-content {
-    padding: 30px;
-    width: 100%;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+.edit-screen .input-field-text:-webkit-autofill,
+.edit-screen .input-field-text:-webkit-autofill:hover,
+.edit-screen .input-field-text:-webkit-autofill:focus,
+.edit-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
-/* 페이지 제목 */
-.page-title {
-    text-align: center;
-    font-size: 36px;
-    font-weight: bold;
-    background-color: #1a2530;
-    border-radius: 5px;
-    padding: 15px;
-}
-
-/* 정보 수정 폼 */
-.edit-form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-}
-
-.edit-form {
-    background-color: #252c41;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 500px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 14px;
-    color: #bbb;
-    margin-bottom: 5px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #00ccff;
-}
-
-/* 버튼 스타일 */
-.form-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.save-btn, .cancel-btn {
-    width: 48%;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.save-btn {
-    background-color: #14145e;
-    color: white;
-}
-
-.cancel-btn {
-    background-color: #14145e;
-    color: white;
-}
-
-.save-btn:hover {
-    background-color: #14145e;
-}
-
-.cancel-btn:hover {
-    background-color: #14145e;
+input:-internal-autofill-selected {
+    background-color: transparent !important;
+    color: #ffffff !important;
 }
