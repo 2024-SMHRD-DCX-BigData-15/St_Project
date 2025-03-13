@@ -14,7 +14,7 @@
             <div class="text-21">회원가입</div>
           </div>
 
-          <form action="register.do" method="post" id="registerForm">
+          <form action="/member/register.do" method="post" id="registerForm">
             <div class="input-group">
               <label for="userId" class="text-1">아이디</label>
               <div class="input-with-button"> <!-- 새로운 컨테이너 추가 -->
@@ -71,76 +71,7 @@
   </div>
   
   <script>
-    // 비밀번호 확인
-    document.getElementById("passwordConfirm").addEventListener("input", function () {
-      const pw = document.getElementById("password").value;
-      const pwConfirm = this.value;
-      const pwMessage = document.getElementById("pwMessage");
-
-      if (pw === pwConfirm) {
-        pwMessage.textContent = "비밀번호가 일치합니다.";
-        pwMessage.classList.add("text-success");
-        pwMessage.classList.remove("text-danger");
-      } else {
-        pwMessage.textContent = "비밀번호가 일치하지 않습니다.";
-        pwMessage.classList.add("text-danger");
-        pwMessage.classList.remove("text-success");
-      }
-    });
-
-    // 아이디 중복 체크
-    function checkId() {
-      const userId = document.getElementById('userId').value;
-      const idMessage = document.getElementById('idMessage');
-
-      if (!userId) {
-        idMessage.textContent = "아이디를 입력해주세요.";
-        idMessage.classList.add("text-danger");
-        return;
-      }
-
-      fetch('/api/check-id', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        idMessage.textContent = data.isDuplicated ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.";
-        idMessage.classList.toggle("text-danger", data.isDuplicated);
-        idMessage.classList.toggle("text-success", !data.isDuplicated);
-      })
-      .catch(() => {
-        idMessage.textContent = "서버 오류 발생";
-        idMessage.classList.add("text-danger");
-      });
-    }
-
-    // 가입 날짜 타임스탬프 설정
-    document.getElementById("joinDate").value = new Date().toISOString().slice(0, 19).replace("T", " ");
-
-    // SHA-256 암호화
-    async function hashPassword(password) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(password);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // 폼 제출 전에 비밀번호 해싱
-    document.getElementById("registerForm").addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const passwordInput = document.getElementById("password");
-      const passwordConfirmInput = document.getElementById("passwordConfirm");
-
-      const hashedPassword = await hashPassword(passwordInput.value);
-
-      passwordInput.value = hashedPassword;
-      passwordConfirmInput.value = hashedPassword;
-
-      this.submit();
-    });
+   
   </script>
 </body>
 </html>

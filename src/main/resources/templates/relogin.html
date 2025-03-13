@@ -39,13 +39,6 @@
     const userId = document.getElementById('userId');
     const password = document.getElementById('password');
     const recoverBtn = document.querySelector('.recover-btn');
-
-    function toggleButtonState() {
-        recoverBtn.disabled = !(userId.value.trim() && password.value.trim());
-    }
-
-    userId.addEventListener('input', toggleButtonState);
-    password.addEventListener('input', toggleButtonState);
 </script>
 </body>
 </html>
