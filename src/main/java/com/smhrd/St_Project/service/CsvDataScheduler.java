@@ -23,7 +23,7 @@ public class CsvDataScheduler {
     /**
      * 🔹 일정 시간마다 실행되는 CSV 데이터 업로드
      */
-    @Scheduled(fixedRate = 60000) // ✅ 1분(60,000ms)마다 실행
+    @Scheduled(fixedRate = 1000*60*60*24) // ✅ 30초(30,000ms)마다 실행 추후 수정 일단은 시간 늘려놓음
     public void loadCsvDataPeriodically() {
         try {
             System.out.println("🔄 CSV 데이터 업로드 시작...");

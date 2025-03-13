@@ -109,7 +109,7 @@ public class MemberService {
     	}
 
       // 탈퇴 버튼 클릭 후 일정 시간 이후 계정 삭제
-      @Scheduled(fixedRate = 180000) // 3분마다 실행
+      @Scheduled(fixedRate = 180000) // 3분(180,000ms)마다 실행 추후 30일(1000*60*60*24*30)로 변경
       @Transactional
       public void deleteInactiveUsers() {
           System.out.println("=== 3분 이상 지난 탈퇴 회원 삭제 시작 ===");
