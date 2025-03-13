@@ -14,4 +14,20 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class MainController {
 
+	@GetMapping("/")
+    public String home() {
+        return "login"; // login.html 템플릿을 반환 (thymeleaf 사용 시 resources/templates/login.html 필요)
+    }
+	
+	 // "/register" URL 접속 시 회원가입 페이지로 이동
+    @GetMapping("/register")
+    public String register() {
+        return "register"; // register.html 반환
+    }
+    
+    @GetMapping("/login")
+    public String login() {
+        return "login"; // login.html 템플릿을 반환 (thymeleaf 사용 시 resources/templates/login.html 필요)
+    }
+
 }

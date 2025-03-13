@@ -71,7 +71,26 @@
   </div>
   
   <script>
-    
+  function checkId() {
+      let userId = document.getElementById("userId").value;
+      let idMessage = document.getElementById("idMessage");
+
+      // AJAX 요청을 보내서 ID 중복 확인
+      fetch(`/api/member/checkId?userId=${userId}`)
+          .then(response => response.json())
+          .then(data => {
+              if (data) {
+                  idMessage.textContent = "사용 가능한 아이디입니다.";
+                  idMessage.style.color = "green";
+              } else {
+                  idMessage.textContent = "이미 존재하는 아이디입니다.";
+                  idMessage.style.color = "red";
+              }
+          })
+          .catch(error => {
+              console.error("아이디 중복 체크 오류:", error);
+          });
+  }
   </script>
 </body>
 </html>
