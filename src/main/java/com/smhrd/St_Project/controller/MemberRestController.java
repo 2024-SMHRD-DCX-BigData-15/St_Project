@@ -12,7 +12,7 @@ public class MemberRestController {
     private MemberService memberService;
 
     /**
-     * 아이디 중복 체크 API
+     * 아이디 중복 체크 API11
      * @param userId 클라이언트가 입력한 아이디
      * @return true(중복 없음), false(중복 있음)
      */
