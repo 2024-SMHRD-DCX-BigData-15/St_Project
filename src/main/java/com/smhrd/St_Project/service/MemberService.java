@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class MemberService {
@@ -18,12 +20,16 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
+ // 🔹 인증 토큰 저장 (토큰 - 사용자 ID 매핑)
+    private static final ConcurrentHashMap<String, String> authTokenStorage = new ConcurrentHashMap<>();
+
     /**
      * 회원 정보를 DB에 저장
      * @param memberEntity 회원 정보
      */
     public void registerMember(MemberEntity memberEntity) {
         memberRepository.save(memberEntity);
+        System.out.println("✅ 회원 가입 완료: " + memberEntity.getUserId());
     }
 
     /**
@@ -79,17 +85,31 @@ public class MemberService {
             return null;
         }
     }
-    
+
+    /**
+     * 회원 정보 수정
+     * @param member 수정할 회원 정보
+     */
     public void updateMember(MemberEntity member) {
         System.out.println("📌 회원 정보 업데이트: " + member.getUserId());
         memberRepository.save(member);
     }
-    
+
+    /**
+     * 특정 ID의 회원 정보 조회
+     * @param userId 조회할 사용자 ID
+     * @return 회원 정보 (없으면 null)
+     */
     public MemberEntity findMemberById(String userId) {
         return memberRepository.findById(userId).orElse(null);
     }
 
-    // 회원 탈퇴
+    /**
+     * 회원 탈퇴
+     * @param userId 탈퇴할 사용자 ID
+     * @param password 입력된 비밀번호
+     * @return 탈퇴 성공 여부
+     */
     public boolean deleteMember(String userId, String password) {
         Optional<MemberEntity> memberOptional = memberRepository.findById(userId);
 
@@ -122,5 +142,67 @@ public class MemberService {
         return false;
     }
 
+    /**
+     * 🔹 인증 토큰 생성 (Base64 인코딩)
+     */
+    public String generateAuthToken(MemberEntity member) {
+        String token = Base64.getEncoder().encodeToString((member.getUserId() + ":" + System.currentTimeMillis()).getBytes());
+        authTokenStorage.put(token, member.getUserId()); // ✅ 토큰 저장
+        System.out.println("✅ 인증 토큰 생성: " + token);
+        return token;
+    }
+
+    /**
+     * 🔹 인증 토큰 검증 (실패 시 자동 삭제)
+     */
+    public MemberEntity validateAuthToken(String token) {
+        String userId = authTokenStorage.get(token);
+
+        if (userId != null) {
+            System.out.println("✅ 유효한 토큰 확인: " + token);
+            return memberRepository.findById(userId).orElse(null);
+        } else {
+            System.out.println("🚨 유효하지 않은 토큰: " + token);
+            removeAuthToken(token); // 🔥 자동 삭제 처리
+        }
+        return null;
+    }
+
+    /**
+     * 🔹 로그아웃 (토큰 삭제)
+     */
+    public void removeAuthToken(String token) {
+        authTokenStorage.remove(token);
+        System.out.println("✅ 로그아웃 완료 - 토큰 삭제: " + token);
+    }
+    
+ // ✅ 계정 복구 로직
+    public boolean recoverMember(String userId, String password) {
+        Optional<MemberEntity> memberOptional = memberRepository.findById(userId);
+
+        if (memberOptional.isPresent()) {
+            MemberEntity member = memberOptional.get();
+            String encryptedPassword = PasswordEncryptor.encryptSHA256(password);
+
+            // 📌 디버깅 로그
+            System.out.println("[디버깅] 계정 복구 요청 아이디: " + userId);
+            System.out.println("[디버깅] 입력된 비밀번호(암호화 후): " + encryptedPassword);
+            System.out.println("[디버깅] 저장된 비밀번호: " + member.getUserPw());
+
+            if (member.getUserPw().equals(encryptedPassword)) {
+                member.setUserStatus('N'); // ✅ 계정 활성화
+                member.setDeletedAt(null); // ✅ 삭제 날짜 초기화
+                memberRepository.save(member);
+
+                System.out.println("[디버깅] 계정 복구 완료: user_status = 'N', deleted_at = NULL");
+                return true;
+            } else {
+                System.out.println("[디버깅] 비밀번호 불일치");
+            }
+        } else {
+            System.out.println("[디버깅] 회원 정보 없음");
+        }
+        return false;
+    }
 
 }

@@ -36,9 +36,57 @@
   </div>
 
   <script>
-    const userId = document.getElementById('userId');
-    const password = document.getElementById('password');
-    const recoverBtn = document.querySelector('.recover-btn');
+ //------------------- [ 계정 복구 백엔드 스크립트 부분 ] -------------------
+  const userId = document.getElementById('userId');
+   const password = document.getElementById('password');
+   const recoverBtn = document.querySelector('.recover-btn');
+
+   // 입력 필드가 모두 채워지면 버튼 활성화
+   userId.addEventListener("input", toggleButton);
+   password.addEventListener("input", toggleButton);
+
+   function toggleButton() {
+       recoverBtn.disabled = !(userId.value.trim() && password.value.trim());
+   }
+
+   async function recoverAccount(event) {
+       event.preventDefault();
+
+       const userData = {
+           id: userId.value.trim(),
+           pw: password.value.trim()
+       };
+
+       console.log("[디버깅] 계정 복구 요청 아이디:", userData.id);
+       console.log("[디버깅] 입력된 비밀번호:", userData.pw);
+
+       try {
+           const response = await fetch("/api/member/recover", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify(userData)
+           });
+
+           const result = await response.json();
+           console.log("[디버깅] 서버 응답:", result);
+
+           if (response.ok) {
+               alert("계정이 성공적으로 복구되었습니다!");
+               window.location.href = "/login";
+           } else {
+               alert("계정 복구 실패: " + result.message);
+           }
+       } catch (error) {
+           console.error("[디버깅] 서버 요청 중 오류 발생:", error);
+           alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+       }
+   }
+
+   document.getElementById("recoverForm").addEventListener("submit", recoverAccount);
+   
+//--------------------------------------------------------------------    
+    
+    
 
 </script>
 </body>

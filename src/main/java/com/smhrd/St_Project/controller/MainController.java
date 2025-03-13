@@ -32,9 +32,19 @@ public class MainController {
     }
     
     @GetMapping("/maindashboard")
-    public String mainDashboard() {
+    public String mainDashboard(HttpSession session) {
+        // ✅ 세션에 로그인 정보 확인
+        MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            System.out.println("🚨 접근 오류: 로그인 필요");
+            return "redirect:/login";
+        }
+
+        System.out.println("✅ 대시보드 접근 허용: " + loginUser.getUserId());
         return "maindashboard"; // ✅ 로그인 성공 후 이동할 페이지
     }
+
 
     @GetMapping("/edit/{id}")
     public String editMember(@PathVariable("id") String userId, Model model, HttpSession session) {
@@ -55,6 +65,11 @@ public class MainController {
     @GetMapping("/delete")
     public String deletePage() {
         return "delete"; // delete.html을 반환
+    }
+    
+    @GetMapping("/relogin")
+    public String relogin() {
+        return "relogin"; // relogin.html을 반환
     }
 
 

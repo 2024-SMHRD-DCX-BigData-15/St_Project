@@ -64,18 +64,19 @@ public class MemberController {
                         @RequestParam("pw") String password,
                         HttpSession session) {
 
-        // 비밀번호 암호화 후 DB에서 검증
+        // 📌 비밀번호 암호화 후 DB에서 검증
         String encryptedPassword = memberService.encryptPassword(password);
         MemberEntity member = memberService.login(userId, encryptedPassword);
 
         if (member != null) {
-            // 로그인 성공 -> 세션 저장 후 대시보드로 이동
+            // ✅ 로그인 성공 시 세션에 저장
             session.setAttribute("loginUser", member);
             System.out.println("✅ 로그인 성공: " + userId);
+
             return "redirect:/maindashboard";
         } else {
-            // 로그인 실패 -> 로그인 페이지로 이동 + 오류 메시지 전달
-            System.out.println("🚨 로그인 실패 (ID 또는 비밀번호 불일치): " + userId);
+            // 🚨 로그인 실패 -> 로그인 페이지로 이동 + 오류 메시지 전달
+            System.out.println("🚨 로그인 실패: 아이디 또는 비밀번호 불일치");
             return "redirect:/login?error=invalid";
         }
     }
