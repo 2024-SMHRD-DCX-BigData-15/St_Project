@@ -33,7 +33,7 @@
                 <div class="main-dashboard">
                     <div class="inputs">
                         <div class="title">
-                            <div class="text-21">수조 추가</div>
+                            <div class="text-21">수조 정보 등록</div>
                         </div>
 
                         <form class="tank-form" action="/tank/add" method="post">
@@ -71,6 +71,7 @@
                                 </button>
                             </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>
@@ -123,7 +124,7 @@
                     alert("수조 추가 실패!\n" + errorText);
                 }
             } catch (error) {
-                console.error("🚨 서버 요청 중 오류 발생:", error);
+                console.error("서버 요청 중 오류 발생:", error);
                 alert("서버 오류 발생! 다시 시도해주세요.");
             }
         });
