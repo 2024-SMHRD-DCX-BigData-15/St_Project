@@ -238,3 +238,21 @@
 .hamburger-menu.open .bar:nth-child(3) {
     transform: rotate(45deg) translate(-6px, -6px);
 }
+
+/* 자동 완성 드롭다운 배경 제거 */
+.edit-screen .input-field-text:-webkit-autofill,
+.edit-screen .input-field-text:-webkit-autofill:hover,
+.edit-screen .input-field-text:-webkit-autofill:focus,
+.edit-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important;
+    -webkit-text-fill-color: #ffffff !important; /* 텍스트 색상 유지 */
+    transition: background-color 5000s ease-in-out 0s; /* 배경색 전환 방지 */
+}
+
+/* 자동 완성 드롭다운 스타일 강제 제거 */
+input:-internal-autofill-selected {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
