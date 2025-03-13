@@ -21,11 +21,18 @@ public class TankDataService {
     @Autowired
     private TankRepository tankRepository;
 
+    private static final int TOTAL_TANKS = 4; // ✅ 총 수조 개수 (4개)
+
     /**
-     * 🔹 CSV 데이터 저장 (한 번에 여러 개 저장 가능)
+     * 🔹 CSV 데이터 저장 (4개씩 저장하도록 수정)
      */
     @Transactional
     public void saveTankData(List<String[]> csvData) {
+        int rowIndex = 0; // ✅ 현재 데이터 행 인덱스 (0부터 시작)
+
+        // ✅ CsvDataScheduler에서 컬럼 헤더를 이미 건너뛰었으므로 추가적인 헤더 스킵 없음!
+
+        // ✅ CSV 데이터 반복문 실행
         for (String[] nextRecord : csvData) {
             try {
                 // ✅ CSV 데이터가 충분한지 검사
@@ -34,16 +41,19 @@ public class TankDataService {
                     continue;
                 }
 
-                TankDataEntity tankData = new TankDataEntity();
+                // ✅ tank_idx를 1~4로 유지하도록 rowIndex를 4개 단위로 끊음
+                Long tankIdx = (long) ((rowIndex % TOTAL_TANKS) + 1);
+                rowIndex++; // ✅ rowIndex 증가
 
                 // ✅ tank_idx에 해당하는 TankEntity 찾기
-                Long tankIdx = 1L; // 임시 값 (수조 ID를 직접 지정)
                 TankEntity tankEntity = tankRepository.findById(tankIdx).orElse(null);
 
                 if (tankEntity == null) {
                     System.out.println("❌ 수조 정보 없음! tankIdx=" + tankIdx + " 건너뜀");
                     continue;
                 }
+
+                TankDataEntity tankData = new TankDataEntity();
                 tankData.setTank(tankEntity);
 
                 // ✅ 현재 시간으로 record_date 설정
@@ -60,6 +70,11 @@ public class TankDataService {
                 // ✅ 데이터베이스에 저장
                 tankDataRepository.save(tankData);
                 System.out.println("✅ 데이터 저장 완료! tankIdx=" + tankIdx + ", 저장 시간=" + tankData.getRecordDate());
+
+                // ✅ 4개 저장할 때마다 로그 찍음
+                if (rowIndex % TOTAL_TANKS == 0) {
+                    System.out.println("✅ 4개 데이터 저장 완료! (현재 rowIndex=" + rowIndex + ")");
+                }
 
             } catch (Exception e) {
                 System.out.println("❌ 데이터 변환 오류! 건너뜀: " + String.join(", ", nextRecord));

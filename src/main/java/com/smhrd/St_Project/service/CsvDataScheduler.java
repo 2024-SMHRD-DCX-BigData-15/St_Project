@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
+//1
 @Service
 public class CsvDataScheduler {
 
@@ -17,7 +17,7 @@ public class CsvDataScheduler {
     private TankDataService tankDataService;
 
     private int lastProcessedRow = 0; // ✅ 마지막으로 저장된 행의 번호
-    private static final int batchSize = 5; // ✅ 한 번에 저장할 행 개수
+    private static final int batchSize = 4; // ✅ 한 번에 저장할 행 개수 (4개)
     private int totalRows = 0; // ✅ CSV 총 행 개수 저장
 
     /**
@@ -61,7 +61,7 @@ public class CsvDataScheduler {
 
                 tankDataList.add(nextRecord);
 
-                // ✅ 배치 크기만큼 저장 후 종료
+                // ✅ 배치 크기(4개)만큼 저장 후 종료
                 if (tankDataList.size() >= batchSize) {
                     break;
                 }
