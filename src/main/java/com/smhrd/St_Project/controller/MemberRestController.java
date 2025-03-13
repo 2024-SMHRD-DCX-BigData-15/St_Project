@@ -91,17 +91,26 @@ public class MemberRestController {
 
         // 🔹 토큰 검증
         MemberEntity member = memberService.validateAuthToken(token);
+
         if (member != null) {
+            // 🔹 DB에서 user_status 확인 (Y면 탈퇴한 계정이므로 자동 로그인 실패)
+            if (member.getUserStatus() == 'Y') {
+                System.out.println("🚨 자동 로그인 실패: 탈퇴한 계정 (" + member.getUserId() + ")");
+                memberService.removeAuthToken(token); // 🔥 토큰 삭제
+                return ResponseEntity.status(401).body(Map.of("success", false, "message", "탈퇴한 계정입니다."));
+            }
+
             System.out.println("✅ 자동 로그인 성공: " + member.getUserId());
 
-            // 🔹 자동 로그인 성공 시 세션에 로그인 정보 저장 (무한 루프 방지)
+            // 🔹 자동 로그인 성공 시 세션에 로그인 정보 저장
             session.setAttribute("loginUser", member);
             return ResponseEntity.ok(Map.of("success", true));
         } else {
             System.out.println("🚨 자동 로그인 실패: 토큰 무효");
-            return ResponseEntity.status(401).body(Map.of("success", false));
+            return ResponseEntity.status(401).body(Map.of("success", false, "message", "토큰이 유효하지 않습니다."));
         }
     }
+
 
 
     /**

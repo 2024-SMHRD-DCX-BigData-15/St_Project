@@ -153,20 +153,34 @@ public class MemberService {
     }
 
     /**
-     * 🔹 인증 토큰 검증 (실패 시 자동 삭제)
+     * 🔹 인증 토큰 검증 (탈퇴한 계정 확인 및 자동 삭제 기능 포함)
+     * @param token 클라이언트에서 제공한 토큰
+     * @return 검증된 사용자 (없으면 null)
      */
     public MemberEntity validateAuthToken(String token) {
         String userId = authTokenStorage.get(token);
 
         if (userId != null) {
-            System.out.println("✅ 유효한 토큰 확인: " + token);
-            return memberRepository.findById(userId).orElse(null);
-        } else {
-            System.out.println("🚨 유효하지 않은 토큰: " + token);
-            removeAuthToken(token); // 🔥 자동 삭제 처리
+            MemberEntity member = memberRepository.findById(userId).orElse(null);
+
+            if (member != null) {
+                // 🔹 탈퇴한 계정이면 자동 로그인 실패 및 토큰 삭제
+                if (member.getUserStatus() == 'Y') {
+                    System.out.println("🚨 유효하지 않은 토큰: 탈퇴한 계정 (" + userId + ")");
+                    removeAuthToken(token);
+                    return null;
+                }
+
+                System.out.println("✅ 유효한 토큰 확인: " + token);
+                return member;
+            }
         }
+
+        System.out.println("🚨 유효하지 않은 토큰: " + token);
+        removeAuthToken(token); // 🔥 유효하지 않은 토큰 삭제
         return null;
     }
+
 
     /**
      * 🔹 로그아웃 (토큰 삭제)
