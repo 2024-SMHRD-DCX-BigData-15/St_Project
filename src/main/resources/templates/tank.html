@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수조 추가</title>
     <link rel="stylesheet" href="/css/tank.css">
 </head>
-<body>
+<body style="margin: 0">
     <div class="wrapper">
         <!-- 사이드바 -->
         <div class="sidebar" id="sidebar">
@@ -28,47 +28,53 @@
         </div>
 
         <!-- 메인 콘텐츠 -->
-        <main class="main-content">
-            <header class="header">
-                <h1 class="page-title">수조 추가</h1>
-            </header>
+        <div class="container-center-horizontal">
+            <div class="tank-screen screen">
+                <div class="main-dashboard">
+                    <div class="inputs">
+                        <div class="title">
+                            <div class="text-21">수조 추가</div>
+                        </div>
 
-            <!-- 수조 추가 폼 -->
-            <section class="tank-form-container">
-                <form class="tank-form" >
-                    <div class="form-group">
-                        <label for="tank-diameter">수조 직경 (m)</label>
-                        <input type="number" id="tank-diameter" name="tank_width" min="0">
+                        <form class="tank-form" action="/tank/add" method="post">
+                            <div class="input-group">
+                                <label for="tank-diameter" class="text-1">수조 직경 (m)</label>
+                                <input type="number" id="tank-diameter" name="tank_width" class="input-field-text" min="0" placeholder="수조 직경을 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="tank-height" class="text-1">수조 높이 (m)</label>
+                                <input type="number" id="tank-height" name="tank_height" class="input-field-text" min="0" placeholder="수조 높이를 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="tank-location" class="text-1">수조 위치</label>
+                                <input type="text" id="tank-location" name="tank_location" class="input-field-text" placeholder="수조 위치를 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="species" class="text-1">품종</label>
+                                <input type="text" id="species" name="fish_type" class="input-field-text" placeholder="품종을 입력하세요" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="start-date" class="text-1">사육 개시일</label>
+                                <input type="date" id="start-date" name="started_at" class="input-field-text" placeholder="사육 개시일을 입력하세요" required>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="button-base_login add-btn">
+                                    <div class="text">추가</div>
+                                </button>
+                                <button type="reset" class="button-base_login cancel-btn">
+                                    <div class="text">취소</div>
+                                </button>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="form-group">
-                        <label for="tank-height">수조 높이 (m)</label>
-                        <input type="number" id="tank-height" name="tank_height" min="0">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tank-location">수조 위치</label>
-                        <input type="text" id="tank-location" name="tank_location">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="species">품종</label>
-                        <input type="text" id="species" name="fish_type">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="start-date">사육 개시일</label>
-                        <input type="date" id="start-date" name="started_at">
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="add-btn">추가</button>
-                        <button type="reset" class="cancel-btn">취소</button>
-                    </div>
-                </form>
-            </section>
-
-        </main>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -76,56 +82,51 @@
             document.getElementById('sidebar').classList.toggle('open');
             this.classList.toggle('open');
         });
-        
-        /**
-         * 🔹 수조 추가 버튼 클릭 시 데이터 저장 후 대시보드로 이동
-         */
-         document.querySelector('.tank-form').addEventListener('submit', async function(event) {
-        	    event.preventDefault(); // 기본 제출 방지
 
-        	    let userId = `[[${session.loginUser?.userId}]]`; // ✅ 세션에서 사용자 ID 가져오기
-        	    let tankWidth = document.getElementById('tank-diameter').value;
-        	    let tankHeight = document.getElementById('tank-height').value;
-        	    let tankLocation = document.getElementById('tank-location').value;
-        	    let fishType = document.getElementById('species').value;
-        	    let startedAt = document.getElementById('start-date').value;
+        document.querySelector('.tank-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-        	    let requestData = {
-        	        userId: userId,
-        	        tankWidth: parseFloat(tankWidth),
-        	        tankHeight: parseFloat(tankHeight),
-        	        tankLocation: tankLocation,
-        	        fishType: fishType,
-        	        startedAt: startedAt
-        	    };
+            let userId = `[[${session.loginUser?.userId}]]`;
+            let tankWidth = document.getElementById('tank-diameter').value;
+            let tankHeight = document.getElementById('tank-height').value;
+            let tankLocation = document.getElementById('tank-location').value;
+            let fishType = document.getElementById('species').value;
+            let startedAt = document.getElementById('start-date').value;
 
-        	    try {
-        	        let response = await fetch("/tank/add", {
-        	            method: "POST",
-        	            headers: { "Content-Type": "application/json" },
-        	            body: JSON.stringify(requestData)
-        	        });
+            let requestData = {
+                userId: userId,
+                tankWidth: parseFloat(tankWidth),
+                tankHeight: parseFloat(tankHeight),
+                tankLocation: tankLocation,
+                fishType: fishType,
+                startedAt: startedAt
+            };
 
-        	        if (response.ok) {
-        	            alert("✅ 수조 추가 완료!");
-        	            console.log("✅ 서버 응답: 수조 추가 성공");
+            try {
+                let response = await fetch("/tank/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestData)
+                });
 
-        	            // ✅ 메인 대시보드의 수조 목록을 즉시 갱신
-        	            if (window.opener && !window.opener.closed) {
-        	                window.opener.loadTanks(userId);
-        	            }
+                if (response.ok) {
+                    alert("수조 추가 완료!");
+                    console.log("서버 응답: 수조 추가 성공");
 
-        	            // ✅ 대시보드로 이동
-        	            window.location.href = "/maindashboard";
-        	        } else {
-        	            let errorText = await response.text();
-        	            alert("❌ 수조 추가 실패!\n" + errorText);
-        	        }
-        	    } catch (error) {
-        	        console.error("🚨 서버 요청 중 오류 발생:", error);
-        	        alert("❌ 서버 오류 발생! 다시 시도해주세요.");
-        	    }
-        	});
+                    if (window.opener && !window.opener.closed) {
+                        window.opener.loadTanks(userId);
+                    }
+
+                    window.location.href = "/maindashboard";
+                } else {
+                    let errorText = await response.text();
+                    alert("수조 추가 실패!\n" + errorText);
+                }
+            } catch (error) {
+                console.error("🚨 서버 요청 중 오류 발생:", error);
+                alert("서버 오류 발생! 다시 시도해주세요.");
+            }
+        });
     </script>
 </body>
 </html>
