@@ -22,13 +22,13 @@
 }
 
 .edit-screen .inputs {
-    align-items: center; /* 가운데 정렬로 변경 */
+    align-items: center;
     display: flex;
     flex-direction: column;
     min-height: 400px;
     width: 354px;
-    max-width: 90%; /* 반응형 추가 */
-    gap: 20px; /* title과 폼 간격 조정 */
+    max-width: 90%;
+    gap: 20px;
 }
 
 /* 제목 스타일 */
@@ -58,8 +58,8 @@
 .edit-screen .edit-form {
     display: flex;
     flex-direction: column;
-    align-items: center; /* 폼 내부 요소도 가운데 정렬 */
-    width: 100%; /* title과 동일한 너비 */
+    align-items: center;
+    width: 100%;
 }
 
 /* 입력 그룹 스타일 */
@@ -104,7 +104,7 @@
 }
 
 .edit-screen .input-field-text[readonly] {
-    background: rgba(255, 255, 255, 0.1); /* 읽기 전용 필드 구분 */
+    background: rgba(255, 255, 255, 0.1);
     cursor: not-allowed;
 }
 
@@ -115,11 +115,11 @@
 /* 버튼 스타일 */
 .edit-screen .form-actions {
     display: flex;
-    justify-content: center; /* 버튼을 가운데로 정렬 */
+    justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 36px;
-    gap: 10px; /* 버튼 간 간격 추가 */
+    gap: 10px;
 }
 
 .edit-screen .button-base_login {
@@ -137,11 +137,11 @@
 }
 
 .edit-screen .save-btn {
-    background-color: #0075ff; /* 저장 버튼은 파란색 */
+    background-color: #0075ff;
 }
 
 .edit-screen .cancel-btn {
-    background-color: #ccc; /* 취소 버튼은 회색 */
+    background-color: #ccc;
 }
 
 .edit-screen .save-btn:hover {
@@ -161,7 +161,7 @@
     line-height: normal;
 }
 
-/* 사이드바와 햄버거 메뉴 스타일 */
+/* 사이드바 & 햄버거 */
 .wrapper {
     position: relative;
     height: 100vh;
@@ -239,7 +239,6 @@
     transform: rotate(45deg) translate(-6px, -6px);
 }
 
-/* 자동 완성 드롭다운 배경 제거 */
 .edit-screen .input-field-text:-webkit-autofill,
 .edit-screen .input-field-text:-webkit-autofill:hover,
 .edit-screen .input-field-text:-webkit-autofill:focus,
@@ -247,11 +246,10 @@
     -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
     box-shadow: 0 0 0 1000px transparent inset !important;
     background-color: transparent !important;
-    -webkit-text-fill-color: #ffffff !important; /* 텍스트 색상 유지 */
-    transition: background-color 5000s ease-in-out 0s; /* 배경색 전환 방지 */
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
-/* 자동 완성 드롭다운 스타일 강제 제거 */
 input:-internal-autofill-selected {
     background-color: transparent !important;
     color: #ffffff !important;
