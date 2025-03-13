@@ -1,20 +1,19 @@
-/* relogin.css */
-.wrapper {
+/* 계정 복구 화면 기본 설정 */
+.recover-screen {
     align-items: center;
     justify-content: center;
     display: flex;
     height: 100vh;
-    width: 100vh;
+    width: 100vw;
     overflow: hidden;
     background-color: transparent;
 }
 
-.main-content {
+.recover-screen .main-dashboard {
     align-items: center;
     justify-content: center;
     background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
     display: flex;
-    flex-direction: column;
     height: 100%;
     width: 100%;
     position: absolute;
@@ -22,7 +21,17 @@
     left: 0;
 }
 
-.header {
+.recover-screen .inputs {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    width: 354px;
+    max-width: 90%;
+}
+
+/* 제목 스타일 */
+.recover-screen .title {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,7 +41,7 @@
     width: 100%;
 }
 
-.page-title {
+.recover-screen .text-21 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
     font-size: 30px;
@@ -44,20 +53,8 @@
     margin-bottom: 6px;
 }
 
-.recover-form-container {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    min-height: 300px;
-    width: 354px;
-    max-width: 90%;
-}
-
-.recover-form {
-    width: 100%;
-}
-
-.form-group {
+/* 입력 그룹 스타일 */
+.recover-screen .input-group {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -67,7 +64,7 @@
     width: 100%;
 }
 
-.form-group label {
+.recover-screen .text-1 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
     font-size: 14px;
@@ -79,7 +76,7 @@
     white-space: nowrap;
 }
 
-.form-group input {
+.recover-screen .input-field-text {
     -webkit-backdrop-filter: blur(42px) brightness(100%);
     backdrop-filter: blur(42px) brightness(100%);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
@@ -97,42 +94,59 @@
     box-sizing: border-box;
 }
 
-.form-group input::placeholder {
+.recover-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.form-actions {
+/* 폼 액션 및 버튼 스타일 */
+.recover-screen .form-actions {
     display: flex;
     justify-content: center;
     margin-top: 36px;
+    width: 100%;
 }
 
-.recover-btn {
+.recover-screen .recover-btn {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
     background-color: #0075ff;
-    border-radius: 12px;
-    height: 45px;
-    padding: 0 20px;
-    width: 350px;
-    max-width: 100%;
-    border: none;
     color: #ffffff;
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    height: 45px;
+    width: 350px;
+    max-width: 100%;
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-sizing: border-box;
 }
 
-.recover-btn:hover {
+.recover-screen .recover-btn:hover {
     background-color: #005bb5;
 }
 
-.recover-btn:disabled {
-    background-color: #ccc;
+.recover-screen .recover-btn:disabled {
+    background-color: #cccccc;
     cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.recover-screen .input-field-text:-webkit-autofill,
+.recover-screen .input-field-text:-webkit-autofill:hover,
+.recover-screen .input-field-text:-webkit-autofill:focus,
+.recover-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s; 
+}
+
+input:-internal-autofill-selected {
+    background-color: transparent !important;
+    color: #ffffff !important;
 }
