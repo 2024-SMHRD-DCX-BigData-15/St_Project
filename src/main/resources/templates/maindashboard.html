@@ -182,7 +182,7 @@
         	                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
         	                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
         	                    </h4>
-        	                    <div class="tank-info" onclick="window.location.href='/dashboarddetail'">
+        	                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
         	                      
         	                    </div>
         	                    <div class="alarm-log-container" id="alarm-log-1" onclick = "window.location.href='/alarmHistory'">
@@ -243,6 +243,15 @@
                 console.error("❌ 삭제 중 오류 발생:", error);
                 alert("❌ 삭제 실패!");
             }
+            
+           }
+        
+        /**
+         * 🔹 수조 상세 페이지로 이동하는 함수
+         */
+        function goToDashboardDetail(tankIdx) {
+            console.log(`🚀 수조 상세 페이지 이동: tankIdx=${tankIdx}`); // ✅ 디버깅 로그 추가
+            window.location.href = `/dashboarddetail?tankIdx=${tankIdx}`;
         }
     </script>
 

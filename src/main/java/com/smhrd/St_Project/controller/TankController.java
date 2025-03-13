@@ -74,4 +74,29 @@ public class TankController {
 
         return "redirect:/maindashboard"; // ✅ 수정 완료 후 대시보드로 이동
     }
+    
+    /**
+     * 🔹 특정 수조 정보를 가져와서 `dashboarddetail.html`로 전달
+     */
+    @GetMapping("/dashboard/detail")
+    public String getTankDetail(@RequestParam("tankIdx") Long tankIdx, Model model) {
+        System.out.println("🚀 수조 정보 요청: tankIdx=" + tankIdx); // ✅ tankIdx 값 확인
+
+        if (tankIdx == null) {
+            System.out.println("❌ tankIdx가 null입니다!");
+            return "redirect:/maindashboard";
+        }
+
+        TankEntity tank = tankService.getTankById(tankIdx);
+
+        if (tank == null) {
+            System.out.println("❌ 해당 tankIdx의 수조 정보 없음: " + tankIdx);
+            model.addAttribute("selectedTank", new TankEntity()); // 기본 빈 객체 추가
+        } else {
+            System.out.println("✅ 수조 정보 로드 완료: " + tank.toString());
+            model.addAttribute("selectedTank", tank);
+        }
+
+        return "dashboarddetail";
+    }
 }

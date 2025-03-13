@@ -82,7 +82,17 @@ public class TankService {
      * 🔹 특정 tankIdx로 수조 정보 조회
      */
     public TankEntity getTankById(Long tankIdx) {
-        return tankRepository.findById(tankIdx).orElse(null);
+        System.out.println("🔍 TankService에서 수조 조회: tankIdx=" + tankIdx);
+
+        Optional<TankEntity> optionalTank = tankRepository.findById(tankIdx);
+
+        if (optionalTank.isPresent()) {
+            System.out.println("✅ 수조 정보 찾음: " + optionalTank.get().toString());
+            return optionalTank.get();
+        } else {
+            System.out.println("❌ 해당 tankIdx의 수조 없음: " + tankIdx);
+            return null;
+        }
     }
     
 	

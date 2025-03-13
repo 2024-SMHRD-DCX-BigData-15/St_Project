@@ -30,7 +30,7 @@ public class TankRestController {
      */
     @GetMapping("/list")
     public List<TankEntity> getUserTanks(HttpSession session) {
-        // ✅ 세션에서 로그인된 사용자 정보 가져오기
+        // 11✅ 세션에서 로그인된 사용자 정보 가져오기
         MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
 
         if (loginUser == null) {
