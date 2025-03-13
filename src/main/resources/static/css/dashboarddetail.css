@@ -36,14 +36,14 @@ body {
   max-width: 1200px;
   overflow-y: auto;
   box-sizing: border-box;
-  margin-top: 120px; /* main-content 위치 아래로 내리기 */
+  margin: 120px auto; /* 수평 가운데 정렬 및 상단 여백 유지 */
 }
 
 /* 헤더 */
 .header {
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 40%;
   transform: translateX(-40%);
   width: 100%;
   max-width: 1200px;
@@ -52,7 +52,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
+  z-index: 900; /* 사이드바보다 낮은 z-index로 설정 */
   gap: 5px;
 }
 
@@ -276,13 +276,6 @@ body {
   }
 }
 
-/* 기본 리셋 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* 사이드바 스타일 */
 .sidebar {
   position: fixed;
@@ -293,7 +286,7 @@ body {
   background-color: #252c41;
   transition: left 0.3s ease; /* right에서 left로 변경 */
   padding-top: 20px;
-  z-index: 1000;
+  z-index: 1100; /* 헤더보다 높은 z-index로 설정 */
 }
 
 /* 사이드바 열기 및 닫기 */
@@ -353,7 +346,6 @@ body {
   font-weight: bold;
 }
 
-
 /* 햄버거 메뉴 스타일 */
 .hamburger-menu {
   position: fixed;
@@ -370,6 +362,8 @@ body {
   margin: 6px 0;
   transition: 0.4s;
 }
+
+
 
 .hamburger-menu.open .bar:nth-child(1) {
   opacity: 1;
