@@ -1,5 +1,7 @@
 package com.smhrd.St_Project.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -45,121 +47,7 @@ public class MemberController {
 		return "login"; // 회원가입 후 로그인 페이지로 이동
 	}
 
-	// 로그인 기능
-	@PostMapping("/login.do")
-	public String login(@RequestParam(required = false) String id, @RequestParam(required = false) String pw,
-			HttpSession session) {
-
-		// id 또는 pw 값이 없는 경우 예외 처리
-		if (id == null || id.isEmpty() || pw == null || pw.isEmpty()) {
-			System.out.println("로그인 실패: ID 또는 비밀번호가 비어있음");
-			return "redirect:/login?error=missing_credentials";
-		}
-
-		System.out.println("로그인 요청: ID=" + id + ", PW=" + pw);
-
-		MemberEntity member = memberService.login(id, pw);
-
-		if (member != null) {
-			session.setAttribute("loginUser", member);
-			System.out.println("로그인 성공: " + id);
-			// 세션에 저장된 로그인 사용자 정보 출력 (디버깅용)
-			System.out.println("세션에 저장된 로그인 사용자: " + session.getAttribute("loginUser"));
-			return "redirect:/maindashboard";
-		} else {
-			System.out.println("로그인 실패: 사용자 없음");
-			return "redirect:/login?error=true";
-		}
-	}
 	
-	
-	// 회원정보 수정 기능
-	// 생성자를 통해 MemberService를 주입받음
-	public MemberController(MemberService memberService) {
-		this.memberService = memberService;
-	}
-
-	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable String id, Model model) {
-		// memberService 객체를 통해 findDetail 메서드 호출
-		Optional<MemberEntity> member = memberService.findDetail(id);
-
-		// Optional을 사용하여 값을 안전하게 처리
-		member.ifPresent(memberEntity -> model.addAttribute("member", memberEntity));
-
-		// "edit" 뷰로 전달
-		return "edit";
-	}
-
-	@PostMapping("/update")
-	public String updateProfile(@RequestParam String id, 
-	                            @RequestParam String pw, 
-	                            @RequestParam String name,
-	                            @RequestParam String add, 
-	                            @RequestParam String phone, 
-	                            HttpSession session) {
-
-	    // 현재 로그인된 사용자 가져오기
-	    MemberEntity member = (MemberEntity) session.getAttribute("loginUser");
-
-	    if (member != null && member.getUserId().equals(id)) {
-	        // 비밀번호가 변경되었을 경우 암호화하여 저장
-	        if (pw != null && !pw.isEmpty()) {
-	            String encryptedPw = memberService.encryptPassword(pw);
-	            member.setUserPw(encryptedPw);
-	        }
-
-	        // 입력된 정보로 기존 정보 업데이트
-	        member.setUserName(name);
-	        member.setUserAdd(add);
-	        member.setUserPhone(phone);
-
-	        // 서비스에서 업데이트 처리
-	        memberService.updateMember(member);
-
-	        // 세션 업데이트
-	        session.setAttribute("loginUser", member);
-	    }
-
-	    return "redirect:/maindashboard"; // 업데이트 후 대시보드로 이동
-	}
-
-	// 회원 탈퇴 폼
-    @GetMapping("/delete")
-    public String showDeleteForm() {
-        return "delete";  // 회원 탈퇴 페이지로 이동
-    }
-
-    // 회원 탈퇴 처리
-    @PostMapping("/delete")
-    public String deleteMember(@RequestParam String id, @RequestParam String pw, Model model) {
-        // 디버깅: 요청된 아이디와 비밀번호 확인
-        System.out.println("회원 탈퇴 요청: 아이디 = " + id + ", 비밀번호 = " + pw);
-
-        // 탈퇴 처리 서비스 호출
-        boolean isDeleted = memberService.deleteMember(id, pw);
-
-        // 탈퇴 처리 결과에 따른 메시지 설정
-        String message = isDeleted ? "회원 탈퇴가 완료되었습니다." : "아이디 또는 비밀번호가 잘못되었습니다.";
-        model.addAttribute("message", message);
-
-        // 탈퇴 후 홈 페이지로 리다이렉트
-        return "redirect:/";
-    }
-    
-    @PostMapping("/recover")
-    public String recoverMember(@RequestParam String id, @RequestParam String pw, Model model) {
-        boolean isRecovered = memberService.recoverMember(id, pw);
-
-        if (isRecovered) {
-            model.addAttribute("message", "계정이 성공적으로 복구되었습니다. 로그인해주세요.");
-            return "redirect:/login";
-        } else {
-            model.addAttribute("message", "계정 복구 실패: 아이디 또는 비밀번호를 확인해주세요.");
-            return "redirect:/relogin?error=true";
-        }
-    }
-
 
     // 로그아웃 처리
     @GetMapping("/logout")

@@ -88,59 +88,7 @@
       }
     });
 
-    // 아이디 중복 체크
-    function checkId() {
-      const userId = document.getElementById('userId').value;
-      const idMessage = document.getElementById('idMessage');
-
-      if (!userId) {
-        idMessage.textContent = "아이디를 입력해주세요.";
-        idMessage.classList.add("text-danger");
-        return;
-      }
-
-      fetch('/api/check-id', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        idMessage.textContent = data.isDuplicated ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.";
-        idMessage.classList.toggle("text-danger", data.isDuplicated);
-        idMessage.classList.toggle("text-success", !data.isDuplicated);
-      })
-      .catch(() => {
-        idMessage.textContent = "서버 오류 발생";
-        idMessage.classList.add("text-danger");
-      });
-    }
-
-    // 가입 날짜 타임스탬프 설정
-    document.getElementById("joinDate").value = new Date().toISOString().slice(0, 19).replace("T", " ");
-
-    // SHA-256 암호화
-    async function hashPassword(password) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(password);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // 폼 제출 전에 비밀번호 해싱
-    document.getElementById("registerForm").addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const passwordInput = document.getElementById("password");
-      const passwordConfirmInput = document.getElementById("passwordConfirm");
-
-      const hashedPassword = await hashPassword(passwordInput.value);
-
-      passwordInput.value = hashedPassword;
-      passwordConfirmInput.value = hashedPassword;
-
-      this.submit();
-    });
+   
   </script>
 </body>
 </html>
