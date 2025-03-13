@@ -76,6 +76,41 @@
             this.classList.toggle('open');
         });
 
+     // ------------------- [ 회원 탈퇴 가능 스크립트 ] -------------------
+        document.getElementById("deleteForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        let userId = document.getElementById("userId").value;
+        let password = document.getElementById("password").value;
+
+        // 📌 디버깅 로그
+        console.log("[디버깅] 탈퇴 요청 아이디:", userId);
+        console.log("[디버깅] 입력된 비밀번호:", password);
+
+        fetch("/api/member/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userId, pw: password })
+        })
+        .then(response => response.text()) // 서버 응답을 텍스트로 받음
+        .then(data => {
+            console.log("[디버깅] 서버 응답:", data);
+
+            if (data.includes("회원 탈퇴 성공")) {
+                alert("회원 탈퇴가 완료되었습니다.");
+                console.log("[디버깅] 탈퇴 후 로그인 페이지로 이동");
+                window.location.href = "/login"; // 로그인 페이지로 이동
+            } else {
+                alert("회원 탈퇴 실패: 아이디 또는 비밀번호가 잘못되었습니다.");
+                console.log("[디버깅] 탈퇴 실패");
+            }
+        })
+        .catch(error => {
+            console.error("[디버깅] 회원 탈퇴 요청 오류:", error);
+            alert("서버 오류 발생. 관리자에게 문의하세요.");
+        });
+    });
+        
         
     </script>
 </body>

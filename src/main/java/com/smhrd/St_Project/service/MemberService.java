@@ -2,11 +2,14 @@ package com.smhrd.St_Project.service;
 
 import com.smhrd.St_Project.entity.MemberEntity;
 import com.smhrd.St_Project.repository.MemberRepository;
+import com.smhrd.St_Project.util.PasswordEncryptor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
@@ -76,4 +79,48 @@ public class MemberService {
             return null;
         }
     }
+    
+    public void updateMember(MemberEntity member) {
+        System.out.println("📌 회원 정보 업데이트: " + member.getUserId());
+        memberRepository.save(member);
+    }
+    
+    public MemberEntity findMemberById(String userId) {
+        return memberRepository.findById(userId).orElse(null);
+    }
+
+    // 회원 탈퇴
+    public boolean deleteMember(String userId, String password) {
+        Optional<MemberEntity> memberOptional = memberRepository.findById(userId);
+
+        if (memberOptional.isPresent()) {
+            MemberEntity member = memberOptional.get();
+
+            // 📌 입력된 비밀번호 해싱 후 비교
+            String encryptedPassword = PasswordEncryptor.encryptSHA256(password);
+
+            // 📌 디버깅 로그
+            System.out.println("[디버깅] DB 조회된 회원 정보: " + member.getUserId());
+            System.out.println("[디버깅] 저장된 비밀번호: " + member.getUserPw()); 
+            System.out.println("[디버깅] 입력된 비밀번호(암호화 후): " + encryptedPassword); 
+            System.out.println("[디버깅] 현재 회원 상태: " + member.getUserStatus());
+
+            if (member.getUserPw().equals(encryptedPassword)) { // ✅ 암호화된 비밀번호로 비교
+                member.setUserStatus('Y'); // ✅ user_status 변경
+                member.setDeletedAt(new Timestamp(System.currentTimeMillis())); // ✅ deletedAt에 현재 시간 저장
+                memberRepository.save(member);
+
+                System.out.println("[디버깅] 회원 상태 변경 완료 (user_status = 'Y')");
+                System.out.println("[디버깅] 삭제 날짜 설정 완료: " + member.getDeletedAt());
+                return true;
+            } else {
+                System.out.println("[디버깅] 비밀번호 불일치");
+            }
+        } else {
+            System.out.println("[디버깅] 회원 정보 없음");
+        }
+        return false;
+    }
+
+
 }

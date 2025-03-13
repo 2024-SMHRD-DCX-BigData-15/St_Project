@@ -79,4 +79,52 @@ public class MemberController {
             return "redirect:/login?error=invalid";
         }
     }
+    
+    @PostMapping("/update")
+    public String updateMember(@RequestParam("id") String userId,
+                               @RequestParam(value = "pw", required = false) String password,
+                               @RequestParam(value = "name", required = false) String userName,
+                               @RequestParam(value = "add", required = false) String userAdd,
+                               @RequestParam(value = "phone", required = false) String userPhone,
+                               HttpSession session) {
+
+        // 1. 현재 로그인한 사용자 정보 가져오기
+        MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
+
+        // 2. 로그인한 사용자가 없거나 다른 ID를 수정하려는 경우 차단
+        if (loginUser == null || !loginUser.getUserId().equals(userId)) {
+            System.out.println("🚨 접근 오류: 로그인 필요 또는 권한 없음");
+            return "redirect:/login";
+        }
+
+        // 3. 기존 회원 정보 가져오기
+        MemberEntity existingMember = memberService.findMemberById(userId);
+        if (existingMember == null) {
+            System.out.println("❌ 회원 정보 찾을 수 없음: " + userId);
+            return "redirect:/edit/" + userId + "?error=notfound";
+        }
+
+        // 4. 변경된 값만 반영 (null 값은 기존 정보 유지)
+        if (password != null && !password.isEmpty()) {
+            existingMember.setUserPw(memberService.encryptPassword(password)); // 🔹 암호화 후 저장
+        }
+        if (userName != null && !userName.isEmpty()) {
+            existingMember.setUserName(userName);
+        }
+        if (userAdd != null && !userAdd.isEmpty()) {
+            existingMember.setUserAdd(userAdd);
+        }
+        if (userPhone != null && !userPhone.isEmpty()) {
+            existingMember.setUserPhone(userPhone);
+        }
+
+        // 5. 변경된 정보 저장
+        memberService.updateMember(existingMember);
+        session.setAttribute("loginUser", existingMember); // 세션 정보도 업데이트
+
+        System.out.println("✅ 회원 정보 수정 완료: " + userId);
+
+        return "redirect:/maindashboard?update=success"; // 수정 후 대시보드로 이동
+    }
+
 }
