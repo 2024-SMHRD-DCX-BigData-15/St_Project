@@ -2,12 +2,15 @@ package com.smhrd.St_Project.controller;
 
 import com.smhrd.St_Project.entity.MemberEntity;
 import com.smhrd.St_Project.service.MemberService;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/member")
@@ -28,12 +31,6 @@ public class MemberController {
                            @RequestParam("add") String userAdd,
                            @RequestParam("phone") String userPhone) {
 
-        // 비밀번호가 null인지 확인
-        if (password == null || password.isEmpty()) {
-            System.out.println("🚨 비밀번호가 입력되지 않았습니다.");
-            return "redirect:/register?error=emptyPassword";
-        }
-
         // 비밀번호 암호화
         String encryptedPassword = memberService.encryptPassword(password);
 
@@ -47,7 +44,6 @@ public class MemberController {
         memberEntity.setUserStatus('N');
         memberEntity.setUserRole('1');
         memberEntity.setJoinedAt(Timestamp.valueOf(LocalDateTime.now()));
-
         // 회원 정보 저장
         memberService.registerMember(memberEntity);
 
@@ -56,4 +52,31 @@ public class MemberController {
         return "redirect:/login";
     }
 
+    /**
+     * 로그인 처리
+     * @param userId 사용자 입력 ID
+     * @param password 사용자 입력 비밀번호
+     * @param session 로그인 유지 세션
+     * @return 로그인 성공 시 대시보드, 실패 시 로그인 페이지로 이동
+     */
+    @PostMapping("/login.do")
+    public String login(@RequestParam("id") String userId,
+                        @RequestParam("pw") String password,
+                        HttpSession session) {
+
+        // 비밀번호 암호화 후 DB에서 검증
+        String encryptedPassword = memberService.encryptPassword(password);
+        MemberEntity member = memberService.login(userId, encryptedPassword);
+
+        if (member != null) {
+            // 로그인 성공 -> 세션 저장 후 대시보드로 이동
+            session.setAttribute("loginUser", member);
+            System.out.println("✅ 로그인 성공: " + userId);
+            return "redirect:/maindashboard";
+        } else {
+            // 로그인 실패 -> 로그인 페이지로 이동 + 오류 메시지 전달
+            System.out.println("🚨 로그인 실패 (ID 또는 비밀번호 불일치): " + userId);
+            return "redirect:/login?error=invalid";
+        }
+    }
 }

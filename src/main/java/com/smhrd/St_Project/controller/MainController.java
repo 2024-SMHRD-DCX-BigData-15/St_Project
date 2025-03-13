@@ -29,5 +29,11 @@ public class MainController {
     public String login() {
         return "login"; // login.html 템플릿을 반환 (thymeleaf 사용 시 resources/templates/login.html 필요)
     }
+    
+    @GetMapping("/maindashboard")
+    public String mainDashboard() {
+        return "maindashboard"; // ✅ 로그인 성공 후 이동할 페이지
+    }
+
 
 }

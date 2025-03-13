@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -37,6 +38,10 @@ public class MemberService {
      * @return 암호화된 비밀번호
      */
     public String encryptPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            return null;
+        }
+
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(password.getBytes());
@@ -51,6 +56,24 @@ public class MemberService {
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("비밀번호 암호화 실패", e);
+        }
+    }
+
+    /**
+     * 로그인 처리 (ID와 암호화된 비밀번호 검증)
+     * @param userId 사용자 입력 ID
+     * @param encryptedPassword 암호화된 비밀번호
+     * @return 로그인 성공 시 MemberEntity 객체, 실패 시 null
+     */
+    public MemberEntity login(String userId, String encryptedPassword) {
+        Optional<MemberEntity> member = memberRepository.findById(userId);
+
+        if (member.isPresent() && member.get().getUserPw().equals(encryptedPassword)) {
+            System.out.println("✅ 로그인 검증 성공: " + userId);
+            return member.get();
+        } else {
+            System.out.println("🚨 로그인 검증 실패 (ID 또는 비밀번호 불일치): " + userId);
+            return null;
         }
     }
 }

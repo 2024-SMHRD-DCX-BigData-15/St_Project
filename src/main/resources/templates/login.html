@@ -14,7 +14,7 @@
             <div class="text-21">로그인</div>
           </div>
 
-          <form action="login.do" method="post" id="loginForm" onsubmit="return handleLogin()">
+          <form action="/member/login.do" method="post" id="loginForm" onsubmit="return handleLogin()">
             <div class="input-group">
               <label for="userId" class="text-1">아이디</label>
               <input type="text" id="userId" name="id" class="input-field-text" placeholder="아이디를 입력하세요" required />
@@ -73,6 +73,15 @@
               switchBase.style.backgroundColor = "#ccc";
           }
       });
+  });
+  
+  document.addEventListener("DOMContentLoaded", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+
+      if (error === "invalid") {
+          alert("🚨 로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.");
+      }
   });
   </script>
 </body>
