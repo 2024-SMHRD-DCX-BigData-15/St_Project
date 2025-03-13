@@ -53,8 +53,8 @@
                     <th>데이터 이름</th>
                     <th>값</th>
                     <th>상태</th>
-                    <th>지속 시간</th>
                     <th>확인 여부</th>
+                    <th>지속 시간</th>
                   </tr>
                 </thead>
                 <tbody id="alarmLog"></tbody>
@@ -64,29 +64,6 @@
               <button id="prevLog" class="page-btn">이전</button>
               <span id="logPage">1</span>
               <button id="nextLog" class="page-btn">다음</button>
-            </div>
-          </section>
-
-          <!-- 알람 히스토리 -->
-          <section class="section" id="historySection">
-            <h2 class="section-title" id="historySectionTitle">히스토리</h2>
-            <div class="alarm-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>날짜</th>
-                    <th>시간</th>
-                    <th>내용</th>
-                    <th>상태</th>
-                  </tr>
-                </thead>
-                <tbody id="alarmHistory"></tbody>
-              </table>
-            </div>
-            <div class="pagination">
-              <button id="prevHistory" class="page-btn">이전</button>
-              <span id="historyPage">1</span>
-              <button id="nextHistory" class="page-btn">다음</button>
             </div>
           </section>
 
@@ -107,17 +84,11 @@
     let currentLogPage = 1;
     const logsPerPage = 5;
 
-    // 알람 히스토리 데이터 저장
-    let alarmHistory = [];
-    let currentHistoryPage = 1;
-    const historyPerPage = 5;
-
     // 필터링 변수
     let dataTypeFilter = "";
 
     // DOM 요소 캐싱
     const alarmLogTable = document.getElementById("alarmLog");
-    const alarmHistoryTable = document.getElementById("alarmHistory");
     const loadingDiv = document.getElementById("loading");
 
     // XSS 방지 기본 함수
@@ -144,8 +115,8 @@
           <td>${escapeHTML(log.dataName)}</td>
           <td>${escapeHTML(log.value)}</td>
           <td>${escapeHTML(log.status)}</td>
-          <td>${escapeHTML(log.duration)}</td>
           <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
+          <td>${escapeHTML(log.duration)}</td>
         `;
         row.querySelector(".action").addEventListener("click", () => confirmLog(alarmLogs.indexOf(log)));
         alarmLogTable.appendChild(row);
@@ -156,37 +127,11 @@
       document.getElementById("nextLog").disabled = end >= filteredLogs.length;
     }
 
-    // 알람 히스토리 렌더링 (경고만 표시)
-    function renderAlarmHistory(history = alarmHistory) {
-      alarmHistoryTable.innerHTML = "";
-      const filteredHistory = history.filter(hist => hist.message.includes("이상 감지"))
-        .filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
-      const start = (currentHistoryPage - 1) * historyPerPage;
-      const end = start + historyPerPage;
-      const paginatedHistory = filteredHistory.slice(start, end);
-
-      paginatedHistory.forEach((hist, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${escapeHTML(hist.date)}</td>
-          <td>${escapeHTML(hist.time)}</td>
-          <td>${escapeHTML(hist.message)}</td>
-          <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
-        `;
-        row.querySelector(".action").addEventListener("click", () => confirmHistory(index));
-        alarmHistoryTable.appendChild(row);
-      });
-
-      document.getElementById("historyPage").textContent = currentHistoryPage;
-      document.getElementById("prevHistory").disabled = currentHistoryPage === 1;
-      document.getElementById("nextHistory").disabled = end >= filteredHistory.length;
-    }
-
     // 요약 통계 업데이트
     function updateSummaryStats() {
       const warningCount = alarmLogs.filter(log => log.status === "⚠️ 경고").length;
       const today = new Date().toISOString().slice(0, 10);
-      const todayWarningCount = alarmHistory.filter(hist => hist.date === today && hist.message.includes("이상 감지")).length;
+      const todayWarningCount = alarmLogs.filter(log => log.timestamp.includes(today) && log.status === "⚠️ 경고").length;
       const unconfirmedCount = alarmLogs.filter(log => log.action === "미확인" && log.status === "⚠️ 경고").length;
 
       document.getElementById("warningCount").textContent = warningCount;
@@ -198,13 +143,6 @@
     function updateLogSection() {
       currentLogPage = 1; // 페이지 초기화
       renderAlarmLog();
-      updateSummaryStats();
-    }
-
-    // 히스토리 섹션 업데이트
-    function updateHistorySection() {
-      currentHistoryPage = 1; // 페이지 초기화
-      renderAlarmHistory();
       updateSummaryStats();
     }
 
@@ -223,21 +161,6 @@
       }
     });
 
-    // 페이지 이동 (히스토리)
-    document.getElementById("prevHistory").addEventListener("click", () => {
-      if (currentHistoryPage > 1) {
-        currentHistoryPage--;
-        renderAlarmHistory();
-      }
-    });
-
-    document.getElementById("nextHistory").addEventListener("click", () => {
-      if (currentHistoryPage * historyPerPage < alarmHistory.filter(hist => hist.message.includes("이상 감지")).length) {
-        currentHistoryPage++;
-        renderAlarmHistory();
-      }
-    });
-
     // 알람 로그 추가 및 24시간 필터링
     function addAlarmLog(dataName, value, status) {
       if (status !== "⚠️ 경고") return;
@@ -249,19 +172,16 @@
         dataName,
         value,
         status,
-        duration: "0분",
         action: "미확인",
+        duration: "0분",
         createdAt: now.getTime()
       };
 
       alarmLogs = alarmLogs.filter(l => now.getTime() - l.createdAt <= 24 * 60 * 60 * 1000);
       alarmLogs.unshift(log);
 
-      addToHistory(`${dataName} 이상 감지 (${value})`);
       playAlarmSound();
-
       updateLogSection();
-      updateHistorySection();
     }
 
     // 알람 소리 재생
@@ -276,10 +196,6 @@
       const log = alarmLogs[index];
       if (log.action === "미확인") {
         log.action = "확인";
-        const histIndex = alarmHistory.findIndex(h => h.message === `${log.dataName} 이상 감지 (${log.value})`);
-        if (histIndex !== -1) {
-          alarmHistory[histIndex].status = "읽음";
-        }
         alarmLogs.splice(index, 1);
         try {
           await fetch('/api/alarms/confirm', {
@@ -292,38 +208,7 @@
           alert('로그 확인 처리에 실패했습니다.');
         }
         updateLogSection();
-        updateHistorySection();
       }
-    }
-
-    // 히스토리 확인 처리
-    async function confirmHistory(index) {
-      const hist = alarmHistory[index];
-      if (hist.status === "안 읽음") {
-        hist.status = "읽음";
-        try {
-          await fetch('/api/history/confirm', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ histId: index }) // 백엔드에서 ID 제공 시 hist.id로 변경
-          });
-        } catch (error) {
-          console.error('히스토리 확인 처리 실패:', error);
-          alert('히스토리 확인 처리에 실패했습니다.');
-        }
-        updateHistorySection();
-      }
-    }
-
-    // 히스토리에 추가
-    function addToHistory(message, status = "안 읽음") {
-      const now = new Date();
-      alarmHistory.unshift({
-        date: now.toISOString().slice(0, 10),
-        time: now.toTimeString().slice(0, 5),
-        message,
-        status
-      });
     }
 
     // API 데이터 가져오기
@@ -337,7 +222,6 @@
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
         addAlarmLog('시스템', '데이터 로드 실패', '⚠️ 경고');
-        // alert('알람 데이터를 불러오지 못했습니다.'); // 제거됨
       } finally {
         loadingDiv.style.display = "none";
       }
@@ -348,18 +232,13 @@
       document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
         dataTypeFilter = e.target.value;
         updateLogSection();
-        updateHistorySection();
       });
 
       updateLogSection();
-      updateHistorySection();
-
       setInterval(fetchAlarmData, 5000);
     });
 
-    
     // 더미 데이터와 테스트 함수 (백엔드 연동 후 제거 예정)
-    
     const thresholds = {
       ph: { min: 6.5, max: 8.0, unit: "" },
       do: { min: 5, max: 10, unit: "mg/L" },
@@ -397,7 +276,6 @@
     }
 
     setInterval(checkDataAlarm, 5000);
-    /**/
   </script>
 </body>
 </html>
