@@ -89,10 +89,11 @@
 // 🔹 로그인 성공 후 localStorage에 저장
 document.addEventListener("DOMContentLoaded", function () {
     const storedToken = localStorage.getItem("authToken");
+    const autoLoginToggle = document.getElementById("autoLoginToggle");
 
     // ✅ 자동 로그인 시도 (무한 루프 방지)
     if (storedToken && !sessionStorage.getItem("autoLoginAttempted")) {
-        sessionStorage.setItem("autoLoginAttempted", "true"); // 🚨 한 번만 실행되도록 설정
+        sessionStorage.setItem("autoLoginAttempted", "true");
 
         fetch("/api/member/autoLogin", {
             method: "POST",
@@ -106,12 +107,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "/maindashboard";
             } else {
                 console.warn("🚨 자동 로그인 실패: 토큰 무효");
-                localStorage.removeItem("authToken");
-                sessionStorage.removeItem("autoLoginAttempted"); // 🔹 실패 시 다시 시도 가능하도록 설정
+                localStorage.removeItem("authToken"); // 🔥 실패 시 토큰 삭제
+                sessionStorage.removeItem("autoLoginAttempted"); // 🔹 다시 시도 가능하도록 설정
             }
         })
         .catch(error => console.error("🚨 자동 로그인 오류:", error));
     }
+
+    // ✅ 로그인 버튼 클릭 시 실행
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const userId = document.getElementById("userId").value;
+        const password = document.getElementById("password").value;
+        const autoLogin = autoLoginToggle.checked; // 🔹 체크 여부 확인
+
+        fetch("/api/member/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userId, pw: password, autoLogin }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("✅ 로그인 성공:", data);
+
+                // 🔹 자동 로그인 체크된 경우에만 토큰 저장
+                if (autoLogin && data.token) {
+                    localStorage.setItem("authToken", data.token);
+                } else {
+                    localStorage.removeItem("authToken"); // 🔥 자동 로그인 체크 안 하면 토큰 삭제
+                }
+
+                window.location.href = "/maindashboard"; // ✅ 로그인 성공 시 대시보드 이동
+            } else {
+                alert("🚨 로그인 실패: " + data.message);
+            }
+        })
+        .catch(error => console.error("🚨 로그인 오류:", error));
+    });
+});
+
 
     // 🔹 로그인 버튼 클릭 시 실행
     document.getElementById("loginForm").addEventListener("submit", function (event) {
@@ -143,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("🚨 로그인 오류:", error));
     });
-});
+
 
 // 🔹 로그아웃 시 토큰 삭제
 function handleLogout() {
