@@ -85,35 +85,21 @@
             this.classList.toggle('open');
         });
 
+      //------------------- [ 수조정보 수정 백엔드 스크립트 ] -------------------
         document.querySelector('.tank-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
+            event.preventDefault(); // 기본 폼 제출 방지
 
-            let tankIdx = document.querySelector('input[name="tank_idx"]').value;
-            let tankWidth = document.getElementById('tank-diameter').value;
-            let tankHeight = document.getElementById('tank-height').value;
-            let tankLocation = document.getElementById('tank-location').value;
-            let fishType = document.getElementById('species').value;
-            let startedAt = document.getElementById('start-date').value;
-
-            let requestData = {
-                tankIdx: tankIdx,
-                tankWidth: parseFloat(tankWidth),
-                tankHeight: parseFloat(tankHeight),
-                tankLocation: tankLocation,
-                fishType: fishType,
-                startedAt: startedAt
-            };
+            let formData = new FormData(this);
 
             try {
                 let response = await fetch("/tank/update", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(requestData)
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams(formData).toString() // ✅ form 데이터를 URL 인코딩 방식으로 변환
                 });
 
                 if (response.ok) {
                     alert("수조 정보 수정 완료!");
-                    console.log("서버 응답: 수정 성공");
                     window.location.href = "/maindashboard";
                 } else {
                     let errorText = await response.text();
@@ -124,6 +110,7 @@
                 alert("서버 오류 발생! 다시 시도해주세요.");
             }
         });
+
     </script>
 </body>
 </html>
