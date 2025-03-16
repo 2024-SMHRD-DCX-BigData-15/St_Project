@@ -79,7 +79,7 @@ public class TankService {
     }
 
     /**
-     * 🔹 특정 tankIdx로 수조 정보 조회
+     * 🔹 특정 tankIdx에 해당하는 수조 정보 조회
      */
     public TankEntity getTankById(Long tankIdx) {
         System.out.println("🔍 TankService에서 수조 조회: tankIdx=" + tankIdx);
@@ -94,6 +94,7 @@ public class TankService {
             return null;
         }
     }
+
     
 	
     /**

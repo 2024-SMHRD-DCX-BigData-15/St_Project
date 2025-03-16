@@ -80,7 +80,7 @@ public class TankController {
      */
     @GetMapping("/dashboard/detail")
     public String getTankDetail(@RequestParam("tankIdx") Long tankIdx, Model model) {
-        System.out.println("🚀 수조 정보 요청: tankIdx=" + tankIdx); // ✅ tankIdx 값 확인
+        System.out.println("🚀 수조 정보 요청: tankIdx=" + tankIdx);
 
         if (tankIdx == null) {
             System.out.println("❌ tankIdx가 null입니다!");
@@ -91,7 +91,7 @@ public class TankController {
 
         if (tank == null) {
             System.out.println("❌ 해당 tankIdx의 수조 정보 없음: " + tankIdx);
-            model.addAttribute("selectedTank", new TankEntity()); // 기본 빈 객체 추가
+            model.addAttribute("selectedTank", new TankEntity());
         } else {
             System.out.println("✅ 수조 정보 로드 완료: " + tank.toString());
             model.addAttribute("selectedTank", tank);

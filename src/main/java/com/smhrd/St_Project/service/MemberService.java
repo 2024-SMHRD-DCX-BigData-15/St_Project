@@ -77,13 +77,27 @@ public class MemberService {
     public MemberEntity login(String userId, String encryptedPassword) {
         Optional<MemberEntity> member = memberRepository.findById(userId);
 
-        if (member.isPresent() && member.get().getUserPw().equals(encryptedPassword)) {
-            System.out.println("✅ 로그인 검증 성공: " + userId);
-            return member.get();
+        if (member.isPresent()) {
+            MemberEntity foundMember = member.get();
+
+            // ✅ 추가: 탈퇴한 회원 로그인 차단
+            if (foundMember.getUserStatus() == 'Y') {
+                System.out.println("🚨 로그인 차단: 탈퇴한 계정 (" + userId + ")");
+                return null;
+            }
+
+            // ✅ 비밀번호 검증 후 로그인 성공 여부 판단
+            if (foundMember.getUserPw().equals(encryptedPassword)) {
+                System.out.println("✅ 로그인 검증 성공: " + userId);
+                return foundMember;
+            } else {
+                System.out.println("🚨 로그인 검증 실패 (비밀번호 불일치): " + userId);
+            }
         } else {
-            System.out.println("🚨 로그인 검증 실패 (ID 또는 비밀번호 불일치): " + userId);
-            return null;
+            System.out.println("🚨 로그인 검증 실패 (ID 없음): " + userId);
         }
+
+        return null;
     }
 
     /**
@@ -154,33 +168,25 @@ public class MemberService {
 
     /**
      * 🔹 인증 토큰 검증 (탈퇴한 계정 확인 및 자동 삭제 기능 포함)
-     * @param token 클라이언트에서 제공한 토큰
-     * @return 검증된 사용자 (없으면 null)
      */
     public MemberEntity validateAuthToken(String token) {
+        // 🔹 로그아웃된 토큰인지 확인
+        if (!authTokenStorage.containsKey(token)) {
+            System.out.println("🚨 자동 로그인 차단: 로그아웃한 계정 (토큰 무효)");
+            return null; // 🔥 자동 로그인 방지
+        }
+
         String userId = authTokenStorage.get(token);
+        MemberEntity member = memberRepository.findById(userId).orElse(null);
 
-        if (userId != null) {
-            MemberEntity member = memberRepository.findById(userId).orElse(null);
-
-            if (member != null) {
-                // 🔹 탈퇴한 계정이면 자동 로그인 실패 및 토큰 삭제
-                if (member.getUserStatus() == 'Y') {
-                    System.out.println("🚨 유효하지 않은 토큰: 탈퇴한 계정 (" + userId + ")");
-                    removeAuthToken(token);
-                    return null;
-                }
-
-                System.out.println("✅ 유효한 토큰 확인: " + token);
-                return member;
-            }
+        if (member != null) {
+            System.out.println("✅ 유효한 토큰 확인: " + token);
+            return member;
         }
 
         System.out.println("🚨 유효하지 않은 토큰: " + token);
-        removeAuthToken(token); // 🔥 유효하지 않은 토큰 삭제
         return null;
     }
-
 
     /**
      * 🔹 로그아웃 (토큰 삭제)

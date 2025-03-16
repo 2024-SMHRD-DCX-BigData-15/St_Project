@@ -59,7 +59,7 @@ public class MemberRestController {
      * 🔹 로그인 API (자동 로그인 지원)
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> requestData) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> requestData, HttpSession session) {
         String userId = requestData.get("id");
         String password = requestData.get("pw");
         boolean autoLogin = Boolean.parseBoolean(requestData.get("autoLogin"));
@@ -70,16 +70,33 @@ public class MemberRestController {
 
         Map<String, Object> response = new HashMap<>();
         if (member != null) {
-            String token = memberService.generateAuthToken(member); // 🔹 인증 토큰 생성
+            // ✅ 추가: 탈퇴한 회원 로그인 차단 (user_status == 'Y')
+            if (member.getUserStatus() == 'Y') {
+                System.out.println("🚨 로그인 실패: 탈퇴한 계정 (" + userId + ")");
+                response.put("success", false);
+                response.put("message", "탈퇴한 계정입니다.");
+                return ResponseEntity.status(403).body(response);
+            }
+
+            // ✅ 추가: 로그인 성공 시 세션에 사용자 정보 저장
+            session.setAttribute("loginUser", member);
+            System.out.println("✅ 세션에 loginUser 저장: " + userId);
+
+            // 🔹 인증 토큰 생성 (자동 로그인 선택 시에만 저장)
+            String token = autoLogin ? memberService.generateAuthToken(member) : null;
             response.put("success", true);
-            response.put("token", autoLogin ? token : null); // 자동 로그인 체크 시 토큰 반환
+            response.put("token", token);
+
+            System.out.println("✅ 로그인 성공: " + userId);
         } else {
             response.put("success", false);
             response.put("message", "아이디 또는 비밀번호가 일치하지 않습니다.");
+            System.out.println("🚨 로그인 실패 (ID 또는 비밀번호 불일치): " + userId);
         }
 
         return ResponseEntity.ok(response);
     }
+
 
     /**
      * 🔹 자동 로그인 API (토큰 검증)
@@ -93,7 +110,7 @@ public class MemberRestController {
         MemberEntity member = memberService.validateAuthToken(token);
 
         if (member != null) {
-            // 🔹 DB에서 user_status 확인 (Y면 탈퇴한 계정이므로 자동 로그인 실패)
+            // 🔹 탈퇴한 계정인지 확인
             if (member.getUserStatus() == 'Y') {
                 System.out.println("🚨 자동 로그인 실패: 탈퇴한 계정 (" + member.getUserId() + ")");
                 memberService.removeAuthToken(token); // 🔥 토큰 삭제
@@ -102,7 +119,7 @@ public class MemberRestController {
 
             System.out.println("✅ 자동 로그인 성공: " + member.getUserId());
 
-            // 🔹 자동 로그인 성공 시 세션에 로그인 정보 저장
+            // ✅ 자동 로그인 성공 시 세션에 저장
             session.setAttribute("loginUser", member);
             return ResponseEntity.ok(Map.of("success", true));
         } else {
@@ -111,16 +128,23 @@ public class MemberRestController {
         }
     }
 
-
-
     /**
-     * 🔹 로그아웃 API (토큰 삭제)
+     * 🔹 로그아웃 API (자동 로그인 해제 포함)
      */
-    @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(@RequestBody Map<String, String> requestData) {
+    @PostMapping("/logout")  // ✅ POST 방식으로 요청받아야 함
+    public ResponseEntity<Map<String, String>> logout(@RequestBody Map<String, String> requestData, HttpSession session) {
         String token = requestData.get("token");
-        memberService.removeAuthToken(token);
-        System.out.println("✅ 로그아웃 완료 - 토큰 삭제");
+
+        if (token != null) {
+            memberService.removeAuthToken(token); // 🔥 토큰 삭제
+            System.out.println("✅ 로그아웃 완료 - 토큰 삭제: " + token);
+        } else {
+            System.out.println("🚨 로그아웃 요청 시 토큰 없음");
+        }
+
+        session.invalidate(); // ✅ 세션 강제 종료
+        System.out.println("✅ 세션 무효화 완료");
+
         return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
     }
     

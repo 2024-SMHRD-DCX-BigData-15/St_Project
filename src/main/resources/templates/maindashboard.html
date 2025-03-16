@@ -75,23 +75,44 @@
       </main>
 
     <script>
-        /**
-         * 🔹 로그아웃 함수 (쿠키 삭제 후 서버 요청)
-         */
-        function handleLogout() {
-            console.log("🚀 로그아웃 요청");
+  //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
+    function handleLogout() {
+        console.log("🚀 로그아웃 요청");
 
-            // ✅ 자동 로그인 관련 쿠키 삭제
-            deleteCookie("autoLoginId");
-            deleteCookie("autoLoginPw");
+        const authToken = localStorage.getItem("authToken");
 
-            // ✅ 로그아웃 요청 보내기
-            fetch("/logout", { method: "GET" })
-                .then(() => {
-                    alert("로그아웃 완료!");
-                    window.location.href = "/login"; // 로그인 페이지로 이동
-                });
-        }
+        fetch("/api/member/logout", { // ✅ 올바른 API 경로로 수정
+            method: "POST",  // ✅ GET이 아니라 POST로 변경
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: authToken }),
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("✅ 서버 로그아웃 성공");
+
+                // ✅ localStorage, sessionStorage에서 자동 로그인 정보 삭제
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("autoLogin");
+                localStorage.removeItem("savedUserId");
+                localStorage.removeItem("savedPassword");
+                sessionStorage.clear();
+
+                // ✅ JSESSIONID 쿠키 삭제 (강제 로그아웃)
+                document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+                console.log("✅ 모든 저장소 데이터 삭제 완료");
+
+                // ✅ 1초 대기 후 로그인 페이지로 이동
+                setTimeout(() => {
+                    alert("✅ 로그아웃 완료!");
+                    window.location.href = "/login";
+                }, 1000);
+            } else {
+                console.warn("🚨 로그아웃 실패: 응답 오류");
+            }
+        })
+        .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+    }
 
         /**
          * 🔹 쿠키 삭제 함수

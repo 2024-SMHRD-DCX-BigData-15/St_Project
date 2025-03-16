@@ -54,10 +54,6 @@ public class MemberController {
 
     /**
      * 로그인 처리
-     * @param userId 사용자 입력 ID
-     * @param password 사용자 입력 비밀번호
-     * @param session 로그인 유지 세션
-     * @return 로그인 성공 시 대시보드, 실패 시 로그인 페이지로 이동
      */
     @PostMapping("/login.do")
     public String login(@RequestParam("id") String userId,
@@ -69,18 +65,17 @@ public class MemberController {
         MemberEntity member = memberService.login(userId, encryptedPassword);
 
         if (member != null) {
-            // ✅ 로그인 성공 시 세션에 저장
+            // ✅ 추가: 로그인 성공 시 세션에 사용자 정보 저장
             session.setAttribute("loginUser", member);
-            System.out.println("✅ 로그인 성공: " + userId);
+            System.out.println("✅ 세션에 loginUser 저장 완료: " + userId);
 
             return "redirect:/maindashboard";
         } else {
-            // 🚨 로그인 실패 -> 로그인 페이지로 이동 + 오류 메시지 전달
             System.out.println("🚨 로그인 실패: 아이디 또는 비밀번호 불일치");
             return "redirect:/login?error=invalid";
         }
     }
-    
+
     @PostMapping("/update")
     public String updateMember(@RequestParam("id") String userId,
                                @RequestParam(value = "pw", required = false) String password,

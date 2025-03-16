@@ -54,7 +54,7 @@
           <div class="user-info">
           
             <div th:if="${session.loginUser != null}">
-    		<p th:text="${session.loginUser.userName}"></p> <!-- 로그인된 사용자 이름 출력 -->
+    		<p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
 		  </div>
 		    <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
           </div>
@@ -116,9 +116,15 @@
         <section class="dashboard-cards">
 		    <div class="tank-info">
 			    <h4>수조정보</h4>
+			    <p><strong>수조 ID:</strong> <span th:text="${selectedTank?.tankIdx ?: '정보 없음'}"></span></p>
+			    <p><strong>직경:</strong> <span th:text="${selectedTank?.tankWidth ?: '정보 없음'}"></span> m</p>
+			    <p><strong>높이:</strong> <span th:text="${selectedTank?.tankHeight ?: '정보 없음'}"></span> m</p>
+			    <p><strong>위치:</strong> <span th:text="${selectedTank?.tankLocation ?: '정보 없음'}"></span></p>
+			    <p><strong>품종:</strong> <span th:text="${selectedTank?.fishType ?: '정보 없음'}"></span></p>
+			    <p><strong>사육 개시일:</strong><span th:text="${selectedTank?.startedAt != null ? #temporals.format(selectedTank.startedAt, 'yyyy-MM-dd') : '정보 없음'}"></span></p>
 			    <canvas id="tank-data"></canvas>
 			</div>
-          <div class="card card-graph">
+			<div class="card card-graph">
             <h2>실시간 그래프</h2>
             <div class="graph-container">
               <!-- AI 허브 데이터를 활용한 그래프 삽입 영역 /30초마다 변경되게 -->
@@ -204,6 +210,30 @@
           });
         });
 
+      //------------------- [ 수조정보 조회 백엔드 스크립트 ] -------------------
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tankIdx = urlParams.get("tankIdx");
+
+            if (tankIdx) {
+                fetch(`/api/tank/detail?tankIdx=${tankIdx}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            document.querySelector("span[th\\:text='${selectedTank?.tankIdx}']").textContent = data.tankIdx || "정보 없음";
+                            document.querySelector("span[th\\:text='${selectedTank?.tankWidth}']").textContent = data.tankWidth || "정보 없음";
+                            document.querySelector("span[th\\:text='${selectedTank?.tankHeight}']").textContent = data.tankHeight || "정보 없음";
+                            document.querySelector("span[th\\:text='${selectedTank?.tankLocation}']").textContent = data.tankLocation || "정보 없음";
+                            document.querySelector("span[th\\:text='${selectedTank?.fishType}']").textContent = data.fishType || "정보 없음";
+                            document.querySelector("span[th\\:text='${selectedTank?.startedAt}']").textContent = data.startedAt ? new Date(data.startedAt).toISOString().split('T')[0] : "정보 없음";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("❌ 수조 정보 로드 실패:", error);
+                    });
+            }
+        });
+     
     </script>
 
 

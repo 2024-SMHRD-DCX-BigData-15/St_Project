@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +87,16 @@ public class TankRestController {
             System.out.println("❌ 수조 삭제 실패! tankIdx = " + tankIdx + " (해당 ID 없음)"); // ❌ 오류 로그
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ 해당 수조를 찾을 수 없음");
         }
+    }
+    
+    /**
+     * 🔹 특정 tankIdx의 수조 정보를 JSON으로 반환
+     */
+    @GetMapping("/detail")
+    public TankEntity getTankDetail(@RequestParam("tankIdx") Long tankIdx) {
+        System.out.println("🚀 REST API: 수조 정보 요청 - tankIdx=" + tankIdx);
+        Optional<TankEntity> tank = Optional.ofNullable(tankService.getTankById(tankIdx));
+        return tank.orElse(null);
     }
 
 }
