@@ -9,21 +9,29 @@
   </head>
   <body>
     <div class="wrapper">
-       <!-- 사이드바 -->
+    
+    <!-- 사이드바 -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h2>메뉴</h2>
   </div>
+  
   <ul class="sidebar-menu">
-    <!-- 수조 관리 시스템 -->
+  	<!-- 홈 -->
     <li>
-      <a href="javascript:void(0)" class="toggle-menu">수조 관리</a>
-      <ul class="sub-menu">
-        <li><a href="/tank">수조 정보 등록</a></li>
-        <li><a href="/tankedit">수조 정보 수정</a></li>
-      </ul>
+      <a href="/home" class="toggle-menu">홈</a>
+    </li>
+  
+    <!-- 수조 정보 등록 -->
+    <li>
+      <a href="/tank" class="toggle-menu">수조 정보 등록</a>
     </li>
 
+    <!-- 알람 히스토리 -->
+    <li>
+      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
+    </li>
+    
     <!-- 회원 정보 관리 -->
     <li>
       <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
@@ -33,10 +41,6 @@
       </ul>
     </li>
     
-    <!-- 알람 히스토리 -->
-    <li>
-      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-    </li>
   </ul>
 </div>
 
