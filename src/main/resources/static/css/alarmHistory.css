@@ -1,6 +1,16 @@
 /* 기본 설정 */
 body {
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container-center-horizontal {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .alarm-dashboard-screen {
@@ -8,7 +18,7 @@ body {
   justify-content: center;
   display: flex;
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow-y: auto;
   background-color: transparent;
 }
@@ -242,8 +252,111 @@ body {
   text-decoration: underline;
 }
 
+/* 햄버거 버튼 스타일 */
+.hamburger-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 1100;
+  transition: background-color 0.3s;
+}
+
+.hamburger-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+  width: 250px;
+  background: rgba(15, 18, 59, 0.95);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 1000;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar-header {
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "Abel", Helvetica;
+  font-size: 16px;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.sidebar-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 서브 메뉴 스타일 */
+.sub-menu {
+  display: none; /* 기본적으로 숨김 */
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.sub-menu li {
+  margin-bottom: 10px;
+}
+
+.sub-menu a {
+  font-size: 14px;
+  padding: 8px;
+  color: #a0aec0;
+}
+
+.sub-menu a:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
 /* 모바일 반응형 */
 @media (max-width: 600px) {
+  .sidebar {
+    width: 200px;
+    left: -200px;
+  }
+  .sidebar.active {
+    left: 0;
+  }
   .alarm-dashboard-screen .content {
     padding: 10px;
   }
@@ -258,5 +371,8 @@ body {
   }
   .filter-dropdown {
     width: 100%;
+  }
+  .hamburger-btn {
+    font-size: 20px;
   }
 }

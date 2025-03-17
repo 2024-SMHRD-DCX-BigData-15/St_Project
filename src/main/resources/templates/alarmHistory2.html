@@ -8,6 +8,38 @@
 </head>
 <body>
   <div class="container-center-horizontal">
+    <!-- 햄버거 버튼 -->
+    <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+
+    <!-- 사이드바 -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>메뉴</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <!-- 홈 -->
+        <li>
+          <a href="/maindashboard" class="toggle-menu">홈</a>
+        </li>
+        <!-- 수조 정보 등록 -->
+        <li>
+          <a href="/tank" class="toggle-menu">수조 정보 등록</a>
+        </li>
+        <!-- 알람 히스토리 -->
+        <li>
+          <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
+        </li>
+        <!-- 회원 정보 관리 -->
+        <li>
+          <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+          <ul class="sub-menu">
+            <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+            <li><a href="/delete">회원 탈퇴</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
@@ -79,6 +111,8 @@
     // DOM 요소 캐싱
     const alarmHistoryTable = document.getElementById("alarmHistory");
     const loadingDiv = document.getElementById("loading");
+    const sidebar = document.getElementById("sidebar");
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
 
     // XSS 방지 기본 함수
     const escapeHTML = (str) => {
@@ -90,7 +124,6 @@
     // 알람 히스토리 렌더링
     function renderAlarmHistory(history = alarmHistory) {
       alarmHistoryTable.innerHTML = "";
-      // 필터링: 데이터 타입 필터만 적용 (기본적으로 모든 데이터 표시)
       const filteredHistory = history.filter(hist => {
         return !dataTypeFilter || hist.message.includes(dataTypeFilter);
       });
@@ -107,7 +140,7 @@
           <td>${escapeHTML(hist.message)}</td>
           <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
         `;
-        row.querySelector(".action").addEventListener("click", () => confirmHistory(index));
+        row.querySelector(".action").addEventListener("click", () => confirmHistory(alarmHistory.indexOf(hist)));
         alarmHistoryTable.appendChild(row);
       });
 
@@ -188,7 +221,7 @@
         data.forEach(({ message, tankNumber, status }) => addToHistory(message, tankNumber, status));
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
-        addToHistory('시스템 오류 감지', 'T1', '⚠️ 경고');
+        addToHistory('시스템 오류 감지', 'T1', '경고');
       } finally {
         loadingDiv.style.display = "none";
       }
@@ -199,6 +232,23 @@
       document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
         dataTypeFilter = e.target.value;
         updateHistorySection();
+      });
+
+      // 햄버거 버튼으로 사이드바 토글
+      hamburgerBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // 서브 메뉴 토글 기능
+      const toggleMenus = document.querySelectorAll(".toggle-menu");
+      toggleMenus.forEach(menu => {
+        menu.addEventListener("click", (e) => {
+          const subMenu = menu.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
+            e.preventDefault(); // 링크 기본 동작 방지
+            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          }
+        });
       });
 
       fetchAlarmData();
@@ -235,8 +285,8 @@
       latestData.forEach((value, index) => {
         const key = keys[index];
         const { min, max, unit } = thresholds[key];
-        const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
-        if (status === "⚠️ 경고") {
+        const status = (value < min || value > max) ? "경고" : "정상";
+        if (status === "경고") {
           addToHistory(`${labels[index]} 이상 감지 (${value}${unit})`, "T1");
         }
       });
