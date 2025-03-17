@@ -9,45 +9,26 @@
 <body style="margin: 0">
     <div class="wrapper">
         <!-- 사이드바 -->
-		<div class="sidebar" id="sidebar">
-		  <div class="sidebar-header">
-		    <h2>메뉴</h2>
-		  </div>
-		  
-		  <ul class="sidebar-menu">
-		  	<!-- 홈 -->
-		    <li>
-		      <a href="/maindashboard" class="toggle-menu">홈</a>
-		    </li>
-		  
-		    <!-- 수조 정보 등록 -->
-		    <li>
-		      <a href="/tank" class="toggle-menu">수조 정보 등록</a>
-		    </li>
-		
-		    <!-- 알람 히스토리 -->
-		    <li>
-		      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-		    </li>
-		    
-		    <!-- 회원 정보 관리 -->
-		    <li>
-		      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-		      <ul class="sub-menu">
-		        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
-		        <li><a href="/delete">회원 탈퇴</a></li>
-		      </ul>
-		    </li>
-		    
-		  </ul>
-		</div>  
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>메뉴</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/maindashboard" class="toggle-menu">홈</a></li>
+                <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
+                <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
+                <li>
+                    <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+                    <ul class="sub-menu">
+                        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+                        <li><a href="/delete">회원 탈퇴</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
 
         <!-- 햄버거 메뉴 -->
-        <div class="hamburger-menu" id="hamburger-menu">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
+        <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
         <!-- 메인 콘텐츠 -->
         <div class="container-center-horizontal">
@@ -93,7 +74,6 @@
                                 </button>
                             </div>
                         </form>
-                        
                     </div>
                 </div>
             </div>
@@ -101,11 +81,26 @@
     </div>
 
     <script>
-        document.getElementById('hamburger-menu').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-            this.classList.toggle('open');
+        // 햄버거 버튼으로 사이드바 토글
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        hamburgerBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
         });
 
+        // 서브 메뉴 토글
+        const toggleMenus = document.querySelectorAll(".toggle-menu");
+        toggleMenus.forEach(menu => {
+            menu.addEventListener("click", (e) => {
+                const subMenu = menu.nextElementSibling;
+                if (subMenu && subMenu.classList.contains("sub-menu")) {
+                    e.preventDefault();
+                    subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+                }
+            });
+        });
+
+        // 수조 추가 요청
         document.querySelector('.tank-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 

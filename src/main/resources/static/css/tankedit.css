@@ -172,32 +172,59 @@
     line-height: normal;
 }
 
-/* 사이드바, 햄버거 */
+/* 사이드바와 햄버거 메뉴 */
 .wrapper {
     position: relative;
     height: 100vh;
     overflow: hidden;
 }
 
+/* 햄버거 버튼 스타일 */
+.hamburger-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1100;
+    transition: background-color 0.3s;
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 사이드바 스타일 */
 .sidebar {
+    width: 250px;
+    background: rgba(15, 18, 59, 0.95);
+    height: 100vh;
     position: fixed;
     top: 0;
     left: -250px;
-    width: 250px;
-    height: 100%;
-    background-color: #333;
-    transition: 0.3s;
+    padding: 20px;
+    box-sizing: border-box;
     z-index: 1000;
+    overflow-y: auto;
+    transition: left 0.3s ease;
 }
 
-.sidebar.open {
+.sidebar.active {
     left: 0;
 }
 
 .sidebar-header {
-    padding: 20px;
-    background-color: #444;
-    color: white;
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .sidebar-menu {
@@ -206,53 +233,43 @@
     margin: 0;
 }
 
-.sidebar-menu li a {
-    display: block;
-    padding: 15px 20px;
-    color: white;
+.sidebar-menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+    color: #ffffff;
     text-decoration: none;
+    font-family: "Abel", Helvetica;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
 }
 
-.sidebar-menu li a:hover {
-    background-color: #555;
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.hamburger-menu {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1100;
-    cursor: pointer;
-}
-
-.hamburger-menu .bar {
-    width: 30px;
-    height: 3px;
-    background-color: #fff;
-    margin: 6px 0;
-    transition: 0.3s;
-}
-
-.hamburger-menu.open .bar:nth-child(1) {
-    transform: rotate(-45deg) translate(-6px, 6px);
-}
-
-.hamburger-menu.open .bar:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger-menu.open .bar:nth-child(3) {
-    transform: rotate(45deg) translate(-6px, -6px);
-}
-
-/* 서브메뉴 기본 숨김 */
-.sidebar-menu .sub-menu {
+.sub-menu {
     display: none;
     list-style: none;
     padding-left: 20px;
+    margin-top: 5px;
 }
 
-/* .active 클래스가 추가되면 보이게 설정 */
-.sidebar-menu li.active .sub-menu {
-    display: block;
+.sub-menu li {
+    margin-bottom: 10px;
+}
+
+.sub-menu a {
+    font-size: 14px;
+    padding: 8px;
+    color: #a0aec0;
+}
+
+.sub-menu a:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
 }
