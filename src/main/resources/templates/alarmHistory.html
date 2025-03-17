@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <link rel="stylesheet" href="/css/alarmHistory.css" />
-  <title>알람 대시보드</title>
+  <link rel="stylesheet" href="css/alarmHistory.css" />
+  <title>알람 히스토리</title>
 </head>
 <body>
   <div class="container-center-horizontal">
@@ -17,19 +17,9 @@
         <h2>메뉴</h2>
       </div>
       <ul class="sidebar-menu">
-        <!-- 홈 -->
-        <li>
-          <a href="/maindashboard" class="toggle-menu">홈</a>
-        </li>
-        <!-- 수조 정보 등록 -->
-        <li>
-          <a href="/tank" class="toggle-menu">수조 정보 등록</a>
-        </li>
-        <!-- 알람 히스토리 -->
-        <li>
-          <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-        </li>
-        <!-- 회원 정보 관리 -->
+        <li><a href="/maindashboard" class="toggle-menu">홈</a></li>
+        <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
+        <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
         <li>
           <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
           <ul class="sub-menu">
@@ -39,38 +29,41 @@
         </li>
       </ul>
     </div>
-    
-    <!-- 사용자 정보 (로그아웃 버튼) -->
-        <div class="user-info">
-            <div th:if="${session.loginUser != null}">
-                <p th:text="${session.loginUser.userId}"></p>
-            </div>
-            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
-        </div>
 
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
-          <header class="title">
-            <h1 class="text-21">알람</h1>
-            <div class="filter-section">
-              <select class="filter-dropdown" id="dataTypeFilter">
-                <option value="">전체 데이터</option>
-                <option value="산성도">산성도</option>
-                <option value="용존산소">용존산소</option>
-                <option value="수온">수온</option>
-                <option value="염도">염도</option>
-                <option value="암모니아">암모니아</option>
-                <option value="아질산">아질산</option>
-              </select>
-              <label class="sound-toggle">
-                <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
-              </label>
+          <!-- 통합된 헤더 -->
+          <header class="fixed-header">
+            <div class="header-content">
+              <div class="header-top">
+                <div class="header-spacer"></div>
+                <div class="header-title">
+                  <h1 class="text-21">알람 히스토리</h1>
+                </div>
+                <div class="user-info">
+                  <div th:if="${session.loginUser != null}">
+                    <p th:text="${session.loginUser.userId}"></p>
+                  </div>
+                  <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+                </div>
+              </div>
+              <div class="filter-section">
+                <select class="filter-dropdown" id="dataTypeFilter">
+                  <option value="">전체 데이터</option>
+                  <option value="산성도">산성도</option>
+                  <option value="용존산소">용존산소</option>
+                  <option value="수온">수온</option>
+                  <option value="염도">염도</option>
+                  <option value="암모니아">암모니아</option>
+                  <option value="아질산">아질산</option>
+                </select>
+                <label class="sound-toggle">
+                  <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
+                </label>
+              </div>
             </div>
           </header>
-
-          <!-- 로딩 스피너 -->
-          <div id="loading" class="loading">로딩 중...</div>
 
           <!-- 요약 통계 -->
           <section class="section">
@@ -133,14 +126,14 @@
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-    // XSS 방지 기본 함수
+    // XSS 방지 함수
     const escapeHTML = (str) => {
       const div = document.createElement("div");
       div.textContent = str;
       return div.innerHTML;
     };
 
-    // 알람 로그 렌더링 (경고만 표시)
+    // 알람 로그 렌더링 (항상 5행 유지)
     function renderAlarmLog(logs = alarmLogs) {
       alarmLogTable.innerHTML = "";
       const filteredLogs = logs.filter(log => log.status === "⚠️ 경고")
@@ -149,20 +142,34 @@
       const end = start + logsPerPage;
       const paginatedLogs = filteredLogs.slice(start, end);
 
-      paginatedLogs.forEach((log, index) => {
+      // 실제 데이터 행 렌더링
+      for (let i = 0; i < logsPerPage; i++) {
         const row = document.createElement("tr");
-        row.classList.add("warning");
-        row.innerHTML = `
-          <td>${escapeHTML(log.timestamp)}</td>
-          <td>${escapeHTML(log.dataName)}</td>
-          <td>${escapeHTML(log.value)}</td>
-          <td>${escapeHTML(log.status)}</td>
-          <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
-          <td>${escapeHTML(log.duration)}</td>
-        `;
-        row.querySelector(".action").addEventListener("click", () => confirmLog(alarmLogs.indexOf(log)));
+        if (i < paginatedLogs.length) {
+          const log = paginatedLogs[i];
+          row.classList.add("warning");
+          row.innerHTML = `
+            <td>${escapeHTML(log.timestamp)}</td>
+            <td>${escapeHTML(log.dataName)}</td>
+            <td>${escapeHTML(log.value)}</td>
+            <td>${escapeHTML(log.status)}</td>
+            <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
+            <td>${escapeHTML(log.duration)}</td>
+          `;
+          row.querySelector(".action").addEventListener("click", () => confirmLog(alarmLogs.indexOf(log)));
+        } else {
+          // 빈 행 추가
+          row.innerHTML = `
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          `;
+        }
         alarmLogTable.appendChild(row);
-      });
+      }
 
       document.getElementById("logPage").textContent = currentLogPage;
       document.getElementById("prevLog").disabled = currentLogPage === 1;
@@ -219,7 +226,7 @@
         createdAt: now.getTime()
       };
 
-      alarmLogs = alarmLogs.filter(l => now.getTime() - l.createdAt <= 24 * 60 * 60 * 1000);
+      alarmLogs = alarmLogs.filter(l => now.getTime() - l.createdAt <= 24 * 60 * 60 * 1000); // 24시간 이내 로그만 유지
       alarmLogs.unshift(log);
 
       playAlarmSound();
@@ -263,41 +270,13 @@
         data.forEach(({ dataName, value, status }) => addAlarmLog(dataName, value, status));
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
-        addAlarmLog('시스템', '데이터 로드 실패', '경고');
+        addAlarmLog('시스템', '데이터 로드 실패', '⚠️ 경고');
       } finally {
         loadingDiv.style.display = "none";
       }
     }
 
-    // 이벤트 리스너 설정
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
-        dataTypeFilter = e.target.value;
-        updateLogSection();
-      });
-
-      // 햄버거 버튼으로 사이드바 토글
-      hamburgerBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-      });
-
-      // 서브 메뉴 토글 기능
-      const toggleMenus = document.querySelectorAll(".toggle-menu");
-      toggleMenus.forEach(menu => {
-        menu.addEventListener("click", (e) => {
-          const subMenu = menu.nextElementSibling;
-          if (subMenu && subMenu.classList.contains("sub-menu")) {
-            e.preventDefault();
-            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-          }
-        });
-      });
-
-      updateLogSection();
-      setInterval(fetchAlarmData, 5000);
-    });
-
-    // 더미 데이터와 테스트 함수 (백엔드 연동 후 제거 예정)
+    // 더미 데이터와 테스트 함수
     const thresholds = {
       ph: { min: 6.5, max: 8.0, unit: "" },
       do: { min: 5, max: 10, unit: "mg/L" },
@@ -327,14 +306,39 @@
       latestData.forEach((value, index) => {
         const key = keys[index];
         const { min, max, unit } = thresholds[key];
-        const status = (value < min || value > max) ? "경고" : "정상"; // 상태 일치 수정
-        if (status === "경고") {
+        const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
+        if (status === "⚠️ 경고") {
           addAlarmLog(labels[index], `${value}${unit}`, status);
         }
       });
     }
 
-    setInterval(checkDataAlarm, 5000);
+    // 이벤트 리스너 설정
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
+        dataTypeFilter = e.target.value;
+        updateLogSection();
+      });
+
+      hamburgerBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      const toggleMenus = document.querySelectorAll(".toggle-menu");
+      toggleMenus.forEach(menu => {
+        menu.addEventListener("click", (e) => {
+          const subMenu = menu.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
+            e.preventDefault();
+            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          }
+        });
+      });
+
+      updateLogSection();
+      setInterval(fetchAlarmData, 5000); // 5초마다 API 호출
+      setInterval(checkDataAlarm, 5000); // 5초마다 더미 데이터 체크 (백엔드 연동 후 제거)
+    });
   </script>
 </body>
 </html>
