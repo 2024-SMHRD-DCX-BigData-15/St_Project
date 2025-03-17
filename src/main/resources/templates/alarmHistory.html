@@ -39,6 +39,14 @@
         </li>
       </ul>
     </div>
+    
+    <!-- 사용자 정보 (로그아웃 버튼) -->
+        <div class="user-info">
+            <div th:if="${session.loginUser != null}">
+                <p th:text="${session.loginUser.userId}"></p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
 
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
