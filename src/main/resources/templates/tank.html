@@ -9,16 +9,38 @@
 <body style="margin: 0">
     <div class="wrapper">
         <!-- 사이드바 -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>메뉴</h2>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="#">홈</a></li>
-                <li><a href="#">대시보드</a></li>
-                <li><a href="#">설정</a></li>
-            </ul>
-        </div>
+		<div class="sidebar" id="sidebar">
+		  <div class="sidebar-header">
+		    <h2>메뉴</h2>
+		  </div>
+		  
+		  <ul class="sidebar-menu">
+		  	<!-- 홈 -->
+		    <li>
+		      <a href="/maindashboard" class="toggle-menu">홈</a>
+		    </li>
+		  
+		    <!-- 수조 정보 등록 -->
+		    <li>
+		      <a href="/tank" class="toggle-menu">수조 정보 등록</a>
+		    </li>
+		
+		    <!-- 알람 히스토리 -->
+		    <li>
+		      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
+		    </li>
+		    
+		    <!-- 회원 정보 관리 -->
+		    <li>
+		      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+		      <ul class="sub-menu">
+		        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+		        <li><a href="/delete">회원 탈퇴</a></li>
+		      </ul>
+		    </li>
+		    
+		  </ul>
+		</div>  
 
         <!-- 햄버거 메뉴 -->
         <div class="hamburger-menu" id="hamburger-menu">

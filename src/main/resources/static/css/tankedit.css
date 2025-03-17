@@ -244,3 +244,15 @@
 .hamburger-menu.open .bar:nth-child(3) {
     transform: rotate(45deg) translate(-6px, -6px);
 }
+
+/* 서브메뉴 기본 숨김 */
+.sidebar-menu .sub-menu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+}
+
+/* .active 클래스가 추가되면 보이게 설정 */
+.sidebar-menu li.active .sub-menu {
+    display: block;
+}
