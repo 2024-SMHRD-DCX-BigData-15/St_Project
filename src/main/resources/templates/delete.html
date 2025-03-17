@@ -14,35 +14,21 @@
                 <h2>메뉴</h2>
             </div>
             <ul class="sidebar-menu">
-            	<!-- 홈 -->
-			    <li>
-			      <a href="/maindashboard" class="toggle-menu">홈</a>
-			    </li>
-                <!-- 수조 정보 등록 -->
-			    <li>
-			      <a href="/tank" class="toggle-menu">수조 정보 등록</a>
-			    </li>			    
-			    <!-- 알람 히스토리 -->
-			    <li>
-			      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-			    </li>
-			    <!-- 회원 정보 관리 -->
-			    <li>
-			      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-			      <ul class="sub-menu">
-			        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
-			        <li><a href="/delete">회원 탈퇴</a></li>
-			      </ul>
-			    </li>
+                <li><a href="/maindashboard" class="toggle-menu">홈</a></li>
+                <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
+                <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
+                <li>
+                    <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+                    <ul class="sub-menu">
+                        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+                        <li><a href="/delete">회원 탈퇴</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
 
         <!-- 햄버거 메뉴 -->
-        <div class="hamburger-menu" id="hamburger-menu">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
+        <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
         <!-- 메인 콘텐츠 -->
         <div class="container-center-horizontal">
@@ -73,7 +59,6 @@
                                 </button>
                             </div>
                         </form>
-                        
                     </div>
                 </div>
             </div>
@@ -81,46 +66,54 @@
     </div>
 
     <script>
-        document.getElementById('hamburger-menu').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-            this.classList.toggle('open');
+        // 햄버거 버튼으로 사이드바 토글
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        hamburgerBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
         });
 
-// ------------------- [ 회원 탈퇴 가능 백엔드 스크립트 부분 ] -------------------
+        // 서브 메뉴 토글
+        const toggleMenus = document.querySelectorAll(".toggle-menu");
+        toggleMenus.forEach(menu => {
+            menu.addEventListener("click", (e) => {
+                const subMenu = menu.nextElementSibling;
+                if (subMenu && subMenu.classList.contains("sub-menu")) {
+                    e.preventDefault();
+                    subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+                }
+            });
+        });
+
+        // 회원 탈퇴 요청
         document.getElementById("deleteForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // 기본 폼 제출 방지
+            event.preventDefault();
+            let userId = document.getElementById("userId").value;
+            let password = document.getElementById("password").value;
 
-        let userId = document.getElementById("userId").value;
-        let password = document.getElementById("password").value;
+            console.log("[디버깅] 탈퇴 요청 아이디:", userId);
+            console.log("[디버깅] 입력된 비밀번호:", password);
 
-        // 📌 디버깅 로그
-        console.log("[디버깅] 탈퇴 요청 아이디:", userId);
-        console.log("[디버깅] 입력된 비밀번호:", password);
-
-        fetch("/api/member/delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: userId, pw: password })
-        })
-        .then(response => response.text()) // 서버 응답을 텍스트로 받음
-        .then(data => {
-            console.log("[디버깅] 서버 응답:", data);
-
-            if (data.includes("회원 탈퇴 성공")) {
-                alert("회원 탈퇴가 완료되었습니다.");
-                console.log("[디버깅] 탈퇴 후 로그인 페이지로 이동");
-                window.location.href = "/login"; // 로그인 페이지로 이동
-            } else {
-                alert("회원 탈퇴 실패: 아이디 또는 비밀번호가 잘못되었습니다.");
-                console.log("[디버깅] 탈퇴 실패");
-            }
-        })
-        .catch(error => {
-            console.error("[디버깅] 회원 탈퇴 요청 오류:", error);
-            alert("서버 오류 발생. 관리자에게 문의하세요.");
+            fetch("/api/member/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: userId, pw: password })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("[디버깅] 서버 응답:", data);
+                if (data.includes("회원 탈퇴 성공")) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = "/login";
+                } else {
+                    alert("회원 탈퇴 실패: 아이디 또는 비밀번호가 잘못되었습니다.");
+                }
+            })
+            .catch(error => {
+                console.error("[디버깅] 회원 탈퇴 요청 오류:", error);
+                alert("서버 오류 발생. 관리자에게 문의하세요.");
+            });
         });
-    });
-// --------------------------------------------------------------------        
     </script>
 </body>
 </html>
