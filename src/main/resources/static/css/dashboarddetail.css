@@ -43,7 +43,7 @@ body {
 .header {
   position: absolute;
   top: 0;
-  left: 40%;
+  left: 45%;
   transform: translateX(-40%);
   width: 100%;
   max-width: 1200px;
@@ -70,38 +70,6 @@ body {
   margin-bottom: 5px;
 }
 
-/* 알림 아이콘 */
-.notification-container {
-  position: relative;
-  display: inline-block;
-}
-
-.notification-icon {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.notification-log {
-  display: none;
-  position: absolute;
-  top: 30px;
-  right: 0;
-  width: 200px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  z-index: 100;
-}
-
-.notification-log p {
-  margin: 0;
-  font-size: 14px;
-  color: #333;
-}
 
 /* 페이지 제목 */
 .page-title {
@@ -148,7 +116,9 @@ body {
 /* 각 카드 내의 canvas 크기 설정 */
 .dashboard-cards canvas {
   width: 100%;
-  height: 50px;
+  height: 80px;
+   margin-top: 30px;  /* 20px만큼 아래로 내림 */
+   
 }
 
 /* 실시간 그래프에 대한 canvas 크기 설정 */
@@ -173,6 +143,10 @@ body {
 .card h3, .card h2 {
   font-size: 24px;
   margin-bottom: 15px;
+}
+
+.card h4{
+  text-align: center;
 }
 
 .data-container p {

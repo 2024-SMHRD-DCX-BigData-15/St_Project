@@ -1,0 +1,282 @@
+/* 기본 리셋 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 전체 페이지 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1e213a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* 레이아웃 */
+.wrapper {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 사이드바는 왼쪽에서 숨겨짐 */
+    width: 180px;
+    height: 100%;
+    background-color: #252c41;
+    transition: left 0.3s ease; /* right에서 left로 변경 */
+    padding-top: 20px;
+    z-index: 1000;
+  }
+  
+  /* 사이드바 열기 및 닫기 */
+  .sidebar.open {
+    left: 0; /* 왼쪽에서 열림 */
+  }
+  
+  .sidebar-header {
+    text-align: center;
+    color: #fff;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-menu li {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .sidebar-menu li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* sub-menu 기본 숨김 */
+  .sub-menu {
+    display: block; /* 기본적으로 display: block으로 설정 */
+    max-height: 0; /* 처음에는 높이가 0 */
+    overflow: hidden; /* 콘텐츠가 넘칠 경우 숨기기 */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center; /* 가운데 정렬 */
+    transition: max-height 0.3s ease, padding 0.3s ease; /* max-height와 padding에만 transition 적용 */
+  }
+  
+  /* sub-menu 아이템 스타일 */
+  .sub-menu li {
+    padding: 8px 10px;
+    text-align: center;
+    transition: padding 0.3s ease; /* padding 애니메이션 */
+  }
+  
+  /* sub-menu 열기 */
+  .sub-menu.open {
+    max-height: 500px; /* 최대 높이를 충분히 큰 값으로 설정 */
+    padding: 10px 0; /* 패딩을 통해 열릴 때 부드럽게 */
+  }
+  
+  
+  
+  
+  /* 토글 메뉴 스타일 */
+  .toggle-menu {
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .toggle-menu:hover {
+    color: #00ccff;
+  }
+  
+  /* sub-menu 열기 */
+  .sub-menu.open {
+    display: block; /* .open 클래스를 추가할 때만 표시 */
+  }
+  
+  
+  
+  /* 햄버거 메뉴 스타일 */
+  .hamburger-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+  
+  .hamburger-menu .bar {
+    width: 30px;
+    height: 5px;
+    background-color: #fff;
+    margin: 6px 0;
+    transition: 0.4s;
+  }
+  
+  
+  
+  .hamburger-menu.open .bar:nth-child(1) {
+    opacity: 1;
+  }
+  
+  .hamburger-menu.open .bar:nth-child(2) {
+    opacity: 1;
+  }
+  
+  .hamburger-menu.open .bar:nth-child(3) {
+    opacity: 1;
+  }
+  
+  
+  
+  
+
+/* 메인 콘텐츠 */
+.main-content {
+    padding: 30px;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 페이지 제목 */
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    background-color: #1e213a;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+/* 승인 대기 테이블 */
+.approval-container {
+    margin-top: 30px;
+}
+
+.approval-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.approval-table th, .approval-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.approval-table th {
+    background-color: #252c41;
+}
+
+.approval-table td {
+    background-color: #333;
+}
+
+.approval-table button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.approval-table .approve-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.approval-table .reject-btn {
+    background-color: #F44336;
+    color: white;
+}
+
+/* 버튼 hover 효과 */
+.approval-table .approve-btn:hover {
+    background-color: #45a049;
+}
+
+.approval-table .reject-btn:hover {
+    background-color: #e53935;
+}
+
+/* 비활성화된 버튼 */
+.approval-table .approve-btn:disabled,
+.approval-table .reject-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+}
+
+/* 상태 표시 */
+.status-pending {
+    color: #ff9800;
+}
+
+.status-approved {
+    color: #4CAF50;
+}
+
+.status-rejected {
+    color: #F44336;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 100%;
+        height: 100%;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .hamburger-menu {
+        top: 15px;
+        left: 15px;
+    }
+
+    .main-content {
+        padding: 20px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .approval-table {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .approval-table th, .approval-table td {
+        padding: 8px;
+    }
+
+    .approval-table button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}

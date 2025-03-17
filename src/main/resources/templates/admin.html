@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 승인 페이지</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- 사이드바 -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>메뉴</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <!-- 수조 관리 시스템 -->
+          <li>
+            <a href="javascript:void(0)" class="toggle-menu">수조 관리</a>
+            <ul class="sub-menu">
+              <li><a href="#">수조 정보 등록</a></li>
+              <li><a href="#">수조 정보 수정</a></li>
+            </ul>
+          </li>
+      
+          <!-- 회원 정보 관리 -->
+          <li>
+            <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+            <ul class="sub-menu">
+              <li><a href="#">회원 정보 수정</a></li>
+              <li><a href="#">회원 탈퇴</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+        <!-- 햄버거 메뉴 -->
+        <div class="hamburger-menu" id="hamburger-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="page-title">회원 승인 관리</h1>
+            </header>
+
+            <!-- 회원 목록 테이블 -->
+            <section class="approval-container">
+                <table class="approval-table">
+                    <thead>
+                        <tr>
+                            <th>회원 아이디</th>
+                            <th>회원 이름</th>
+                            <th>양식장 주소</th>
+                            <th>회원 연락처</th>
+                            <th>가입 날짜</th>
+                            <th>상태</th>
+                            <th>작업</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approval-table-body">
+                        <!-- 서버에서 데이터를 받아와서 동적으로 여기에 삽입됩니다 -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+              document.getElementById('hamburger-menu').addEventListener('click', function() {
+        // 사이드바 열기/닫기 토글
+        document.getElementById('sidebar').classList.toggle('open');
+        
+        // 햄버거 메뉴 애니메이션
+        this.classList.toggle('open');
+      });
+
+                      // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
+          document.querySelectorAll('.toggle-menu').forEach(menu => {
+            menu.addEventListener('click', function() {
+              const subMenu = this.nextElementSibling; // 클릭된 항목 바로 다음의 ul.sub-menu
+
+              // 이미 열려 있는 경우 숨기기
+              if (subMenu.classList.contains('open')) {
+                subMenu.classList.remove('open');
+              } else {
+                // 다른 메뉴들은 닫히게 함
+                document.querySelectorAll('.sub-menu').forEach(menu => {
+                  menu.classList.remove('open');
+                });
+
+                // 클릭된 메뉴만 열기
+                subMenu.classList.add('open');
+              }
+            });
+          });
+
+
+        // 서버에서 사용자 데이터 받아오기
+        fetch('/api/users')  // 여기에 실제 DB에서 데이터를 가져오는 API 엔드포인트 URL을 입력하세요
+            .then(response => response.json())  // JSON 형식으로 응답받기
+            .then(users => {
+                const tbody = document.getElementById('approval-table-body');
+                
+                // 서버에서 받은 데이터를 테이블에 추가
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.address}</td>
+                        <td>${user.contact}</td>
+                        <td>${user.joinDate}</td>
+                        <td><span class="status-pending">${user.status}</span></td>
+                        <td>
+                            <button class="approve-btn">승인</button>
+                            <button class="reject-btn">거부</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // 승인 및 거부 버튼 클릭 이벤트 추가
+                document.querySelectorAll('.approve-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        let row = this.closest('tr');
+                        row.querySelector('.status-pending').textContent = '승인됨';
+                        row.querySelector('.status-pending').classList.remove('status-pending');
+                        row.querySelector('.status-pending').classList.add('status-approved');
+                        this.disabled = true; // 승인 버튼 비활성화
+                        row.querySelector('.reject-btn').disabled = true; // 거부 버튼 비활성화
+                    });
+                });
+
+                document.querySelectorAll('.reject-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        let row = this.closest('tr');
+                        row.querySelector('.status-pending').textContent = '거부됨';
+                        row.querySelector('.status-pending').classList.remove('status-pending');
+                        row.querySelector('.status-pending').classList.add('status-rejected');
+                        this.disabled = true; // 거부 버튼 비활성화
+                        row.querySelector('.approve-btn').disabled = true; // 승인 버튼 비활성화
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('데이터를 가져오는 데 실패했습니다:', error);
+            });
+    </script>
+</body>
+</html>
