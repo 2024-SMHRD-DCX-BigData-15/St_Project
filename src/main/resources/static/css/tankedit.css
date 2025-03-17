@@ -273,3 +273,39 @@
     color: #ffffff;
     background-color: rgba(255, 255, 255, 0.05);
 }
+
+
+/* user-info 스타일 추가 */
+.user-info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    z-index: 1200;
+}
+
+.user-info p {
+    font-size: 16px;
+    margin: 0;
+}
+
+.logout-btn {
+    background-color: #0075ff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #005bb5;
+}

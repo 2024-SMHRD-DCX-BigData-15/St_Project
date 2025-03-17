@@ -30,6 +30,15 @@
         <!-- 햄버거 메뉴 -->
         <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
+		<!-- 사용자 정보 (로그아웃 버튼) -->
+        <div class="user-info">
+            <div th:if="${session.loginUser != null}">
+                <p th:text="${session.loginUser.userId}"></p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
+		
+		
         <!-- 메인 콘텐츠 -->
         <div class="container-center-horizontal">
             <div class="tank-screen screen">
