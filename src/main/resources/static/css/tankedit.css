@@ -288,11 +288,15 @@
     align-items: center;
     gap: 10px;
     z-index: 1200;
+    height: 100px;
+    line-height: 39px;
+    justify-content: center;
 }
 
 .user-info p {
     font-size: 16px;
     margin: 0;
+    line-height: 39px;
 }
 
 .logout-btn {
@@ -304,6 +308,8 @@
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
+    height: 39px;
+    box-sizing: border-box;
 }
 
 .logout-btn:hover {

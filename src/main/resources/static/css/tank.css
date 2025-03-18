@@ -306,29 +306,28 @@
     align-items: center;
     gap: 10px;
     z-index: 1200;
+    height: 100px;
+    line-height: 39px;
+    justify-content: center;
 }
 
 .user-info p {
     font-size: 16px;
     margin: 0;
+    line-height: 39px;
 }
 
 .logout-btn {
-  background-color: #7a4dff; /* 배경 색 */
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background-color 0.3s ease;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px; /* 버튼 높이 설정 */
-  line-height: normal; /* 기본 라인 높이 제거 */
-  white-space: nowrap;
+    background-color: #0075ff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    height: 39px;
+    box-sizing: border-box;
 }
 
 .logout-btn:hover {
