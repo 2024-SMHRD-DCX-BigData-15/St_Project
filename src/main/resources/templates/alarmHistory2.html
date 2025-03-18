@@ -114,7 +114,7 @@
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-    // XSS 방지 함수
+    // XSS 방지
     const escapeHTML = (str) => {
       const div = document.createElement("div");
       div.textContent = str;
@@ -129,7 +129,6 @@
         const end = start + historyPerPage;
         const paginatedHistory = filteredHistory.slice(start, end);
 
-        // 기존 행 재활용
         const rows = alarmHistoryTable.getElementsByTagName("tr");
         for (let i = 0; i < historyPerPage; i++) {
           let row = rows[i];
@@ -139,7 +138,6 @@
             alarmHistoryTable.appendChild(row);
           }
 
-          // 스타일 초기화
           row.className = "";
           row.style.borderBottomLeftRadius = "0";
           row.style.borderBottomRightRadius = "0";
@@ -166,7 +164,6 @@
             `;
           }
 
-          // 마지막 행에 둥근 모서리 적용
           if (i === historyPerPage - 1) {
             const cells = row.getElementsByTagName("td");
             if (cells.length > 0) {
@@ -176,7 +173,6 @@
           }
         }
 
-        // 불필요한 행 제거
         while (rows.length > historyPerPage) {
           alarmHistoryTable.removeChild(rows[historyPerPage]);
         }
@@ -189,7 +185,7 @@
 
     // 히스토리 섹션 업데이트
     function updateHistorySection() {
-      currentHistoryPage = 1; // 페이지 초기화
+      currentHistoryPage = 1;
       renderAlarmHistory();
     }
 
@@ -208,7 +204,6 @@
       }
     });
 
-    // 히스토리 추가
     function addToHistory(message, tankNumber = "T1", status = "안 읽음", timestamp) {
       const now = timestamp ? new Date(timestamp) : new Date();
       const date = now.toISOString().slice(0, 10);
@@ -222,24 +217,24 @@
         createdAt: now.getTime()
       };
 
-      alarmHistory.unshift(hist); // 모든 기록 저장
+      alarmHistory.unshift(hist);
 
       playAlarmSound();
       updateHistorySection();
     }
 
-    // 알람 소리 재생
+    // 알람 소리
     function playAlarmSound() {
       const soundToggle = document.getElementById("soundToggle");
       const audio = document.getElementById("alarmSound");
       if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
     }
 
-    // 히스토리 확인 처리 (삭제 대신 상태만 변경)
+    // 히스토리 확인 처리
     async function confirmHistory(index) {
       const hist = alarmHistory[index];
       if (hist.status === "안 읽음") {
-        hist.status = "읽음"; // 상태만 '읽음'으로 변경, 삭제하지 않음
+        hist.status = "읽음";
         try {
           await fetch('/api/history/confirm', {
             method: 'POST',
@@ -250,7 +245,7 @@
           console.error('확인 처리 실패:', error);
           alert('히스토리 확인 처리에 실패했습니다.');
         }
-        renderAlarmHistory(); // 업데이트된 상태만 반영
+        renderAlarmHistory();
       }
     }
 
