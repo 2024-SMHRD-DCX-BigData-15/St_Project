@@ -1,388 +1,466 @@
 /* 기본 설정 */
 body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .container-center-horizontal {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .alarm-dashboard-screen {
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    overflow-y: auto;
-    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  background-color: transparent;
 }
 
 .alarm-dashboard-screen .main-dashboard {
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    position: relative;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
 }
 
 .alarm-dashboard-screen .content {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
-    box-sizing: border-box;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  padding-top: 120px;
+  box-sizing: border-box;
 }
 
-/* 제목 스타일 */
-.alarm-dashboard-screen .title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 60px;
-    text-align: center;
-    width: 100%;
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  z-index: 1000;
+  padding: 40px 0;
+  height: 100px;
+  overflow: hidden;
+}
+
+.header-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
 }
 
 .alarm-dashboard-screen .text-21 {
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: clamp(18px, 4vw, 28px);
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: 1.2;
-    white-space: nowrap;
-    margin-bottom: 8px;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  margin-bottom: 6px;
+  text-align: left;
 }
 
-/* 필터링 및 검색 섹션 */
 .filter-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    justify-content: flex-start;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-/* 드롭다운 스타일 */
 .filter-dropdown {
-    background-color: #0f1535;
-    border: 0.5px solid #e2e8f04c;
-    border-radius: 15px;
-    padding: 10px;
-    font-size: 14px;
-    color: #ffffff;
-    width: 200px;
+  background-color: #0f1535;
+  border: 0.5px solid #e2e8f04c;
+  border-radius: 15px;
+  padding: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  width: 180px;
 }
 
 .filter-dropdown option {
-    background-color: #0f1535;
-    color: #ffffff;
+  background-color: #0f1535;
+  color: #ffffff;
 }
 
-/* 소리 토글 스타일 */
 .sound-toggle {
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
 }
 
-/* 로딩 스타일 */
-.loading {
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: 16px;
-    text-align: center;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    display: none;
-}
-
-/* 섹션 스타일 */
 .alarm-dashboard-screen .section {
-    width: 100%;
-    margin-top: 30px;
+  width: 100%;
+}
+
+.alarm-dashboard-screen .section:first-child {
+  margin-top: 10px;
 }
 
 .alarm-dashboard-screen .section-title {
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: clamp(16px, 3vw, 24px);
-    font-weight: 400;
-    margin-bottom: 10px;
-    text-align: left;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 6px;
+  text-align: left;
 }
 
-/* 테이블 스타일 */
 .alarm-dashboard-screen .alarm-table {
-    width: 100%;
-    overflow-x: auto;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .alarm-dashboard-screen table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-    table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  table-layout: fixed;
 }
 
 .alarm-dashboard-screen th,
 .alarm-dashboard-screen td {
-    padding: 12px 15px;
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: clamp(12px, 2vw, 16px);
-    text-align: left;
-}
-
-.alarm-dashboard-screen #alarmHistory th,
-.alarm-dashboard-screen #alarmHistory td {
-    width: 20%; /* 5열로 나눔 (수조 번호, 날짜, 시간, 내용, 상태) */
+  padding: 8px 10px;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: clamp(12px, 2vw, 16px);
+  text-align: left;
+  height: 32px;
+  min-height: 32px;
+  vertical-align: middle;
 }
 
 .alarm-dashboard-screen tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  height: 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .alarm-dashboard-screen tr:last-child {
-    border-bottom: none;
+  border-bottom: none;
+}
+
+.alarm-dashboard-screen tr.warning {
+  animation: blink 1s infinite;
+  will-change: background-color;
+  contain: content;
 }
 
 .alarm-dashboard-screen .action.unconfirmed {
-    color: #ffc107;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
+  color: #ffc107;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
 }
 
 .alarm-dashboard-screen .action.confirmed {
-    color: #28a745;
-    text-align: center;
+  color: #28a745;
+  text-align: center;
 }
 
-/* 페이지네이션 스타일 */
+/* 경고 */
+@keyframes blink {
+  0% { background-color: rgba(255, 77, 77, 0.8); }
+  50% { background-color: rgba(9.54, 14, 35.36, 0.71); }
+  100% { background-color: rgba(255, 77, 77, 0.8); }
+}
+
 .alarm-dashboard-screen .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .alarm-dashboard-screen .page-btn {
-    background-color: #0075ff;
-    color: #ffffff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: "Abel", Helvetica;
-    font-size: clamp(10px, 1.5vw, 14px);
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #0075ff;
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: "Abel", Helvetica;
+  font-size: clamp(10px, 1.5vw, 14px);
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .alarm-dashboard-screen .page-btn:disabled {
-    background-color: #a0aec0;
-    cursor: not-allowed;
+  background-color: #a0aec0;
+  cursor: not-allowed;
 }
 
 .alarm-dashboard-screen .page-btn:hover:not(:disabled) {
-    background-color: #005bb5;
+  background-color: #005bb5;
+}
+
+/* 요약 */
+.summary-stats {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 10px;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: clamp(12px, 2vw, 16px);
+}
+
+.summary-stats p {
+  margin: 3px 0;
 }
 
 /* 하단 링크 */
 .alarm-dashboard-screen .text-14 {
-    color: #a0aec0;
-    font-family: "Abel", Helvetica;
-    font-size: clamp(10px, 1.5vw, 12px);
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: 1.4;
-    margin-top: 20px;
-    text-align: center;
-    white-space: nowrap;
+  color: #a0aec0;
+  font-family: "Abel", Helvetica;
+  font-size: clamp(10px, 1.5vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .alarm-dashboard-screen .back-link {
-    color: #0075ff;
-    text-decoration: none;
+  color: #0075ff;
+  text-decoration: none;
 }
 
 .alarm-dashboard-screen .back-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
-/* 햄버거 버튼 스타일 */
+/* 햄버거 */
 .hamburger-btn {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #ffffff;
-    font-size: 24px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    z-index: 1100;
-    transition: background-color 0.3s;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 1100;
+  transition: background-color 0.3s;
 }
 
 .hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* 사이드바 스타일 */
+/* 사이드바 */
 .sidebar {
-    width: 190px;
-    background: rgba(15, 18, 59, 0.95);
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: -250px; /* 기본적으로 숨김 */
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 1000;
-    overflow-y: auto;
-    transition: left 0.3s ease;
+  width: 250px;
+  background: rgba(15, 18, 59, 0.95);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 1000;
+  overflow-y: auto;
+  transition: left 0.3s ease;
 }
 
 .sidebar.active {
-    left: 0;
+  left: 0;
 }
 
 .sidebar-header {
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    text-align: center;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-menu li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .sidebar-menu a {
-    color: #ffffff;
-    text-decoration: none;
-    font-family: "Abel", Helvetica;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "Abel", Helvetica;
+  font-size: 16px;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* 서브 메뉴 스타일 */
+/* 서브 메뉴 */
 .sub-menu {
-    display: none;
-    list-style: none;
-    padding-left: 20px;
-    margin-top: 5px;
+  display: none;
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
 }
 
 .sub-menu li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sub-menu a {
-    font-size: 14px;
-    padding: 8px;
-    color: #a0aec0;
+  font-size: 14px;
+  padding: 8px;
+  color: #a0aec0;
 }
 
 .sub-menu a:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* user-info 스타일 */
+.user-info {
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding-right: 20px;
+}
+
+.user-info p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.logout-btn {
+  background-color: #0075ff;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #005bb5;
 }
 
 /* 모바일 반응형 */
 @media (max-width: 600px) {
-    .sidebar {
-        width: 200px;
-        left: -200px;
-    }
-    .sidebar.active {
-        left: 0;
-    }
-    .alarm-dashboard-screen .content {
-        padding: 10px;
-    }
-    .alarm-dashboard-screen th,
-    .alarm-dashboard-screen td {
-        padding: 8px 10px;
-        font-size: clamp(10px, 2vw, 14px);
-    }
-    .filter-section {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .filter-dropdown {
-        width: 100%;
-    }
-    .hamburger-btn {
-        font-size: 20px;
-    }
-}
-
-
-/* user-info 스타일 추가 */
-.user-info {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: 14px;
-    display: flex;
-    flex-direction: row;
+  .sidebar {
+    width: 200px;
+    left: -200px;
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .alarm-dashboard-screen .content {
+    padding: 10px;
+    padding-top: 140px;
+  }
+  .fixed-header {
+    height: 120px;
+  }
+  .header-top {
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    z-index: 1200;
-}
-
-.user-info p {
-    font-size: 16px;
-    margin: 0;
-}
-
-.logout-btn {
-    background-color: #0075ff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: #005bb5;
+  }
+  .alarm-dashboard-screen .section {
+    margin-top: 8px;
+  }
+  .alarm-dashboard-screen th,
+  .alarm-dashboard-screen td {
+    padding: 6px 8px;
+    font-size: clamp(10px, 2vw, 14px);
+    height: 28px;
+    min-height: 28px;
+  }
+  .alarm-dashboard-screen tr {
+    height: 28px;
+  }
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 10px;
+  }
+  .filter-dropdown {
+    width: 100%;
+  }
+  .hamburger-btn {
+    font-size: 20px;
+  }
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .user-info {
+    margin-top: 5px;
+  }
+  .alarm-dashboard-screen .section-title {
+    margin-bottom: 4px;
+  }
+  .summary-stats {
+    padding: 8px;
+  }
+  .alarm-dashboard-screen .pagination {
+    margin-top: 4px;
+  }
+  .alarm-dashboard-screen .page-btn {
+    padding: 3px 8px;
+  }
 }
