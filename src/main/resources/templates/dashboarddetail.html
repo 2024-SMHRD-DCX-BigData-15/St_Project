@@ -465,8 +465,58 @@
         const aihubGraph = document.getElementById('aihubGraph').getContext('2d');
         // 여기에 실시간 그래프 로직 추가 가능 (예: Chart.js 사용)
      
-        
-        
+        /**
+ * 🔹 최신 수조 데이터를 가져와 화면을 갱신하는 함수
+ */
+function fetchLatestTankData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tankIdx = urlParams.get("tankIdx");
+
+    if (tankIdx) {
+        console.log(`🚀 최신 데이터 요청: tankIdx=${tankIdx}`);
+
+        fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`❌ HTTP 오류: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("✅ 최신 수조 데이터 로드 완료:", data);
+
+                // ✅ HTML 요소 업데이트 (최신 데이터로 변경)
+                document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
+                document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
+                document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
+                document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
+                document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
+                document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
+
+                console.log("🔄 화면 갱신 완료!");
+            })
+            .catch(error => {
+                console.error("❌ 수조 데이터 로드 실패:", error);
+            });
+    }
+}
+			//---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]----------------------
+			/**
+			 * 🔹 일정 주기마다 최신 데이터를 가져오는 함수 (자동 갱신)
+			 */
+			function startAutoRefresh() {
+			    console.log("⏳ 자동 갱신 시작 (10초 간격)");
+			
+			    // ✅ 최초 실행 (페이지 로딩 후 즉시 데이터 가져오기)
+			    fetchLatestTankData();
+			
+			    // ✅ 10초마다 자동 갱신 (10000ms = 10초)
+			    setInterval(fetchLatestTankData, 10000);
+			}
+			
+			// ✅ 페이지가 완전히 로드된 후 자동 갱신 시작
+			document.addEventListener("DOMContentLoaded", startAutoRefresh);
+			//-------------------------------------------------------------------------------
     </script>
 
 
