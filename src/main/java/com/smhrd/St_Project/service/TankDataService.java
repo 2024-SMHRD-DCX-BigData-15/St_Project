@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TankDataService {
@@ -94,6 +95,22 @@ public class TankDataService {
         } catch (NumberFormatException e) {
             System.out.println("❌ " + columnName + " 변환 실패! 잘못된 숫자 형식: " + value);
             return BigDecimal.ZERO;  // 오류 발생 시 0으로 설정
+        }
+    }
+    
+    /**
+     * 🔹 tank_idx에 해당하는 최신 수조 데이터를 반환
+     */
+    public TankDataEntity getLatestTankData(Long tankIdx) {
+        System.out.println("🚀 최신 수조 데이터 요청: tankIdx=" + tankIdx);
+        Optional<TankDataEntity> latestData = tankDataRepository.findLatestTankData(tankIdx);
+
+        if (latestData.isPresent()) {
+            System.out.println("✅ 최신 데이터 반환 완료: " + latestData.get());
+            return latestData.get();
+        } else {
+            System.out.println("❌ 최신 데이터 없음: tankIdx=" + tankIdx);
+            return null;
         }
     }
 }

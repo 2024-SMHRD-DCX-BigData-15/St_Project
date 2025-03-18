@@ -63,55 +63,63 @@
         </header>
 
         <!-- 6개의 데이터 카드 -->
-        <section class="dashboard-cards">
-          <!-- 첫 번째 카드 - 산성도 -->
-          <div class="card card-ph">
-            <h4>산성도</h4>
-            <div class="data-container">
-              <canvas id="chart-1" width="200" height="200"></canvas>
-            </div>
-          </div>
+        <!-- 데이터 표시 -->
+		<section class="dashboard-cards">
+		    <!-- 산성도 -->
+		    <div class="card card-ph">
+		        <h4>산성도</h4>
+		        <div class="data-container">
+		            <div id="phValue" class="data-box">-</div>
+		            <canvas id="chart-1" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		
+		    <!-- 용존산소 -->
+		    <div class="card card-oxygen">
+		        <h4>용존산소</h4>
+		        <div class="data-container">
+		            <div id="oxygenValue" class="data-box">-</div>
+		            <canvas id="chart-2" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		
+		    <!-- 수온 -->
+		    <div class="card card-temperature">
+		        <h4>수온</h4>
+		        <div class="data-container">
+		            <div id="temperatureValue" class="data-box">-</div>
+		            <canvas id="chart-3" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		
+		    <!-- 염도 -->
+		    <div class="card card-salinity">
+		        <h4>염도</h4>
+		        <div class="data-container">
+		            <div id="salinityValue" class="data-box">-</div>
+		            <canvas id="chart-4" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		
+		    <!-- 암모니아 -->
+		    <div class="card card-ammonia">
+		        <h4>암모니아</h4>
+		        <div class="data-container">
+		            <div id="ammoniaValue" class="data-box">-</div>
+		            <canvas id="chart-5" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		
+		    <!-- 아질산 -->
+		    <div class="card card-nitrite">
+		        <h4>아질산</h4>
+		        <div class="data-container">
+		            <div id="nitriteValue" class="data-box">-</div>
+		            <canvas id="chart-6" width="200" height="200"></canvas>
+		        </div>
+		    </div>
+		</section>
 
-          <!-- 두 번째 카드 - 용존산소 -->
-          <div class="card card-oxygen">
-            <h4>용존산소</h4>
-            <div class="data-container">
-              <canvas id="chart-2" width="200" height="200"></canvas>
-            </div>
-          </div>
-
-          <!-- 세 번째 카드 - 수온 -->
-          <div class="card card-temperature">
-            <h4>수온</h4>
-            <div class="data-container">
-              <canvas id="chart-3" width="200" height="200"></canvas>
-            </div>
-          </div>
-
-          <!-- 네 번째 카드 - 염도 -->
-          <div class="card card-salinity">
-            <h4>염도</h4>
-            <div class="data-container">
-              <canvas id="chart-4" width="200" height="200"></canvas>
-            </div>
-          </div>
-
-          <!-- 다섯 번째 카드 - 암모니아 -->
-          <div class="card card-ammonia">
-            <h4>암모니아</h4>
-            <div class="data-container">
-              <canvas id="chart-5" width="200" height="200"></canvas>
-            </div>
-          </div>
-
-          <!-- 여섯 번째 카드 - 아질산 -->
-          <div class="card card-nitrite">
-            <h4>아질산</h4>
-            <div class="data-container">
-              <canvas id="chart-6" width="200" height="200"></canvas>
-            </div>
-          </div>
-        </section>
 
         <!-- 수조정보와 실시간 그래프 -->
         <section class="dashboard-cards">
@@ -210,32 +218,9 @@
             }
           });
         });
+     
+     	
 
-      //------------------- [ 수조정보 조회 백엔드 스크립트 ] -------------------
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tankIdx = urlParams.get("tankIdx");
-
-            if (tankIdx) {
-                fetch(`/api/tank/detail?tankIdx=${tankIdx}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            document.querySelector("span[th\\:text='${selectedTank?.tankIdx}']").textContent = data.tankIdx || "정보 없음";
-                            document.querySelector("span[th\\:text='${selectedTank?.tankWidth}']").textContent = data.tankWidth || "정보 없음";
-                            document.querySelector("span[th\\:text='${selectedTank?.tankHeight}']").textContent = data.tankHeight || "정보 없음";
-                            document.querySelector("span[th\\:text='${selectedTank?.tankLocation}']").textContent = data.tankLocation || "정보 없음";
-                            document.querySelector("span[th\\:text='${selectedTank?.fishType}']").textContent = data.fishType || "정보 없음";
-                            document.querySelector("span[th\\:text='${selectedTank?.startedAt}']").textContent = data.startedAt ? new Date(data.startedAt).toISOString().split('T')[0] : "정보 없음";
-                        }
-                    })
-                    .catch(error => {
-                        console.error("❌ 수조 정보 로드 실패:", error);
-                    });
-            }
-        });
-      
-      
         // Get canvas elements for each chart
         const canvasElements = [
           document.getElementById('chart-1'),
@@ -273,26 +258,57 @@
           'chart-5': false,
           'chart-6': false,
         };
+        
+        //---------------------[최신 수질 데이터 불러오기 백엔드 스크립트]----------------------
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tankIdx = urlParams.get("tankIdx");
 
-        // 백엔드에서 데이터 가져오기 (1초마다)
-        function fetchData() {
-          fetch('/api/data')
-            .then(response => response.json())
-            .then(data => {
-              Object.keys(data).forEach(key => {
-                if (currentValues.hasOwnProperty(key)) {
-                  currentValues[key] = Math.max(
-                    dataRanges[key].min,
-                    Math.min(dataRanges[key].max, data[key])
-                  );
-                  checkAlert(key); // 알림 체크
-                }
-              });
-            })
-            .catch(error => {
-              console.error('Error fetching data:', error);
-            });
+            if (tankIdx) {
+                fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`❌ HTTP 오류: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("✅ 최신 수조 데이터 로드 완료:", data);
+
+                        document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
+                        document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
+                        document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
+                        document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
+                        document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
+                        document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
+                    })
+                    .catch(error => {
+                        console.error("❌ 수조 데이터 로드 실패:", error);
+                    });
+            }
+        });
+
+
+
+        /**
+         * 🔹 게이지 차트 업데이트 함수
+         * @param {string} chartId - 캔버스 ID
+         * @param {number} value - 현재 값
+         * @param {number} min - 최소값
+         * @param {number} max - 최대값
+         */
+        function updateGauge(chartId, value, min, max) {
+            if (value === null || value === undefined) return;
+            const percentage = ((value - min) / (max - min)) * 100;
+
+            const ctx = document.getElementById(chartId).getContext("2d");
+            ctx.clearRect(0, 0, 200, 200);
+
+            ctx.fillStyle = "blue";
+            ctx.fillRect(50, 100, 100, percentage);
         }
+       //----------------------------------------------------------------------------------
+
 
         // 알림 체크 함수
         function checkAlert(canvasId) {
@@ -320,9 +336,6 @@
             notification.classList.remove('show');
           }, 5000);
         }
-
-        // 1초마다 데이터 가져오기 시작
-        setInterval(fetchData, 1000);
 
         // 각 캔버스에 게이지 차트를 그리는 함수
         function drawGaugeOnCanvas(canvasId, canvas) {
@@ -463,6 +476,8 @@
         const aihubGraph = document.getElementById('aihubGraph').getContext('2d');
         // 여기에 실시간 그래프 로직 추가 가능 (예: Chart.js 사용)
      
+        
+        
     </script>
 
 

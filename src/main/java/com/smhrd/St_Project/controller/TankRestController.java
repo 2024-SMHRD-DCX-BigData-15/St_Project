@@ -2,6 +2,8 @@ package com.smhrd.St_Project.controller;
 
 import com.smhrd.St_Project.entity.TankEntity;
 import com.smhrd.St_Project.entity.MemberEntity;
+import com.smhrd.St_Project.entity.TankDataEntity;
+import com.smhrd.St_Project.service.TankDataService;
 import com.smhrd.St_Project.service.TankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +30,8 @@ public class TankRestController {
 
     @Autowired
     private TankService tankService;
+    @Autowired
+    private TankDataService tankDataService;
 
     /**
      * 🔹 세션을 활용한 특정 사용자의 수조 목록 조회 API (GET /tank/list)
@@ -98,5 +104,34 @@ public class TankRestController {
         Optional<TankEntity> tank = Optional.ofNullable(tankService.getTankById(tankIdx));
         return tank.orElse(null);
     }
+    
+    /**
+     * 🔹 특정 수조의 최신 수질 데이터를 JSON으로 반환
+     * ✅ 프론트엔드에서 데이터를 요청하면 해당 tankIdx의 최신 데이터가 반환됨
+     */
+    /**
+     * 🔹 tank_idx에 해당하는 최신 수조 데이터를 JSON으로 반환
+     */
+    @GetMapping("/data/latest")
+    public ResponseEntity<Map<String, Object>> getLatestTankData(@RequestParam("tankIdx") Long tankIdx) {
+        TankDataEntity latestData = tankDataService.getLatestTankData(tankIdx);
+
+        if (latestData == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        // ✅ JSON 변환 시 필요한 필드만 추출하여 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("waterPh", latestData.getWaterPh());
+        response.put("waterDo", latestData.getWaterDo());
+        response.put("waterTemp", latestData.getWaterTemp());
+        response.put("waterSalt", latestData.getWaterSalt());
+        response.put("waterAmmonia", latestData.getWaterAmmonia());
+        response.put("waterNitrogen", latestData.getWaterNitrogen());
+        response.put("recordDate", latestData.getRecordDate());
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }

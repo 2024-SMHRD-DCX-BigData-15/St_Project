@@ -5,6 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @Table(name = "t_tankdata")
@@ -17,6 +19,7 @@ public class TankDataEntity {
 
     @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "tank_idx", nullable = false)
+    @JsonBackReference // ✅ TankEntity의 직렬화 무한루프 방지
     private TankEntity tank;  // FK (INT UNSIGNED)
 
     @Column(name = "water_ph", precision = 7, scale = 5)

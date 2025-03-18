@@ -1,6 +1,8 @@
 package com.smhrd.St_Project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -10,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "t_tank")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // ✅ Hibernate 프록시 제거
 public class TankEntity {
 
     @Id
