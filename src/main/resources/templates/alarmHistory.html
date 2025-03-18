@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <link rel="stylesheet" href="css/alarmHistory.css" />
-  <title>알람 히스토리</title>
+  <link rel="stylesheet" href="/css/alarmHistory.css" />
+  <title>알람 로그</title>
 </head>
 <body>
   <div class="container-center-horizontal">
     <!-- 햄버거 버튼 -->
     <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+
     <!-- 사이드바 -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -32,13 +33,14 @@
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
+
           <!-- 통합된 헤더 -->
           <header class="fixed-header">
             <div class="header-content">
               <div class="header-top">
                 <div class="header-spacer"></div>
                 <div class="header-title">
-                  <h1 class="text-21">알람 히스토리</h1>
+                  <h1 class="text-21">알람 로그</h1>
                 </div>
                 <div class="user-info">
                   <div th:if="${session.loginUser != null}">
@@ -335,8 +337,8 @@
       });
 
       updateLogSection();
-      setInterval(fetchAlarmData, 5000); // 5초마다 API 호출
-      setInterval(checkDataAlarm, 5000); // 5초마다 더미 데이터 체크 (백엔드 연동 후 제거)
+      setInterval(fetchAlarmData, 5000); // API 호출
+      setInterval(checkDataAlarm, 5000); // 더미 데이터 체크 (백엔드 연동 후 제거)
     });
   </script>
 </body>
