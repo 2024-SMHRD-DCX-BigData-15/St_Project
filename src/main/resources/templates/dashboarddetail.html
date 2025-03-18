@@ -9,43 +9,37 @@
   </head>
   <body>
 
-<!-- 사이드바 -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <h2>메뉴</h2>
-  </div>
-  
-  <ul class="sidebar-menu">
-  	<!-- 홈 -->
-    <li>
-      <a href="/maindashboard" class="toggle-menu">홈</a>
-    </li>  
-    <!-- 수조 정보 등록 -->
-    <li>
-      <a href="/tank" class="toggle-menu">수조 정보 등록</a>
-    </li>
-    <!-- 알람 히스토리 -->
-    <li>
-      <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-    </li>    
-    <!-- 회원 정보 관리 -->
-    <li>
-      <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-      <ul class="sub-menu">
-        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
-        <li><a href="/delete">회원 탈퇴</a></li>
-      </ul>
-    </li>    
-  </ul>
-</div>  
+<!-- 햄버거 버튼 -->
+    <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
-      
-      <!-- 햄버거 메뉴 아이콘 -->
-      <div class="hamburger-menu" id="hamburger-menu">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+    <!-- 사이드바 -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>메뉴</h2>
       </div>
+      <ul class="sidebar-menu">
+        <!-- 홈 -->
+        <li>
+          <a href="/maindashboard" class="toggle-menu">홈</a>
+        </li>
+        <!-- 수조 정보 등록 -->
+        <li>
+          <a href="/tank" class="toggle-menu">수조 정보 등록</a>
+        </li>
+        <!-- 알람 히스토리 -->
+        <li>
+          <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
+        </li>
+        <!-- 회원 정보 관리 -->
+        <li>
+          <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+          <ul class="sub-menu">
+            <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+            <li><a href="/delete">회원 탈퇴</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
 
       <!-- 메인 콘텐츠 -->
       <main class="main-content">
@@ -170,28 +164,24 @@
             document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
         }
 
-        /**
-         * 🔹 햄버거 메뉴 클릭 이벤트
-         */
-        document.getElementById('hamburger-menu').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-            this.classList.toggle('open');
+     // 햄버거 버튼으로 사이드바 토글
+        hamburgerBtn.addEventListener("click", () => {
+          sidebar.classList.toggle("active");
         });
 
-        /**
-         * 🔹 사이드 메뉴 토글 이벤트
-         */
-        document.querySelectorAll('.toggle-menu').forEach(item => {
-            item.addEventListener('click', function () {
-                const subMenu = this.nextElementSibling;
-                if (subMenu.style.display === "block") {
-                    subMenu.style.display = "none";
-                } else {
-                    subMenu.style.display = "block";
-                }
-            });
+        // 서브 메뉴 토글 기능
+        const toggleMenus = document.querySelectorAll(".toggle-menu");
+        toggleMenus.forEach(menu => {
+          menu.addEventListener("click", (e) => {
+            const subMenu = menu.nextElementSibling;
+            if (subMenu && subMenu.classList.contains("sub-menu")) {
+              e.preventDefault(); // 링크 기본 동작 방지
+              subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+            }
+          });
         });
-        
+
+
         // 알림 로그
 		        function toggleNotifications() {
 		  var log = document.getElementById("notificationLog");
@@ -218,8 +208,7 @@
             }
           });
         });
-     
-     	
+
 
         // Get canvas elements for each chart
         const canvasElements = [

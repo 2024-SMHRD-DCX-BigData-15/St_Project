@@ -249,111 +249,127 @@ body {
   }
 }
 
-/* 사이드바 스타일 */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -250px; /* 사이드바는 왼쪽에서 숨겨짐 */
-  width: 180px;
-  height: 100%;
-  background-color: #252c41;
-  transition: left 0.3s ease; /* right에서 left로 변경 */
-  padding-top: 20px;
-  z-index: 1100; /* 헤더보다 높은 z-index로 설정 */
+/* 햄버거 버튼 스타일 */
+.hamburger-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1100;
+    transition: background-color 0.3s;
 }
 
-/* 사이드바 열기 및 닫기 */
-.sidebar.open {
-  left: 0; /* 왼쪽에서 열림 */
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 190px;
+    background:  rgba(15, 18, 59, 0.95);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -250px; /* 기본적으로 숨김 */
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+}
+
+.sidebar.active {
+    left: 0;
 }
 
 .sidebar-header {
-  text-align: center;
-  color: #fff;
+    color: #ffffff;
+    font-family: "Abel", Helvetica;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .sidebar-menu {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .sidebar-menu li {
-  padding: 10px;
-  text-align: center;
+    margin-bottom: 15px;
 }
 
-.sidebar-menu li a {
-  color: #fff;
-  text-decoration: none;
-  display: block;
+.sidebar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: "Abel", Helvetica;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
 }
 
-/* sub-menu 기본 숨김 */
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 서브 메뉴 스타일 */
 .sub-menu {
-  display: block; /* 기본적으로 display: block으로 설정 */
-  max-height: 0; /* 처음에는 높이가 0 */
-  overflow: hidden; /* 콘텐츠가 넘칠 경우 숨기기 */
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: center; /* 가운데 정렬 */
-  transition: max-height 0.3s ease, padding 0.3s ease; /* max-height와 padding에만 transition 적용 */
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
 }
 
-/* sub-menu 아이템 스타일 */
 .sub-menu li {
-  padding: 8px 10px;
-  text-align: center;
-  transition: padding 0.3s ease; /* padding 애니메이션 */
+    margin-bottom: 10px;
 }
 
-/* sub-menu 열기 */
-.sub-menu.open {
-  max-height: 500px; /* 최대 높이를 충분히 큰 값으로 설정 */
-  padding: 10px 0; /* 패딩을 통해 열릴 때 부드럽게 */
+.sub-menu a {
+    font-size: 14px;
+    padding: 8px;
+    color: #a0aec0;
 }
 
-/* 토글 메뉴 스타일 */
-.toggle-menu {
-  cursor: pointer;
-  font-weight: bold;
+.sub-menu a:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* 햄버거 메뉴 스타일 */
-.hamburger-menu {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  cursor: pointer;
-  z-index: 1100;
-}
-
-.hamburger-menu .bar {
-  width: 30px;
-  height: 5px;
-  background-color: #fff;
-  margin: 6px 0;
-  transition: 0.4s;
-}
-
-
-
-.hamburger-menu.open .bar:nth-child(1) {
-  opacity: 1;
-}
-
-.hamburger-menu.open .bar:nth-child(2) {
-  opacity: 1;
-}
-
-.hamburger-menu.open .bar:nth-child(3) {
-  opacity: 1;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    position: relative;
-  }
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+    .sidebar {
+        width: 200px;
+        left: -200px;
+    }
+    .sidebar.active {
+        left: 0;
+    }
+    .alarm-dashboard-screen .content {
+        padding: 10px;
+    }
+    .alarm-dashboard-screen th,
+    .alarm-dashboard-screen td {
+        padding: 8px 10px;
+        font-size: clamp(10px, 2vw, 14px);
+    }
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filter-dropdown {
+        width: 100%;
+    }
+    .hamburger-btn {
+        font-size: 20px;
+    }
 }

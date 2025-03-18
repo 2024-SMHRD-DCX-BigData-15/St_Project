@@ -40,17 +40,39 @@ body {
   width: 100%;
   max-width: 1000px;
   padding: 20px;
+  padding-top: 120px; /* 헤더 높이 축소 후 간격 조정 */
   box-sizing: border-box;
 }
 
-/* 제목 스타일 */
-.alarm-dashboard-screen .title {
+/* 고정된 헤더 스타일 */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  z-index: 1000;
+  padding: 10px 0;
+  height: 100px; /* 헤더 높이 줄임 */
+  overflow: hidden;
+}
+
+.header-content {
+  max-width: 1000px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 60px;
-  text-align: center;
+  position: relative;
+  height: 100%;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+  margin-bottom: 8px; /* 필터 섹션과의 간격 */
 }
 
 .alarm-dashboard-screen .text-21 {
@@ -61,7 +83,8 @@ body {
   letter-spacing: 0;
   line-height: 1.2;
   white-space: nowrap;
-  margin-bottom: 8px;
+  margin: 0; /* 상하 여백 제거 */
+  text-align: left;
 }
 
 /* 필터링 및 검색 섹션 */
@@ -69,9 +92,10 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 20px;
   justify-content: flex-start;
   width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 /* 드롭다운 스타일 */
@@ -79,10 +103,10 @@ body {
   background-color: #0f1535;
   border: 0.5px solid #e2e8f04c;
   border-radius: 15px;
-  padding: 10px;
+  padding: 8px; /* 패딩 줄임 */
   font-size: 14px;
   color: #ffffff;
-  width: 200px;
+  width: 180px; /* 너비 줄임 */
 }
 
 .filter-dropdown option {
@@ -114,15 +138,19 @@ body {
 /* 섹션 스타일 */
 .alarm-dashboard-screen .section {
   width: 100%;
-  margin-top: 30px;
+  margin-top: 10px; /* 간격 더 줄임 */
+}
+
+.alarm-dashboard-screen .section:first-child {
+  margin-top: 10px;
 }
 
 .alarm-dashboard-screen .section-title {
   color: #ffffff;
   font-family: "Abel", Helvetica;
-  font-size: clamp(16px, 3vw, 24px);
+  font-size: 24px;
   font-weight: 400;
-  margin-bottom: 10px;
+  margin-bottom: 6px; /* 제목 간격 더 줄임 */
   text-align: left;
 }
 
@@ -143,11 +171,13 @@ body {
 
 .alarm-dashboard-screen th,
 .alarm-dashboard-screen td {
-  padding: 12px 15px;
+  padding: 8px 10px; /* 패딩 더 줄임 */
   color: #ffffff;
   font-family: "Abel", Helvetica;
   font-size: clamp(12px, 2vw, 16px);
   text-align: left;
+  height: 32px; /* 행 높이 더 줄임 */
+  vertical-align: middle;
 }
 
 .alarm-dashboard-screen #alarmLog th,
@@ -191,15 +221,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px; /* 버튼 간격 줄임 */
+  margin-top: 6px; /* 위 간격 더 줄임 */
 }
 
 .alarm-dashboard-screen .page-btn {
   background-color: #0075ff;
   color: #ffffff;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 10px; /* 패딩 줄임 */
   border-radius: 6px;
   font-family: "Abel", Helvetica;
   font-size: clamp(10px, 1.5vw, 14px);
@@ -220,14 +250,14 @@ body {
 .summary-stats {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 15px;
+  padding: 10px; /* 패딩 더 줄임 */
   color: #ffffff;
   font-family: "Abel", Helvetica;
   font-size: clamp(12px, 2vw, 16px);
 }
 
 .summary-stats p {
-  margin: 5px 0;
+  margin: 3px 0; /* 문단 간격 더 줄임 */
 }
 
 /* 하단 링크 */
@@ -238,7 +268,7 @@ body {
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.4;
-  margin-top: 20px;
+  margin-top: 10px; /* 푸터 간격 더 줄임 */
   text-align: center;
   white-space: nowrap;
 }
@@ -327,7 +357,7 @@ body {
 
 /* 서브 메뉴 스타일 */
 .sub-menu {
-  display: none; /* 기본적으로 숨김 */
+  display: none;
   list-style: none;
   padding-left: 20px;
   margin-top: 5px;
@@ -348,6 +378,37 @@ body {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* user-info 스타일 */
+.user-info {
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.logout-btn {
+  background-color: #0075ff;
+  color: white;
+  padding: 6px 12px; /* 패딩 줄임 */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #005bb5;
+}
+
 /* 모바일 반응형 */
 @media (max-width: 600px) {
   .sidebar {
@@ -359,15 +420,28 @@ body {
   }
   .alarm-dashboard-screen .content {
     padding: 10px;
+    padding-top: 140px; /* 모바일 헤더 높이 조정 */
+  }
+  .fixed-header {
+    height: 120px; /* 모바일 헤더 높이 줄임 */
+  }
+  .header-top {
+    flex-direction: column; /* 모바일에서 수직 배치로 복원 */
+    align-items: center;
+  }
+  .alarm-dashboard-screen .section {
+    margin-top: 8px;
   }
   .alarm-dashboard-screen th,
   .alarm-dashboard-screen td {
-    padding: 8px 10px;
+    padding: 6px 8px;
     font-size: clamp(10px, 2vw, 14px);
+    height: 28px; /* 모바일 행 높이 더 줄임 */
   }
   .filter-section {
     flex-direction: column;
     align-items: flex-start;
+    padding: 0 10px;
   }
   .filter-dropdown {
     width: 100%;
@@ -375,39 +449,23 @@ body {
   .hamburger-btn {
     font-size: 20px;
   }
-}
-
-/* user-info 스타일 추가 */
-.user-info {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: 14px;
-    display: flex;
-    flex-direction: row;
+  .header-content {
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    z-index: 1200;
-}
-
-.user-info p {
-    font-size: 16px;
-    margin: 0;
-}
-
-.logout-btn {
-    background-color: #0075ff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: #005bb5;
+  }
+  .user-info {
+    margin-top: 5px;
+  }
+  .alarm-dashboard-screen .section-title {
+    margin-bottom: 4px;
+  }
+  .summary-stats {
+    padding: 8px;
+  }
+  .alarm-dashboard-screen .pagination {
+    margin-top: 4px;
+  }
+  .alarm-dashboard-screen .page-btn {
+    padding: 3px 8px;
+  }
 }

@@ -219,12 +219,12 @@
 
 /* 사이드바 스타일 */
 .sidebar {
-    width: 250px;
-    background: rgba(15, 18, 59, 0.95);
+    width: 190px;
+    background:  rgba(15, 18, 59, 0.95);
     height: 100vh;
     position: fixed;
     top: 0;
-    left: -250px;
+    left: -250px; /* 기본적으로 숨김 */
     padding: 20px;
     box-sizing: border-box;
     z-index: 1000;
