@@ -33,7 +33,6 @@
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
-
           <!-- 통합된 헤더 -->
           <header class="fixed-header">
             <div class="header-content">
@@ -102,40 +101,51 @@
   <audio id="alarmSound" src="/static/sounds/alarm.mp3" preload="auto"></audio>
 
   <script>
-      // 알람 히스토리 데이터 저장
-      let alarmHistory = [];
-      let currentHistoryPage = 1;
-      const historyPerPage = 5;
+    // 알람 히스토리 데이터 저장
+    let alarmHistory = [];
+    let currentHistoryPage = 1;
+    const historyPerPage = 5;
 
-      // 필터링 변수
-      let dataTypeFilter = "";
+    // 필터링 변수
+    let dataTypeFilter = "";
 
-      // DOM 요소 캐싱
-      const alarmHistoryTable = document.getElementById("alarmLog");
-      const sidebar = document.getElementById("sidebar");
-      const hamburgerBtn = document.getElementById("hamburgerBtn");
+    // DOM 요소 캐싱
+    const alarmHistoryTable = document.getElementById("alarmLog");
+    const sidebar = document.getElementById("sidebar");
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-      // XSS 방지 함수
-      const escapeHTML = (str) => {
-        const div = document.createElement("div");
-        div.textContent = str;
-        return div.innerHTML;
-      };
+    // XSS 방지 함수
+    const escapeHTML = (str) => {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    };
 
-      // 알람 히스토리 렌더링 (항상 5행 유지)
-      function renderAlarmHistory(history = alarmHistory) {
-        alarmHistoryTable.innerHTML = "";
+    // 알람 히스토리 렌더링
+    function renderAlarmHistory(history = alarmHistory) {
+      requestAnimationFrame(() => {
         const filteredHistory = history.filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
         const start = (currentHistoryPage - 1) * historyPerPage;
         const end = start + historyPerPage;
         const paginatedHistory = filteredHistory.slice(start, end);
 
-        // 실제 데이터 행 렌더링
+        // 기존 행 재활용
+        const rows = alarmHistoryTable.getElementsByTagName("tr");
         for (let i = 0; i < historyPerPage; i++) {
-          const row = document.createElement("tr");
+          let row = rows[i];
+          if (!row) {
+            row = document.createElement("tr");
+            row.style.height = "48px"; // 행 높이 고정
+            alarmHistoryTable.appendChild(row);
+          }
+
+          // 스타일 초기화
+          row.className = "";
+          row.style.borderBottomLeftRadius = "0";
+          row.style.borderBottomRightRadius = "0";
+
           if (i < paginatedHistory.length) {
             const hist = paginatedHistory[i];
-            row.classList.add("warning");
             row.innerHTML = `
               <td>${escapeHTML(hist.tankNumber)}</td>
               <td>${escapeHTML(hist.date)}</td>
@@ -143,9 +153,10 @@
               <td>${escapeHTML(hist.message)}</td>
               <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
             `;
-            row.querySelector(".action").addEventListener("click", () => confirmHistory(alarmHistory.indexOf(hist)));
+            const actionCell = row.querySelector(".action");
+            actionCell.replaceWith(actionCell.cloneNode(true)); // 이벤트 중복 방지
+            row.querySelector(".action").addEventListener("click", () => confirmHistory(history.indexOf(hist)));
           } else {
-            // 빈 행 추가
             row.innerHTML = `
               <td> </td>
               <td> </td>
@@ -154,165 +165,205 @@
               <td> </td>
             `;
           }
-          alarmHistoryTable.appendChild(row);
+
+          // 마지막 행에 둥근 모서리 적용
+          if (i === historyPerPage - 1) {
+            const cells = row.getElementsByTagName("td");
+            if (cells.length > 0) {
+              cells[0].style.borderBottomLeftRadius = "10px";
+              cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+            }
+          }
+        }
+
+        // 불필요한 행 제거
+        while (rows.length > historyPerPage) {
+          alarmHistoryTable.removeChild(rows[historyPerPage]);
         }
 
         document.getElementById("logPage").textContent = currentHistoryPage;
         document.getElementById("prevLog").disabled = currentHistoryPage === 1;
         document.getElementById("nextLog").disabled = end >= filteredHistory.length;
-      }
+      });
+    }
 
-      // 히스토리 섹션
-      function updateHistorySection() {
-        currentHistoryPage = 1;
+    // 히스토리 섹션 업데이트
+    function updateHistorySection() {
+      currentHistoryPage = 1; // 페이지 초기화
+      renderAlarmHistory();
+    }
+
+    // 페이지 이동
+    document.getElementById("prevLog").addEventListener("click", () => {
+      if (currentHistoryPage > 1) {
+        currentHistoryPage--;
         renderAlarmHistory();
       }
+    });
 
-      // 페이지 이동
-      document.getElementById("prevLog").addEventListener("click", () => {
-        if (currentHistoryPage > 1) {
-          currentHistoryPage--;
-          renderAlarmHistory();
-        }
-      });
-
-      document.getElementById("nextLog").addEventListener("click", () => {
-        if (currentHistoryPage * historyPerPage < alarmHistory.length) {
-          currentHistoryPage++;
-          renderAlarmHistory();
-        }
-      });
-
-      // 히스토리 추가 및 24시간 필터링
-      function addToHistory(message, tankNumber = "T1", status = "안 읽음") {
-        const now = new Date();
-        const date = now.toISOString().slice(0, 10);
-        const time = now.toTimeString().slice(0, 5);
-        const hist = {
-          date,
-          time,
-          tankNumber,
-          message,
-          status,
-          createdAt: now.getTime()
-        };
-
-        alarmHistory = alarmHistory.filter(h => now.getTime() - h.createdAt <= 24 * 60 * 60 * 1000); // 24시간 이내 로그만 유지
-        alarmHistory.unshift(hist);
-
-        playAlarmSound();
-        updateHistorySection();
+    document.getElementById("nextLog").addEventListener("click", () => {
+      if (currentHistoryPage * historyPerPage < alarmHistory.length) {
+        currentHistoryPage++;
+        renderAlarmHistory();
       }
+    });
 
-      // 알람 소리 재생
-      function playAlarmSound() {
-        const soundToggle = document.getElementById("soundToggle");
-        const audio = document.getElementById("alarmSound");
-        if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
-      }
+    // 히스토리 추가
+    function addToHistory(message, tankNumber = "T1", status = "안 읽음", timestamp) {
+      const now = timestamp ? new Date(timestamp) : new Date();
+      const date = now.toISOString().slice(0, 10);
+      const time = now.toTimeString().slice(0, 5);
+      const hist = {
+        date,
+        time,
+        tankNumber,
+        message,
+        status,
+        createdAt: now.getTime()
+      };
 
-      // 히스토리 확인 처리
-      async function confirmHistory(index) {
-        const hist = alarmHistory[index];
-        if (hist.status === "안 읽음") {
-          hist.status = "읽음";
-          alarmHistory.splice(index, 1);
-          try {
-            await fetch('/api/history/confirm', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ histId: index }) // 백엔드에서 ID 제공 시 hist.id로 변경
-            });
-          } catch (error) {
-            console.error('확인 처리 실패:', error);
-            alert('히스토리 확인 처리에 실패했습니다.');
-          }
-          updateHistorySection();
-        }
-      }
+      alarmHistory.unshift(hist); // 모든 기록 저장
 
-      // API 데이터 가져오기
-      async function fetchAlarmData() {
+      playAlarmSound();
+      updateHistorySection();
+    }
+
+    // 알람 소리 재생
+    function playAlarmSound() {
+      const soundToggle = document.getElementById("soundToggle");
+      const audio = document.getElementById("alarmSound");
+      if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
+    }
+
+    // 히스토리 확인 처리 (삭제 대신 상태만 변경)
+    async function confirmHistory(index) {
+      const hist = alarmHistory[index];
+      if (hist.status === "안 읽음") {
+        hist.status = "읽음"; // 상태만 '읽음'으로 변경, 삭제하지 않음
         try {
-          const response = await fetch('/api/history');
-          if (!response.ok) throw new Error('API 응답 오류');
-          const data = await response.json();
-          alarmHistory = []; // 초기화 후 새 데이터로 채움
-          data.forEach(({ message, tankNumber, status }) => addToHistory(message, tankNumber, status));
+          await fetch('/api/history/confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ histId: index }) // 백엔드에서 ID 제공 시 hist.id로 변경
+          });
         } catch (error) {
-          console.error('데이터 가져오기 실패:', error);
-          addToHistory('시스템 오류 감지', 'T1', '⚠️ 경고');
+          console.error('확인 처리 실패:', error);
+          alert('히스토리 확인 처리에 실패했습니다.');
         }
+        renderAlarmHistory(); // 업데이트된 상태만 반영
       }
+    }
 
-      // 더미 데이터와 테스트 함수
-      const thresholds = {
-        ph: { min: 6.5, max: 8.0, unit: "" },
-        do: { min: 5, max: 10, unit: "mg/L" },
-        temp: { min: 20, max: 25, unit: "°C" },
-        salinity: { min: 30, max: 35, unit: "ppt" },
-        ammonia: { min: 0, max: 0.1, unit: "ppm" },
-        nitrite: { min: 0, max: 0.2, unit: "ppm" }
-      };
+    // 비동기 수질 데이터 가져오기
+    async function fetchAlarmData() {
+      try {
+        const response = await fetch('/api/water-quality');
+        if (!response.ok) throw new Error('API 응답 오류');
+        const data = await response.json();
+        processWaterQualityData(data);
+      } catch (error) {
+        console.error('데이터 가져오기 실패:', error);
+        const errorMessages = [
+          '시스템 오류 감지',
+          '산성도(pH)',
+          '용존산소 (Do)',
+          '수온 (°C)',
+          '염도',
+          '암모니아',
+          '아질산 (ppm)'
+        ];
+        const randomMessage = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+        addToHistory(randomMessage, 'T1', '⚠️ 경고');
+      }
+    }
 
-      const dataPoints = {
-        labels: ["14:00", "14:10", "14:20", "14:30", "14:40"],
-        datasets: [
-          { label: "산성도 (pH)", data: [7.0, 7.1, 7.2, 7.3, 6.4] },
-          { label: "용존산소 (mg/L)", data: [6.5, 6.8, 7.0, 6.2, 5.8] },
-          { label: "수온 (°C)", data: [22, 23, 24, 26, 28] },
-          { label: "염도 (ppt)", data: [32, 33, 32, 34, 35] },
-          { label: "암모니아 (ppm)", data: [0.05, 0.06, 0.07, 0.08, 0.12] },
-          { label: "아질산 (ppm)", data: [0.1, 0.15, 0.18, 0.2, 0.25] }
-        ]
-      };
+    // 수질 데이터 처리 및 이상 감지
+    const thresholds = {
+      ph: { min: 6.5, max: 8.0, unit: "" },
+      do: { min: 5, max: 10, unit: "mg/L" },
+      temp: { min: 20, max: 25, unit: "°C" },
+      salinity: { min: 30, max: 35, unit: "ppt" },
+      ammonia: { min: 0, max: 0.1, unit: "ppm" },
+      nitrite: { min: 0, max: 0.2, unit: "ppm" }
+    };
 
-      function checkDataAlarm() {
-        const latestData = dataPoints.datasets.map(ds => ds.data[ds.data.length - 1]);
-        const labels = dataPoints.datasets.map(ds => ds.label.split(" ")[0]);
-        const keys = ["ph", "do", "temp", "salinity", "ammonia", "nitrite"];
+    function processWaterQualityData(data) {
+      const keys = ["ph", "do", "temp", "salinity", "ammonia", "nitrite"];
+      const labels = ["산성도", "용존산소", "수온", "염도", "암모니아", "아질산"];
 
-        latestData.forEach((value, index) => {
-          const key = keys[index];
+      data.forEach(item => {
+        const { tankNumber, timestamp, values } = item;
+        keys.forEach((key, index) => {
+          const value = values[key];
           const { min, max, unit } = thresholds[key];
-          const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
-          if (status === "⚠️ 경고") {
-            addToHistory(`${labels[index]} 이상 감지 (${value}${unit})`, "T1");
+          if (value < min || value > max) {
+            const message = `${labels[index]} 이상 감지 (${value}${unit})`;
+            addToHistory(message, tankNumber, "안 읽음", timestamp);
           }
         });
+      });
+    }
+
+    // 더미 데이터로 테스트
+    function simulateWaterQualityData() {
+      const dummyData = [
+        { tankNumber: "T1", timestamp: new Date().toISOString(), values: { ph: 6.4, do: 5.8, temp: 28, salinity: 35, ammonia: 0.12, nitrite: 0.25 } },
+        { tankNumber: "T2", timestamp: new Date().toISOString(), values: { ph: 7.2, do: 6.5, temp: 22, salinity: 32, ammonia: 0.05, nitrite: 0.15 } },
+        { tankNumber: "T3", timestamp: new Date().toISOString(), values: { ph: 8.1, do: 11, temp: 26, salinity: 36, ammonia: 0.15, nitrite: 0.3 } }
+      ];
+      processWaterQualityData(dummyData);
+
+      const testMessages = [
+        '시스템 오류 감지',
+        '산성도(pH)',
+        '용존산소 (Do)',
+        '수온 (°C)',
+        '염도',
+        '암모니아',
+        '아질산 (ppm)'
+      ];
+      const randomTestMessage = testMessages[Math.floor(Math.random() * testMessages.length)];
+      if (Math.random() > 0.7) {
+        addToHistory(randomTestMessage, `T${Math.floor(Math.random() * 3) + 1}`, "안 읽음");
       }
+    }
 
-      // 이벤트 리스너 설정
-      document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
-          dataTypeFilter = e.target.value;
-          updateHistorySection();
-        });
-
-        hamburgerBtn.addEventListener("click", () => {
-          sidebar.classList.toggle("active");
-        });
-
-        const toggleMenus = document.querySelectorAll(".toggle-menu");
-        toggleMenus.forEach(menu => {
-          menu.addEventListener("click", (e) => {
-            const subMenu = menu.nextElementSibling;
-            if (subMenu && subMenu.classList.contains("sub-menu")) {
-              e.preventDefault();
-              subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-            }
-          });
-        });
-
+    // 이벤트 리스너 설정
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
+        dataTypeFilter = e.target.value;
         updateHistorySection();
-        setInterval(fetchAlarmData, 5000); // API 호출
-        setInterval(checkDataAlarm, 5000); // 더미 데이터 체크 (백엔드 연동 후 제거)
       });
 
-      // 로그아웃 함수 (예시)
-      function handleLogout() {
-        window.location.href = "/logout";
-      }
+      hamburgerBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      const toggleMenus = document.querySelectorAll(".toggle-menu");
+      toggleMenus.forEach(menu => {
+        menu.addEventListener("click", (e) => {
+          const subMenu = menu.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
+            e.preventDefault();
+            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          }
+        });
+      });
+
+      updateHistorySection();
+      setInterval(() => {
+        if (Math.random() > 0.5) {
+          fetchAlarmData();
+        } else {
+          simulateWaterQualityData();
+        }
+      }, 5000);
+    });
+
+    // 로그아웃 함수
+    function handleLogout() {
+      window.location.href = "/logout";
+    }
   </script>
 </body>
 </html>

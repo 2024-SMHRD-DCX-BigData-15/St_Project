@@ -159,33 +159,36 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   table-layout: fixed;
+  overflow: hidden;
+  height: 288px; /* thead(48px) + tbody(5행 x 48px) = 288px */
 }
 
 .alarm-dashboard-screen th,
 .alarm-dashboard-screen td {
-  padding: 8px 10px;
+  padding: 0 10px;
   color: #ffffff;
   font-family: "Abel", Helvetica;
   font-size: clamp(12px, 2vw, 16px);
   text-align: left;
-  height: 32px;
-  min-height: 32px;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  line-height: 48px;
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .alarm-dashboard-screen tr {
-  height: 32px;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .alarm-dashboard-screen tr:last-child {
   border-bottom: none;
-}
-
-.alarm-dashboard-screen tr.warning {
-  animation: blink 1s infinite;
-  will-change: background-color;
-  contain: content;
 }
 
 .alarm-dashboard-screen .action.unconfirmed {
@@ -198,13 +201,6 @@ body {
 .alarm-dashboard-screen .action.confirmed {
   color: #28a745;
   text-align: center;
-}
-
-/* 경고 */
-@keyframes blink {
-  0% { background-color: rgba(255, 77, 77, 0.8); }
-  50% { background-color: rgba(9.54, 14, 35.36, 0.71); }
-  100% { background-color: rgba(255, 77, 77, 0.8); }
 }
 
 .alarm-dashboard-screen .pagination {
@@ -236,7 +232,7 @@ body {
   background-color: #005bb5;
 }
 
-/* 요약 */
+/* 요약 통계 (필요 시 추가) */
 .summary-stats {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
@@ -425,13 +421,23 @@ body {
   }
   .alarm-dashboard-screen th,
   .alarm-dashboard-screen td {
-    padding: 6px 8px;
+    padding: 0 8px;
     font-size: clamp(10px, 2vw, 14px);
-    height: 28px;
-    min-height: 28px;
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .alarm-dashboard-screen tr {
-    height: 28px;
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+  }
+  .alarm-dashboard-screen table {
+    height: 240px; /* thead(40px) + tbody(5행 x 40px) = 240px */
   }
   .filter-section {
     flex-direction: column;
