@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="새우양식 관제시스템 대시보드" />
     <link rel="stylesheet" href="/css/maindashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- ✅ Chart.js 추가 -->
     <title>관제센터 대시보드</title>
   </head>
   <body>
@@ -50,16 +51,16 @@
           
           <div class="user-info">
 
-	          
+             
           <div th:if="${session.loginUser != null}">
-		    <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 아이디 출력 -->
-		</div>
+          <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 아이디 출력 -->
+      </div>
 
           <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
           
           <div th:if="${session.loginUser == null}">
-		    <p>로그인해주세요.</p>
-		</div>
+          <p>로그인해주세요.</p>
+      </div>
           </div>
         </header>
 
@@ -140,64 +141,135 @@ function toggleNotifications() {
 /**
  * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가 (최신 데이터 먼저 가져옴)
  */
-async function loadTanks(userId) {
-    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
+ // 🔹 수조 데이터를 불러와 화면에 추가
+ async function loadTanks(userId) {
+     console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
 
-    try {
-        let response = await fetch(`/tank/list?userId=${userId}`);
+     try {
+         let response = await fetch(`/tank/list?userId=${userId}`);
+         if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
 
-        if (!response.ok) {
-            throw new Error(`서버 응답 오류: ${response.status}`);
-        }
+         let tanks = await response.json();
+         console.log("✅ 수조 데이터 응답:", tanks);
 
-        let tanks = await response.json();
-        console.log("✅ 수조 데이터 응답:", tanks);
+         let tankContainer = document.querySelector('.control-center');
+         tankContainer.innerHTML = "";
 
-        let tankContainer = document.querySelector('.control-center');
-        tankContainer.innerHTML = "";
+         for (let tank of tanks) {
+             if (tank.tank_delete === "N") { 
+                 let latestData = await fetchLatestTankData(tank.tankIdx);
 
-        for (let tank of tanks) {
-            if (tank.tank_delete === "N") { 
-                let latestData = await fetchLatestTankData(tank.tankIdx);
+                 let tankDiv = document.createElement('div');
+                 tankDiv.classList.add('control-item');
+                 tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
 
-                let tankDiv = document.createElement('div');
-                tankDiv.classList.add('control-item');
-                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+                 tankDiv.innerHTML = `
+                     <h4>수조관리시스템 (${tank.tankIdx}번 수조)
+                         <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
+                         <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+                     </h4>
+                     <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
+                     <div class="image-container">
+                       <img src="/image/tank.png" alt="Tank Image" class="image" width="150" height="150">
+                         </div>
+                         <canvas id="tankChart-${tank.tankIdx}" width="200" height="200"></canvas>
+                     </div>
+                     <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
+                         <h5>수조 알람</h5>
+                         <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
+                     </div>
+                 `;
 
-                tankDiv.innerHTML = `
-                    <h4>수조관리시스템 (${tank.tankIdx}번 수조)
-                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
-                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
-                    </h4>
-                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-                        <div class="tank-data">
-                            <p class="waterPh">산성도: ${latestData?.waterPh ?? "정보 없음"}</p>
-                            <p class="waterDo">용존산소: ${latestData?.waterDo ?? "정보 없음"}</p>
-                            <p class="waterTemp">수온: ${latestData?.waterTemp ?? "정보 없음"}</p>
-                            <p class="waterSalt">염도: ${latestData?.waterSalt ?? "정보 없음"}</p>
-                            <p class="waterAmmonia">암모니아: ${latestData?.waterAmmonia ?? "정보 없음"}</p>
-                            <p class="waterNitrogen">아질산: ${latestData?.waterNitrogen ?? "정보 없음"}</p>
-                        </div>
-                    </div>
-                    <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
-                    	<h5>수조 알람</h5>
-                    	<div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
-                	</div>
-                `;
+                 tankContainer.appendChild(tankDiv);
+                 renderTankChart(tank);
+             }
+         }
+     } catch (error) {
+         console.error("❌ 오류 발생:", error);
+     }
+ }
 
-                tankContainer.appendChild(tankDiv);
-            }
-        }
-    } catch (error) {
-        console.error("❌ 오류 발생:", error);
-        alert("❌ 수조 데이터를 불러오지 못했습니다!");
-    }
-}
+ async function fetchLatestTankData(tankIdx) {
+     try {
+         let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
+         if (!response.ok) throw new Error(`❌ 서버 응답 오류: ${response.status}`);
+         return await response.json();
+     } catch (error) {
+         console.error(`❌ 최신 데이터 가져오기 실패 (tankIdx=${tankIdx}):`, error);
+         return null;
+     }
+ }
+
+ async function renderTankChart(tank) {
+     const ctx = document.getElementById(`tankChart-${tank.tankIdx}`).getContext('2d');
+     let latestData = await fetchLatestTankData(tank.tankIdx);
+
+     if (!latestData) return;
+
+     new Chart(ctx, {
+       type: 'bar',
+       data: {
+         labels: ['산성도', '용존산소', '수온', '염도', '암모니아', '아질산'],
+         datasets: [{
+           label: `${tank.tankIdx}번 수조 데이터`,
+           data: [
+             latestData.waterPh,
+             latestData.waterDo,
+             latestData.waterTemp,
+             latestData.waterSalt,
+             latestData.waterAmmonia,
+             latestData.waterNitrogen
+           ],
+           backgroundColor: 'rgba(75, 192, 192, 0.6)',
+           borderColor: 'rgba(75, 192, 192, 1)',
+           borderWidth: 1,
+           barThickness: 4,
+           categoryPercentage: 0.9,
+           barPercentage: 0.95
+         }]
+       },
+       options: {
+         indexAxis: 'y',
+         responsive: false, // 반응형 비활성화
+         maintainAspectRatio: false, // 종횡비 유지 비활성화
+         layout: {
+           padding: {
+             left: 0,
+             right: 0,
+             top: 0,
+             bottom: 0
+           }
+         },
+         scales: {
+           x: {
+             beginAtZero: true,
+             display: false
+           },
+           y: {
+             display: true,
+             ticks: {
+               font: { size: 6 },
+               padding: 2
+             }
+           }
+         },
+         plugins: {
+           legend: {
+             display: false
+           },
+           tooltip: {
+             enabled: false
+           }
+         }
+       }
+     });
+   }
 
 window.onload = function () {
     let userId = `[[${session.loginUser?.userId}]]`;
     loadTanks(userId);
 };
+
 
 /**
  * 🔹 특정 tankIdx의 최신 수질 데이터를 불러오는 함수
@@ -314,7 +386,7 @@ async function updateAlarmContent(tankIdx) {
 
         const totalActive = criticalCount + warningCount;
         alarmContent.innerHTML = `
-        	<strong>활성 알람: ${totalActive}건</strong><br>
+           <strong>활성 알람: ${totalActive}건</strong><br>
             🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건<br>
             ${latestAlarms.map(alarm => `
               ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
