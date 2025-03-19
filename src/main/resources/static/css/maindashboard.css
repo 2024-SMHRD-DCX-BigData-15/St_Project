@@ -181,15 +181,21 @@ body {
 
 .tank-info {
   background-color: #252c41;
-  padding: 60px;
+  padding: 10px; /* 패딩 줄임 */
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex; /* flexbox로 수평 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  gap: 10px; /* 이미지와 그래프 간 간격 */
 }
 
-.tank-info p {
-  font-size: 16px;
-  color: white;
+.tank-image {
+  width: 40px; /* 이미지 크기 */
+  height: 40px;
+  object-fit: cover; /* 이미지 비율 유지 */
+  border-radius: 4px; /* 모서리 둥글게 */
 }
+
 
 
 

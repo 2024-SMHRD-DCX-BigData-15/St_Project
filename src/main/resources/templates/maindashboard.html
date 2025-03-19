@@ -172,7 +172,7 @@ function toggleNotifications() {
                      <div class="image-container">
                        <img src="/image/tank.png" alt="Tank Image" class="image" width="150" height="150">
                          </div>
-                         <canvas id="tankChart-${tank.tankIdx}" width="200" height="200"></canvas>
+                         <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
                      </div>
                      <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
                          <h5>수조 알람</h5>
@@ -223,7 +223,7 @@ function toggleNotifications() {
            backgroundColor: 'rgba(75, 192, 192, 0.6)',
            borderColor: 'rgba(75, 192, 192, 1)',
            borderWidth: 1,
-           barThickness: 4,
+           barThickness: 23,
            categoryPercentage: 0.9,
            barPercentage: 0.95
          }]
@@ -248,7 +248,7 @@ function toggleNotifications() {
            y: {
              display: true,
              ticks: {
-               font: { size: 6 },
+               font: { size: 13 },
                padding: 2
              }
            }
