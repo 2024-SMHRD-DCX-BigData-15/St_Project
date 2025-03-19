@@ -109,19 +109,23 @@ public class TankRestController {
      * 🔹 특정 수조의 최신 수질 데이터를 JSON으로 반환
      * ✅ 프론트엔드에서 데이터를 요청하면 해당 tankIdx의 최신 데이터가 반환됨
      */
-    /**
-     * 🔹 tank_idx에 해당하는 최신 수조 데이터를 JSON으로 반환
-     */
     @GetMapping("/data/latest")
     public ResponseEntity<Map<String, Object>> getLatestTankData(@RequestParam("tankIdx") Long tankIdx) {
+        logger.info("🚀 최신 수질 데이터 요청: tankIdx={}", tankIdx);
+
+        // ✅ TankDataService에서 최신 데이터 가져오기
         TankDataEntity latestData = tankDataService.getLatestTankData(tankIdx);
 
         if (latestData == null) {
+            logger.warn("❌ 최신 데이터 없음 (tankIdx={})", tankIdx);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
+        logger.info("✅ 최신 데이터 반환 완료: {}", latestData);
+
         // ✅ JSON 변환 시 필요한 필드만 추출하여 반환
         Map<String, Object> response = new HashMap<>();
+        response.put("tankIdx", tankIdx);
         response.put("waterPh", latestData.getWaterPh());
         response.put("waterDo", latestData.getWaterDo());
         response.put("waterTemp", latestData.getWaterTemp());

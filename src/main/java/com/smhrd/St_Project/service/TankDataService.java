@@ -103,6 +103,7 @@ public class TankDataService {
      */
     public TankDataEntity getLatestTankData(Long tankIdx) {
         System.out.println("🚀 최신 수조 데이터 요청: tankIdx=" + tankIdx);
+        
         Optional<TankDataEntity> latestData = tankDataRepository.findLatestTankData(tankIdx);
 
         if (latestData.isPresent()) {
@@ -113,4 +114,5 @@ public class TankDataService {
             return null;
         }
     }
+
 }

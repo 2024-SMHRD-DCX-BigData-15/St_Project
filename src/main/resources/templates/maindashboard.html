@@ -71,187 +71,216 @@
 
     <script>
   //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
-    function handleLogout() {
-        console.log("🚀 로그아웃 요청");
+    //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
+function handleLogout() {
+    console.log("🚀 로그아웃 요청");
 
-        const authToken = localStorage.getItem("authToken");
+    const authToken = localStorage.getItem("authToken");
 
-        fetch("/api/member/logout", { // ✅ 올바른 API 경로로 수정
-            method: "POST",  // ✅ GET이 아니라 POST로 변경
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: authToken }),
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("✅ 서버 로그아웃 성공");
+    fetch("/api/member/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: authToken }),
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("✅ 서버 로그아웃 성공");
 
-                // ✅ localStorage, sessionStorage에서 자동 로그인 정보 삭제
-                localStorage.removeItem("authToken");
-                localStorage.removeItem("autoLogin");
-                localStorage.removeItem("savedUserId");
-                localStorage.removeItem("savedPassword");
-                sessionStorage.clear();
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("autoLogin");
+            localStorage.removeItem("savedUserId");
+            localStorage.removeItem("savedPassword");
+            sessionStorage.clear();
 
-                // ✅ JSESSIONID 쿠키 삭제 (강제 로그아웃)
-                document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-                console.log("✅ 모든 저장소 데이터 삭제 완료");
+            console.log("✅ 모든 저장소 데이터 삭제 완료");
 
-                // ✅ 1초 대기 후 로그인 페이지로 이동
-                setTimeout(() => {
-                    alert("✅ 로그아웃 완료!");
-                    window.location.href = "/login";
-                }, 1000);
-            } else {
-                console.warn("🚨 로그아웃 실패: 응답 오류");
-            }
-        })
-        .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+            setTimeout(() => {
+                alert("✅ 로그아웃 완료!");
+                window.location.href = "/login";
+            }, 1000);
+        } else {
+            console.warn("🚨 로그아웃 실패: 응답 오류");
+        }
+    })
+    .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+}
+
+/**
+ * 🔹 쿠키 삭제 함수
+ */
+function deleteCookie(name) {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+}
+
+// 햄버거 버튼으로 사이드바 토글
+hamburgerBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+});
+
+// 서브 메뉴 토글 기능
+const toggleMenus = document.querySelectorAll(".toggle-menu");
+toggleMenus.forEach(menu => {
+  menu.addEventListener("click", (e) => {
+    const subMenu = menu.nextElementSibling;
+    if (subMenu && subMenu.classList.contains("sub-menu")) {
+      e.preventDefault();
+      subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
     }
+  });
+});
 
-        /**
-         * 🔹 쿠키 삭제 함수
-         */
-        function deleteCookie(name) {
-            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+// 알림 로그
+function toggleNotifications() {
+    var log = document.getElementById("notificationLog");
+    log.style.display = log.style.display === "block" ? "none" : "block";
+}
+
+/**
+ * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가 (최신 데이터 먼저 가져옴)
+ */
+async function loadTanks(userId) {
+    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
+
+    try {
+        let response = await fetch(`/tank/list?userId=${userId}`);
+
+        if (!response.ok) {
+            throw new Error(`서버 응답 오류: ${response.status}`);
         }
 
-     // 햄버거 버튼으로 사이드바 토글
-        hamburgerBtn.addEventListener("click", () => {
-          sidebar.classList.toggle("active");
-        });
+        let tanks = await response.json();
+        console.log("✅ 수조 데이터 응답:", tanks);
 
-        // 서브 메뉴 토글 기능
-        const toggleMenus = document.querySelectorAll(".toggle-menu");
-        toggleMenus.forEach(menu => {
-          menu.addEventListener("click", (e) => {
-            const subMenu = menu.nextElementSibling;
-            if (subMenu && subMenu.classList.contains("sub-menu")) {
-              e.preventDefault(); // 링크 기본 동작 방지
-              subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+        let tankContainer = document.querySelector('.control-center');
+        tankContainer.innerHTML = "";
+
+        for (let tank of tanks) {
+            if (tank.tank_delete === "N") { 
+                let latestData = await fetchLatestTankData(tank.tankIdx);
+
+                let tankDiv = document.createElement('div');
+                tankDiv.classList.add('control-item');
+                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+
+                tankDiv.innerHTML = `
+                    <h4>수조관리시스템 (${tank.tankIdx}번 수조)
+                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
+                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+                    </h4>
+                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
+                        <div class="tank-data">
+                            <p class="waterPh">산성도: ${latestData?.waterPh ?? "정보 없음"}</p>
+                            <p class="waterDo">용존산소: ${latestData?.waterDo ?? "정보 없음"}</p>
+                            <p class="waterTemp">수온: ${latestData?.waterTemp ?? "정보 없음"}</p>
+                            <p class="waterSalt">염도: ${latestData?.waterSalt ?? "정보 없음"}</p>
+                            <p class="waterAmmonia">암모니아: ${latestData?.waterAmmonia ?? "정보 없음"}</p>
+                            <p class="waterNitrogen">아질산: ${latestData?.waterNitrogen ?? "정보 없음"}</p>
+                        </div>
+                    </div>
+                    <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}" onclick="window.location.href='/alarmHistory'">
+                        <h5>수조 알람 로그</h5>
+                    </div>
+                `;
+
+                tankContainer.appendChild(tankDiv);
             }
-          });
-        });
-
-        
-        // 알림 로그
-		        function toggleNotifications() {
-		  var log = document.getElementById("notificationLog");
-		  log.style.display = log.style.display === "block" ? "none" : "block";
-		}
-
-        
-        /**
-         * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가
-         */
-         async function loadTanks(userId) {
-        	    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
-
-        	    try {
-        	        let response = await fetch(`/tank/list?userId=${userId}`);
-
-        	        if (!response.ok) {
-        	            throw new Error(`서버 응답 오류: ${response.status}`);
-        	        }
-
-        	        let tanks = await response.json();
-        	        console.log("✅ 수조 데이터 응답:", tanks); // ✅ 수조 데이터 로그
-
-        	        let tankContainer = document.querySelector('.control-center');
-        	        tankContainer.innerHTML = ""; // 기존 데이터 초기화
-
-        	        tanks.forEach(tank => {
-        	            console.log(`📌 확인 중: tankIdx=${tank.tankIdx}, tank_delete=${tank.tank_delete}`); // ✅ 개별 수조 상태 확인
-
-        	            if (tank.tank_delete === "N") { // 🔹 tank_delete가 "N"인 것만 표시
-        	                let tankDiv = document.createElement('div');
-        	                tankDiv.classList.add('control-item');
-        	                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
-
-        	                tankDiv.innerHTML = `
-        	                    <h4>수조관리시스템 (${tank.tankIdx}번 수조)
-        	                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
-        	                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
-        	                    </h4>
-        	                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-        	                      // 창환선배 여기 확인하세요 ><
-        	                      <div class="tank-data">
-							            <p>산성도: ${tank.temperature}%</p>
-							            <p>용존산소: ${tank.salinity}%</p>
-							            <p>수온: ${tank.ph}%</p>
-							            <p>염도: ${tank.oxygen}%</p>
-							            <p>암모니아: ${tank.waterLevel}%</p>
-							            <p>아질산: ${tank.turbidity}%</p>
-							        </div>
-						         </div>
-        	                    <div class="alarm-log-container" id="alarm-log-1" onclick = "window.location.href='/alarmHistory'">
-                                <h5>수조 알람 로그</h5>
-        	                `;
-
-        	                tankContainer.appendChild(tankDiv);
-        	                console.log(`✅ 화면에 추가됨: tankIdx=${tank.tankIdx}`); // ✅ 화면에 추가 로그
-        	            }
-        	        });
-
-        	    } catch (error) {
-        	        console.error("❌ 오류 발생:", error);
-        	        alert("❌ 수조 데이터를 불러오지 못했습니다!");
-        	    }
-        	}
-
-        // ✅ 페이지 로드 시 자동 실행
-        window.onload = function () {
-            let userId = `[[${session.loginUser?.userId}]]`;
-            loadTanks(userId);
-        };
-        
-        /**
-         * 🔹 수조 수정 페이지로 이동하는 함수
-         */
-        function editTank(tankIdx) {
-            console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`); // ✅ 디버깅 로그 추가
-            window.location.href = `/tank/edit/${tankIdx}`; // ✅ 수정 페이지로 이동
         }
-        
-        /**
-         * 🔹 수조 삭제 함수
-         */
-        async function deleteTank(tankIdx) {
-            console.log(`🚀 삭제 버튼 클릭됨: tankIdx=${tankIdx}`); // ✅ 버튼 클릭 확인
+    } catch (error) {
+        console.error("❌ 오류 발생:", error);
+        alert("❌ 수조 데이터를 불러오지 못했습니다!");
+    }
+}
 
-            if (!confirm("정말 삭제하시겠습니까?")) return;
+window.onload = function () {
+    let userId = `[[${session.loginUser?.userId}]]`;
+    loadTanks(userId);
+};
 
-            try {
-                console.log(`📡 서버에 삭제 요청 보냄... tankIdx=${tankIdx}`); // ✅ 요청 보내기 전 로그
-                
-                let response = await fetch(`/tank/delete/${tankIdx}`, { method: "PUT" });
-
-                if (!response.ok) {
-                    throw new Error(`서버 응답 오류: ${response.status}`);
-                }
-
-                let result = await response.text();
-                console.log(`✅ 서버 응답: ${result}`); // ✅ 서버 응답 로그
-                
-                alert("✅ 수조 삭제 완료!");
-                
-                // ✅ 화면에서 해당 수조 삭제
-                document.getElementById(`tank-${tankIdx}`).remove();
-                console.log(`🧹 화면에서 수조 제거 완료! tankIdx=${tankIdx}`); // ✅ 화면에서 삭제 확인
-            } catch (error) {
-                console.error("❌ 삭제 중 오류 발생:", error);
-                alert("❌ 삭제 실패!");
-            }
-            
-           }
-        
-        /**
-         * 🔹 수조 상세 페이지로 이동하는 함수
-         */
-        function goToDashboardDetail(tankIdx) {
-            console.log(`🚀 수조 상세 페이지 이동: tankIdx=${tankIdx}`); // ✅ 디버깅 로그 추가
-            window.location.href = `/dashboarddetail?tankIdx=${tankIdx}`;
+/**
+ * 🔹 특정 tankIdx의 최신 수질 데이터를 불러오는 함수
+ */
+async function fetchLatestTankData(tankIdx) {
+    try {
+        let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
+        if (!response.ok) {
+            throw new Error(`❌ 서버 응답 오류: ${response.status}`);
         }
+        let data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`❌ 최신 데이터 가져오기 실패 (tankIdx=${tankIdx}):`, error);
+        return null;
+    }
+}
+
+/**
+ * 🔹 수조 수정 페이지로 이동하는 함수
+ */
+function editTank(tankIdx) {
+    console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`);
+    window.location.href = `/tank/edit/${tankIdx}`;
+}
+
+/**
+ * 🔹 수조 삭제 함수
+ */
+async function deleteTank(tankIdx) {
+    console.log(`🚀 삭제 버튼 클릭됨: tankIdx=${tankIdx}`);
+
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+        let response = await fetch(`/tank/delete/${tankIdx}`, { method: "PUT" });
+
+        if (!response.ok) {
+            throw new Error(`서버 응답 오류: ${response.status}`);
+        }
+
+        alert("✅ 수조 삭제 완료!");
+        document.getElementById(`tank-${tankIdx}`).remove();
+    } catch (error) {
+        console.error("❌ 삭제 중 오류 발생:", error);
+        alert("❌ 삭제 실패!");
+    }
+}
+
+/**
+ * 🔹 수조 상세 페이지로 이동하는 함수
+ */
+function goToDashboardDetail(tankIdx) {
+    console.log(`🚀 수조 상세 페이지 이동: tankIdx=${tankIdx}`);
+    window.location.href = `/dashboarddetail?tankIdx=${tankIdx}`;
+}
+
+/**
+ * 🔹 모든 수조에 대해 자동 갱신 시작 (5초마다 실행)
+ */
+function startAutoUpdateForTanks(tankIds) {
+    console.log("⏳ 모든 수조에 대한 자동 갱신 시작:", tankIds);
+
+    tankIds.forEach(tankIdx => {
+        fetchLatestTankData(tankIdx);
+        setInterval(() => fetchLatestTankData(tankIdx), 1000*60*60*24); // 추후 시간 변경하기 현재 하루로 설정
+    });
+}
+
+/**
+ * 🔹 페이지 로드 시 수조 목록을 불러온 후, 자동 갱신 시작
+ */
+document.addEventListener("DOMContentLoaded", function () {
+    let userId = `[[${session.loginUser?.userId}]]`;
+
+    fetch(`/tank/list?userId=${userId}`)
+        .then(response => response.json())
+        .then(tanks => {
+            let tankIds = tanks.filter(tank => tank.tank_delete === "N").map(tank => tank.tankIdx);
+            startAutoUpdateForTanks(tankIds);
+        })
+        .catch(error => console.error("❌ 수조 목록 불러오기 실패:", error));
+});
+
     </script>
 
   </body>
