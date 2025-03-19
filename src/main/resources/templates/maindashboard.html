@@ -282,9 +282,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("❌ 수조 목록 불러오기 실패:", error));
 });
 
-/**
-  알람 데이터 가져오기 및 업데이트
- */
+
+/* 알람 데이터 가져오기 및 업데이트 */
+
 async function updateAlarmContent(tankIdx) {
     try {
         // 실제 API 호출
@@ -319,8 +319,12 @@ async function updateAlarmContent(tankIdx) {
             ${latestAlarms.map(alarm => `
               🕒 ${new Date(alarm.timestamp).toLocaleTimeString()} - 수조 ${tankIdx}: ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
             `).join("<br>")}
-            <a href="/alarmHistory2" class="detail-link">🔍 자세히 보기</a>
         `;
+        
+        alarmContent.style.cursor = "pointer"; // 클릭 가능하다는 힌트
+        alarmContent.addEventListener("click", () => {
+            window.location.href = "/alarmHistory";
+        });        
     } catch (error) {
         console.error(`❌ 알람 업데이트 실패 (tankIdx=${tankIdx}):`, error);
         let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
@@ -328,9 +332,7 @@ async function updateAlarmContent(tankIdx) {
     }
 }
 
-/**
- * 주기적 알람 업데이트 (5초마다)
- */
+/* 주기적 알람 업데이트 (5초마다) */
 function startAlarmUpdates(tankIds) {
     tankIds.forEach(tankIdx => {
         updateAlarmContent(tankIdx); // 초기 호출
@@ -345,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(tanks => {
             let tankIds = tanks.filter(tank => tank.tank_delete === "N").map(tank => tank.tankIdx);
-            startAlarmUpdates(tankIds); // 알람 업데이트 시작
+            startAlarmUpdates(tankIds);
         })
         .catch(error => console.error("❌ 알람 업데이트 초기화 실패:", error));
 });

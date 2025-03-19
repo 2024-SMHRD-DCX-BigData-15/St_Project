@@ -224,21 +224,21 @@ body {
   }
 }
 
-/* 알람 로그 */
+/* 알람 */
 .alarm-log-container {
   background-color: #252c41;
   padding: 0.625rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.2);
   margin-top: 1.875rem;
   height: 20vh;
   overflow-y: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
 }
 
-.alarm-log-container h5 {
-  font-size: 1rem;
-  color: #fff;
-  margin-bottom: 0.3125rem;
+.alarm-log-container:hover {
+  box-shadow: 0 0.375rem 0.9375rem rgba(0, 0, 0, 0.3);
 }
 
 .alarm-content {
@@ -252,19 +252,6 @@ body {
   display: block;
   margin-bottom: 0.1875rem;
 }
-
-.alarm-content .detail-link {
-  color: #7a4dff;
-  text-decoration: none;
-  font-size: 0.875rem;
-  display: block;
-  margin-top: 0.1875rem;
-}
-
-.alarm-content .detail-link:hover {
-  text-decoration: underline;
-}
-
 
 /* 기본 스타일 */
 body {
