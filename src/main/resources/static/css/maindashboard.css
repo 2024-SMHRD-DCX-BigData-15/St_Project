@@ -16,8 +16,8 @@ body {
   align-items: center;
   min-height: 100vh;
   margin: 0; /* 기본 여백을 제거 */
-  overflow-x: auto; /* 수평 스크롤을 자동으로 생성 */
-  overflow-x: hidden; /* 세로 스크롤 방지 */
+  overflow-x: hidden; /* 가로 스크롤 비활성화 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
 
 /* 페이지 레이아웃을 위한 wrapper */
@@ -224,48 +224,45 @@ body {
   }
 }
 
-/* 알람 로그 컨테이너 스타일 */
+/* 알람 로그 */
 .alarm-log-container {
   background-color: #252c41;
-  padding: 20px;
+  padding: 0.625rem;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 30px;
-  max-height: 200px;
-  overflow-y: auto;
+  margin-top: 1.875rem;
+  height: 20vh;
+  overflow-y: hidden;
 }
 
 .alarm-log-container h5 {
-  font-size: 18px;
+  font-size: 1rem;
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 0.3125rem;
 }
 
-.alarm-log-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.alarm-log-item {
-  background-color: #333;
+.alarm-content {
+  font-size: 0.875rem;
   color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-size: 14px;
+  line-height: 1.2;
 }
 
-.alarm-log-item.warning {
-  background-color: #ffcc00;
+.alarm-content strong {
+  font-size: 0.875rem;
+  display: block;
+  margin-bottom: 0.1875rem;
 }
 
-.alarm-log-item.error {
-  background-color: #ff0000;
+.alarm-content .detail-link {
+  color: #7a4dff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  display: block;
+  margin-top: 0.1875rem;
 }
 
-.alarm-log-item.info {
-  background-color: #00ccff;
+.alarm-content .detail-link:hover {
+  text-decoration: underline;
 }
 
 
