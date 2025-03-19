@@ -8,7 +8,7 @@
 /* 전체 페이지 스타일 */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #1e213a;
+  background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
   color: #ffffff;
   line-height: 1.5;
   display: flex;
@@ -47,7 +47,7 @@ body {
   transform: translateX(-40%);
   width: 70%;
   max-width: 1200px;
-  background-color: #1e213a;
+  background-color:rgb(15, 18, 59);
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
@@ -82,7 +82,7 @@ body {
   margin: 0;
   padding: 10px 0;
   font-family: 'Arial', sans-serif;
-  background-color: #1e213a;
+  background-color:rgb(15, 18, 59);
   border-radius: 5px;
   width: 100%;
   display: inline-block;
@@ -119,6 +119,7 @@ body {
   height: 100%;
    
 }
+
 
 /* 실시간 그래프에 대한 canvas 크기 설정 */
 .graph-container canvas {
@@ -167,6 +168,10 @@ body {
   background-color: #009e8a;
 }
 
+.data-box{
+ text-align: center;
+}
+
 /* 수조정보와 실시간 그래프 스타일 */
 .dashboard-cards {
   display: flex;
@@ -187,6 +192,8 @@ body {
   max-width: 25%;
   min-width: 200px;
   box-sizing: border-box;
+  position: relative;
+  top: -20px; /* 위로 20px 이동 */
 }
 
 /* 실시간 그래프 */
@@ -199,6 +206,8 @@ body {
   max-width: 75%;
   min-width: 300px;
   box-sizing: border-box;
+  position: relative;
+  top: -20px; /* 위로 20px 이동 */
 }
 
 /* 실시간 그래프 */
