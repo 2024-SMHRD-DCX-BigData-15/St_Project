@@ -29,7 +29,6 @@
     box-sizing: border-box;
 }
 
-/* 제목 스타일 */
 .sign-in-screen .title {
     display: flex;
     flex-direction: column;
@@ -51,7 +50,6 @@
     margin-bottom: 8px;
 }
 
-/* 입력 그룹 스타일 */
 .sign-in-screen .input-group {
     display: flex;
     flex-direction: column;
@@ -72,14 +70,13 @@
     line-height: 1.4;
     margin-left: 0;
     white-space: nowrap;
-    text-align: left; /* 라벨 왼쪽 정렬 */
+    text-align: left;
 }
 
-/* 입력 필드와 버튼을 한 줄에 배치 */
 .sign-in-screen .input-with-button {
     display: flex;
     align-items: center;
-    gap: 8px; /* 입력 필드와 버튼 사이 간격 */
+    gap: 8px;
     width: 100%;
 }
 
@@ -93,8 +90,8 @@
     border-radius: 16px;
     height: 40px;
     padding: 0 12px;
-    width: 100%; /* 입력 필드 폭 조정 */
-    flex-grow: 1; /* 남은 공간 채우기 */
+    width: 100%;
+    flex-grow: 1;
     color: #ffffff;
     font-size: clamp(12px, 2vw, 16px);
     background: transparent;
@@ -106,7 +103,6 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* 자동완성 스타일 오버라이드 */
 .sign-in-screen .input-field-text:-webkit-autofill,
 .sign-in-screen .input-field-text:-webkit-autofill:hover,
 .sign-in-screen .input-field-text:-webkit-autofill:focus,
@@ -118,7 +114,6 @@
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* 중복 체크 버튼 스타일 */
 .sign-in-screen .check-btn {
     background-color: #0075ff;
     color: white;
@@ -135,12 +130,11 @@
     background-color: #005bb5;
 }
 
-/* 메시지 스타일 */
 .sign-in-screen #idMessage,
 .sign-in-screen #pwMessage {
     font-size: clamp(8px, 1.2vw, 10px);
     margin-top: 4px;
-    text-align: left; /* 메시지도 왼쪽 정렬 */
+    text-align: left;
 }
 
 .sign-in-screen .text-success {
@@ -151,7 +145,6 @@
     color: #dc3545;
 }
 
-/* 회원가입 버튼 */
 .sign-in-screen .button-base_login {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
@@ -199,7 +192,6 @@
     line-height: normal;
 }
 
-/* 하단 텍스트와 링크 */
 .sign-in-screen .text-14 {
     color: #a0aec0;
     font-family: "Abel", Helvetica;
@@ -219,13 +211,14 @@
 .sign-in-screen .signup-link {
     color: #0075ff;
     text-decoration: none;
+    padding-left: 3%
 }
 
 .sign-in-screen .signup-link:hover {
     text-decoration: underline;
 }
 
-/* 모바일 반응형 추가 */
+/* 모바일 반응형 */
 @media (max-height: 600px) {
     .sign-in-screen .inputs {
         padding: 10px;
