@@ -27,10 +27,9 @@
     flex-direction: column;
     min-height: 400px;
     width: 354px;
-    max-width: 90%; /* 반응형 추가 */
+    max-width: 90%;
 }
 
-/* 제목 스타일 */
 .sign-in-screen .title {
     display: flex;
     flex-direction: column;
@@ -53,7 +52,6 @@
     margin-bottom: 6px;
 }
 
-/* 입력 그룹 스타일 */
 .sign-in-screen .input-group {
     align-items: flex-start;
     display: flex;
@@ -94,7 +92,6 @@
     box-sizing: border-box;
 }
 
-/* 자동완성 스타일 오버라이드 */
 .sign-in-screen .input-field-text:-webkit-autofill,
 .sign-in-screen .input-field-text:-webkit-autofill:hover,
 .sign-in-screen .input-field-text:-webkit-autofill:focus,
@@ -102,15 +99,14 @@
     -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
     box-shadow: 0 0 0 1000px transparent inset !important;
     background-color: transparent !important;
-    -webkit-text-fill-color: #ffffff !important; /* 텍스트 색상 유지 */
-    transition: background-color 5000s ease-in-out 0s; /* 배경색 전환 방지 */
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .sign-in-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* 로그인 버튼 스타일 */
 .sign-in-screen .button-base_login {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
@@ -123,7 +119,7 @@
     padding: 0;
     position: relative;
     width: 350px;
-    max-width: 100%; /* 반응형 */
+    max-width: 100%;
     cursor: pointer;
     box-sizing: border-box;
 }
@@ -157,7 +153,6 @@
     line-height: normal;
 }
 
-/* 하단 텍스트와 링크 */
 .sign-in-screen .text-14 {
     color: #a0aec0;
     font-family: "Abel", Helvetica;
@@ -168,7 +163,16 @@
     margin-top: 20px;
     text-align: center;
     white-space: nowrap;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 3% auto;
+
+    gap: 20px;
+    width: 90%;
 }
+
 
 .sign-in-screen .signup-link {
     color: #0075ff;
@@ -179,7 +183,6 @@
     text-decoration: underline;
 }
 
-/* 로그인 저장 체크박스 스타일 */
 .sign-in-screen .remember-me {
     display: flex;
     align-items: center;
