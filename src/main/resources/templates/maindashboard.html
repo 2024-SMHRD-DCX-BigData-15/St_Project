@@ -314,20 +314,19 @@ async function updateAlarmContent(tankIdx) {
 
         const totalActive = criticalCount + warningCount;
         alarmContent.innerHTML = `
-            <strong>현재 활성 알람: ${totalActive}건</strong><br>
-            🚨 위험: ${criticalCount}건  |  ⚠️ 경고: ${warningCount}건<br>
+        	<strong>활성 알람: ${totalActive}건</strong><br>
+            🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건<br>
             ${latestAlarms.map(alarm => `
-              🕒 ${new Date(alarm.timestamp).toLocaleTimeString()} - 수조 ${tankIdx}: ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
+              ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
             `).join("<br>")}
         `;
-        
-        alarmContent.style.cursor = "pointer"; // 클릭 가능하다는 힌트
+
+        alarmContent.style.cursor = "pointer";
         alarmContent.addEventListener("click", () => {
             window.location.href = "/alarmHistory";
-        });        
+        });
     } catch (error) {
         console.error(`❌ 알람 업데이트 실패 (tankIdx=${tankIdx}):`, error);
-        let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
         alarmContent.innerHTML = "알람 데이터를 불러오지 못했습니다.";
     }
 }
