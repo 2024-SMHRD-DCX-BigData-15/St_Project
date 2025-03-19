@@ -174,8 +174,16 @@
         	                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
         	                    </h4>
         	                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-        	                      
-        	                    </div>
+        	                      // 창환선배 여기 확인하세요 ><
+        	                      <div class="tank-data">
+							            <p>산성도: ${tank.temperature}%</p>
+							            <p>용존산소: ${tank.salinity}%</p>
+							            <p>수온: ${tank.ph}%</p>
+							            <p>염도: ${tank.oxygen}%</p>
+							            <p>암모니아: ${tank.waterLevel}%</p>
+							            <p>아질산: ${tank.turbidity}%</p>
+							        </div>
+						         </div>
         	                    <div class="alarm-log-container" id="alarm-log-1" onclick = "window.location.href='/alarmHistory'">
                                 <h5>수조 알람 로그</h5>
         	                `;
