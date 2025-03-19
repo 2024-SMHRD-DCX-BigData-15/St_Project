@@ -511,7 +511,7 @@ function fetchLatestTankData() {
 			    fetchLatestTankData();
 			
 			    // ✅ 10초마다 자동 갱신 (10000ms = 10초)
-			    setInterval(fetchLatestTankData, 10000);
+			    setInterval(fetchLatestTankData, 10000*6*60*24);
 			}
 			
 			// ✅ 페이지가 완전히 로드된 후 자동 갱신 시작
