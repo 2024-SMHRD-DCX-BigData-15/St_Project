@@ -283,23 +283,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * 알람 데이터 가져오기 및 업데이트
+  알람 데이터 가져오기 및 업데이트
  */
 async function updateAlarmContent(tankIdx) {
     try {
-        // 실제 API 호출 대신 테스트 데이터 사용
+        // 실제 API 호출
         // let response = await fetch(`/tank/alarm?tankIdx=${tankIdx}`);
         // if (!response.ok) throw new Error(`❌ 알람 데이터 요청 오류: ${response.status}`);
         // let alarms = await response.json();
 
-        // 테스트 데이터 (하드코딩)
+        // 테스트 데이터
+        // 아래 테스트 데이터를 삭제하고, 위의 실제 데이터 로직을 사용
         let alarms = [
             { "timestamp": "2025-03-18T15:03:00", "message": "용존산소 4mg/L", "status": "critical" },
             { "timestamp": "2025-03-18T14:55:00", "message": "암모니아 0.5ppm", "status": "critical" },
             { "timestamp": "2025-03-18T14:50:00", "message": "수온 이상", "status": "warning" }
         ];
         console.log(`✅ 테스트 알람 데이터 (tankIdx=${tankIdx}):`, alarms);
-
+        // 테스트 데이터 끝
+        
         let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
         let criticalCount = 0, warningCount = 0;
         let latestAlarms = [];
