@@ -6,6 +6,7 @@ import com.smhrd.St_Project.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,5 +161,28 @@ public class MemberRestController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "아이디 또는 비밀번호 오류"));
         }
+    }
+    
+    // ✅ 승인 및 거부 대기 중인 회원 목록 반환
+    @GetMapping
+    public List<MemberEntity> getPendingUsers() {
+        System.out.println("📡 API 요청: 승인 및 거부 대기 회원 목록 불러오기");
+        return memberService.getPendingUsers();
+    }
+
+    // ✅ 회원 승인 (user_status를 "N"으로 변경)
+    @PutMapping("/approve/{userId}")
+    public String approveUser(@PathVariable String userId) {
+        System.out.println("📡 API 요청: 회원 승인 - userId=" + userId);
+        memberService.approveUser(userId);
+        return "✅ 회원 승인 완료: " + userId;
+    }
+
+    // ✅ 회원 거부 (user_status를 "Y"로 변경)
+    @PutMapping("/reject/{userId}")
+    public String rejectUser(@PathVariable String userId) {
+        System.out.println("📡 API 요청: 회원 거부 - userId=" + userId);
+        memberService.rejectUser(userId);
+        return "❌ 회원 거부 완료: " + userId;
     }
 }

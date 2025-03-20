@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -223,6 +225,24 @@ public class MemberService {
             System.out.println("[디버깅] 회원 정보 없음");
         }
         return false;
+    }
+    
+ // ✅ 승인 및 거부 대기 중인 회원 목록 가져오기
+    public List<MemberEntity> getPendingUsers() {
+        System.out.println("🚀 승인/거부 대기 회원 목록 요청");
+        return memberRepository.findByUserStatusIn(Arrays.asList("Y", "N"));
+    }
+
+    // ✅ 회원 승인 (user_status "N"으로 변경)
+    public void approveUser(String userId) {
+        System.out.println("✅ 회원 승인 요청: userId=" + userId);
+        memberRepository.approveUser(userId);
+    }
+
+    // ✅ 회원 거부 (user_status "Y"로 변경)
+    public void rejectUser(String userId) {
+        System.out.println("❌ 회원 거부 요청: userId=" + userId);
+        memberRepository.rejectUser(userId);
     }
 
 }
