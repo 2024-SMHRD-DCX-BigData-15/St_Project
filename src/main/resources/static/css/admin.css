@@ -4,7 +4,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.th,td,span{
+	font-size: 12px;
+}
 /* 전체 페이지 스타일 */
 body {
     font-family: 'Arial', sans-serif;
@@ -14,7 +16,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* 레이아웃 */
@@ -270,11 +273,11 @@ body {
 
     .approval-table {
         width: 100%;
-        font-size: 12px;
+        font-size: 20px;
     }
 
     .approval-table th, .approval-table td {
-        padding: 8px;
+        padding: 10px;
     }
 
     .approval-table button {
