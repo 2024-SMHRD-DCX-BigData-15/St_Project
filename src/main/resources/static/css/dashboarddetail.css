@@ -185,7 +185,7 @@ body {
 /* 수조정보 */
 .tank-info {
   background-color: #252c41;
-  padding: 20px;
+  padding: 20px; /* 기존 패딩 유지 */
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   flex: 0 0 25%;
@@ -194,12 +194,15 @@ body {
   box-sizing: border-box;
   position: relative;
   top: -20px; /* 위로 20px 이동 */
+  max-height: 300px; /* 세로 크기 줄이기 (필요에 따라 조정) */
+  overflow-y: hidden; 
+  margin-top: 10px;
 }
 
 /* 실시간 그래프 */
 .card-graph {
   background-color: #252c41;
-  padding: 20px;
+  padding: 15px; /* 패딩 유지 */
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   flex: 0 0 75%;
@@ -207,19 +210,30 @@ body {
   min-width: 300px;
   box-sizing: border-box;
   position: relative;
-  top: -20px; /* 위로 20px 이동 */
+  top: -20px;
+  height: 300px; /* 명시적 높이 설정 (필요에 따라 조정) */
+  display: flex; /* 내부 요소를 유연하게 배치 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
 }
 
-/* 실시간 그래프 */
 .graph-container {
   background-color: #252c41;
-  padding: 20px;
+  padding: 0; /* 패딩 제거 */
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  min-height: 200px;
-  max-height: 400px;
-  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  height: 100%; /* 부모 높이에 맞춤 */
+  overflow-y: hidden;
+  margin-top: 0; /* 불필요한 마진 제거 */
+  flex: 1; /* 부모의 남은 공간을 모두 차지 */
 }
+
+.graph-container canvas#aihubGraph {
+  width: 100% !important;
+  height: 100% !important;
+  display: block; /* 캔버스 기본 여백 제거 */
+}
+
+
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
@@ -230,6 +244,7 @@ body {
   .tank-info, .card-graph {
     min-width: 100%;
   }
+  
 
   .wrapper {
     flex-direction: column;
