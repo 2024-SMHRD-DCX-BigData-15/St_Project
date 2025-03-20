@@ -153,23 +153,25 @@ body {
   font-size: 16px;
 }
 
-.card button {
-  padding: 10px 20px;
-  background-color: #00bfae;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
-}
-
-.card button:hover {
-  background-color: #009e8a;
-}
-
 .data-box{
  text-align: center;
+}
+
+.card {
+  cursor: pointer; /* 손 모양 커서 */
+  transition: all 0.2s ease; /* 부드러운 전환 효과 */
+  position: relative; /* 애니메이션 시 레이아웃 안정성 */
+  background-color: #1e2a37; /* 기본 배경색 (기존 스타일 유지 가정) */
+}
+
+.card.clicked {
+  border: 2px solid #4A90E2; /* 선택된 상태에서 파란 테두리 */
+  background-color: rgba(74, 144, 226, 0.1); /* 살짝 밝은 배경 */
+}
+
+.card.animate-click {
+  transform: scale(0.98); /* 클릭 시 살짝 축소 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 클릭 시 강한 그림자 */
 }
 
 /* 수조정보와 실시간 그래프 스타일 */

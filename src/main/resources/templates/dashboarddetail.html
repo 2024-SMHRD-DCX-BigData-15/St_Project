@@ -521,16 +521,35 @@ function fetchLatestTankData() {
 			
 			
 			// 클릭 이벤트 및 실시간 데이터 -성권-
-			// 캔버스 클릭 시 그래프 표시
-			canvasElements.forEach(canvas => {
-			  canvas.addEventListener('click', () => {
-			    const chartId = canvas.id;
-			    const label = dataRanges[chartId].label;  // 예: 'pH'
-			    showGraphFor(chartId, label);  // 그래프 출력 함수 호출
+			// 카드 요소들을 선택
+		const cardElements = document.querySelectorAll('.card');
+
+			// 각 카드에 클릭 이벤트 추가
+			cardElements.forEach(card => {
+			  card.addEventListener('click', () => {
+			    // 모든 카드의 클릭 상태 초기화
+			    cardElements.forEach(c => {
+			      c.classList.remove('clicked', 'animate-click');
+			    });
+			
+			    // 클릭된 카드에 효과 적용
+			    card.classList.add('clicked', 'animate-click');
+			
+			    // 애니메이션 후 'animate-click' 제거 (300ms)
+			    setTimeout(() => {
+			      card.classList.remove('animate-click');
+			    }, 300);
+			
+			    // 기존 그래프 표시 로직
+			    const canvas = card.querySelector('canvas'); // 카드 내의 캔버스 요소
+			    const chartId = canvas.id; // 캔버스 ID 가져오기
+			    const label = dataRanges[chartId].label; // 해당 ID에 맞는 라벨
+			    showGraphFor(chartId, label); // 그래프 출력 함수 호출
 			  });
 			});
-			let realtimeChart = null;  // 현재 그래프 저장용
-
+			
+			let realtimeChart = null; // 현재 그래프 저장용
+			
 			// ▶ 그래프 출력 함수
 			function showGraphFor(chartId, label) {
 			  const ctx = document.getElementById('aihubGraph').getContext('2d');
@@ -543,81 +562,81 @@ function fetchLatestTankData() {
 			    'chart-6': 'waterNitrogen'
 			  };
 			  const dataKey = valueKeyMap[chartId];
-
+			
 			  let labels = [];
 			  let values = [];
-
+			
 			  // 기존 그래프 제거
 			  if (realtimeChart) {
 			    realtimeChart.destroy();
 			  }
-
+			
 			  // 새 그래프 생성
 			  realtimeChart = new Chart(ctx, {
-				  type: 'line',
-				  data: {
-				    labels: labels, // X축 레이블 (시간 등)
-				    datasets: [{
-				      label: `${label} 실시간 데이터`, // 범례 레이블
-				      data: values,
-				      borderColor: '#4A90E2',
-				      backgroundColor: 'rgba(74, 144, 226, 0.2)',
-				      fill: true,
-				      tension: 0.3
-				    }]
-				  },
-				  options: {
-				    responsive: true,
-				    maintainAspectRatio: false, // 종횡비 유지 비활성화
-				    scales: {
-				      x: {
-				        title: {
-				          display: true,
-				          text: '실시간 데이터',
-				          color: '#ffffff',
-				          font: {
-				            size: 14
-				          }
-				        },
-				        ticks: {
-				          display: true, // X축 레이블 표시 유지
-				          color: '#ffffff',
-				          font: {
-				            size: 12
-				          }
-				        }
-				      },
-				      y: {
-				        title: {
-				          display: false // Y축 제목 숨김
-				        },
-				        ticks: {
-				          color: '#ffffff',
-				          font: {
-				            size: 12
-				          }
-				        }
-				      }
-				    },
-				    plugins: {
-				      legend: {
-				        display: false // 범례(데이터셋의 label)를 숨김
-				      },
-				      title: {
-				        display: true,
-				        text: label, // Y축 제목("pH")을 상단에 표시
-				        color: '#ffffff',
-				        font: {
-				          size: 16
-				        },
-				        padding: {
-				          top: 10,
-				          bottom: 20
-				        }
-				      }
-				    }
-				  }
-				});
+			    type: 'line',
+			    data: {
+			      labels: labels, // X축 레이블 (시간 등)
+			      datasets: [{
+			        label: `${label} 실시간 데이터`, // 범례 레이블
+			        data: values,
+			        borderColor: '#4A90E2',
+			        backgroundColor: 'rgba(74, 144, 226, 0.2)',
+			        fill: true,
+			        tension: 0.3
+			      }]
+			    },
+			    options: {
+			      responsive: true,
+			      maintainAspectRatio: false, // 종횡비 유지 비활성화
+			      scales: {
+			        x: {
+			          title: {
+			            display: true,
+			            text: '실시간 데이터',
+			            color: '#ffffff',
+			            font: {
+			              size: 14
+			            }
+			          },
+			          ticks: {
+			            display: true, // X축 레이블 표시 유지
+			            color: '#ffffff',
+			            font: {
+			              size: 12
+			            }
+			          }
+			        },
+			        y: {
+			          title: {
+			            display: false // Y축 제목 숨김
+			          },
+			          ticks: {
+			            color: '#ffffff',
+			            font: {
+			              size: 12
+			            }
+			          }
+			        }
+			      },
+			      plugins: {
+			        legend: {
+			          display: false // 범례(데이터셋의 label)를 숨김
+			        },
+			        title: {
+			          display: true,
+			          text: label, // Y축 제목("pH")을 상단에 표시
+			          color: '#ffffff',
+			          font: {
+			            size: 16
+			          },
+			          padding: {
+			            top: 10,
+			            bottom: 20
+			          }
+			        }
+			      }
+			    }
+			  });
 
 			  // 즉시 데이터 불러오기 + 30초마다 갱신
 			  fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
