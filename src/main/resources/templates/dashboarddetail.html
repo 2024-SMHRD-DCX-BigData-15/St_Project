@@ -642,7 +642,7 @@ function fetchLatestTankData() {
 			  fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
 			  setInterval(() => {
 			    fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
-			  }, 10000);
+			  }, 1000*60*60*24); // 갱신
 			}
 			// ▶ 서버에서 데이터 받아 그래프 갱신
 			function fetchLatestTankDataForGraph(dataKey, labels, values, chart) {
