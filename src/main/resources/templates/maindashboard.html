@@ -138,56 +138,70 @@ function toggleNotifications() {
     log.style.display = log.style.display === "block" ? "none" : "block";
 }
 
-/**
- * 🔹 저장된 수조 데이터를 API에서 불러와 화면에 추가 (최신 데이터 먼저 가져옴)
- */
- // 🔹 수조 데이터를 불러와 화면에 추가
- async function loadTanks(userId) {
-     console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
+    // 저장된 수조 데이터를 API에서 불러와 화면에 추가 (최신 데이터 먼저 가져옴)
+ 	// 수조 데이터를 불러와 화면에 추가
+ 	async function loadTanks(userId) {
+    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
 
-     try {
-         let response = await fetch(`/tank/list?userId=${userId}`);
-         if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+    try {
+        let response = await fetch(`/tank/list?userId=${userId}`);
+        if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
 
-         let tanks = await response.json();
-         console.log("✅ 수조 데이터 응답:", tanks);
+        let tanks = await response.json();
+        console.log("✅ 수조 데이터 응답:", tanks);
 
-         let tankContainer = document.querySelector('.control-center');
-         tankContainer.innerHTML = "";
+        // ✅ 1번이 위, 번호가 클수록 아래로 정렬 (tankIdx 기준 오름차순 정렬)
+        tanks.sort((a, b) => a.tankIdx - b.tankIdx);
+        console.log("📌 정렬된 수조 데이터:", tanks);
 
-         for (let tank of tanks) {
-             if (tank.tank_delete === "N") { 
-                 let latestData = await fetchLatestTankData(tank.tankIdx);
+        let tankContainer = document.querySelector('.control-center');
+        tankContainer.innerHTML = "";
 
-                 let tankDiv = document.createElement('div');
-                 tankDiv.classList.add('control-item');
-                 tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+        // 🔹 화면에 보이는 번호 변수 (1부터 시작)
+        let displayNumber = 1;
 
-                 tankDiv.innerHTML = `
-                     <h4>수조관리시스템 (${tank.tankIdx}번 수조)
-                         <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
-                         <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
-                     </h4>
-                     <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-                     <div class="image-container">
-                       <img src="/image/tank.png" alt="Tank Image" class="image" width="150" height="150">
-                         </div>
-                         <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
-                     </div>
-                     <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
-                         <h5>수조 알람</h5>
-                         <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
-                     </div>
-                 `;
+        // 🔹 화면에 수조 데이터 추가
+        for (let tank of tanks) {
+            if (tank.tank_delete === "N") { 
+                let latestData = await fetchLatestTankData(tank.tankIdx);
 
-                 tankContainer.appendChild(tankDiv);
-                 renderTankChart(tank);
-             }
-         }
-     } catch (error) {
-         console.error("❌ 오류 발생:", error);
-     }
- }
+                let tankDiv = document.createElement('div');
+                tankDiv.classList.add('control-item');
+                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+
+                tankDiv.innerHTML = `
+                    <h4>수조관리시스템 (${displayNumber}번 수조) <!-- ✅ 화면에서 보이는 번호 -->
+                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
+                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+                    </h4>
+                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
+                        <div class="image-container">
+                            <img src="/image/tank.png" alt="Tank Image" class="image" width="150" height="150">
+                        </div>
+                        <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
+                    </div>
+                    <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
+                        <h5>수조 알람</h5>
+                        <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
+                    </div>
+                `;
+
+                tankContainer.appendChild(tankDiv);
+                renderTankChart(tank); // 🔹 차트 렌더링
+
+                displayNumber++; // ✅ 다음 수조 번호 증가
+            }
+        }
+    } catch (error) {
+        console.error("❌ 오류 발생:", error);
+    }
+}
+
+// ✅ 페이지 로드 시 수조 데이터 불러오기
+window.onload = function () {
+    let userId = `[[${session.loginUser?.userId}]]`;
+    loadTanks(userId);
+};
 
  async function fetchLatestTankData(tankIdx) {
      try {
