@@ -368,6 +368,7 @@ async function updateAlarmContent(tankIdx) {
         // 아래 테스트 데이터를 삭제하고, 위의 실제 데이터 로직을 사용
         let alarms = [
             { "timestamp": "2025-03-18T15:03:00", "message": "용존산소 4mg/L", "status": "critical" },
+            { "timestamp": "2025-03-18T15:00:00", "message": "염도 이상", "status": "warning" },
             { "timestamp": "2025-03-18T14:55:00", "message": "암모니아 0.5ppm", "status": "critical" },
             { "timestamp": "2025-03-18T14:50:00", "message": "수온 이상", "status": "warning" }
         ];
@@ -381,12 +382,11 @@ async function updateAlarmContent(tankIdx) {
         alarms.forEach(alarm => {
             if (alarm.status === "critical") criticalCount++;
             else if (alarm.status === "warning") warningCount++;
-            if (latestAlarms.length < 2) latestAlarms.push(alarm); // 최신 2건만 표시
+            if (latestAlarms.length < 4) latestAlarms.push(alarm); // 최신 4건만 표시
         });
 
         const totalActive = criticalCount + warningCount;
         alarmContent.innerHTML = `
-           <strong>활성 알람: ${totalActive}건</strong><br>
             🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건<br>
             ${latestAlarms.map(alarm => `
               ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
