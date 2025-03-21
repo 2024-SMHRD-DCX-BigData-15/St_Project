@@ -400,11 +400,7 @@
             drawLabels(startAngle, normalAngle, warningAngle, dangerAngle);
 
             // 현재 값 표시
-            ctx.fillStyle = 'black';
-            ctx.font = '16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(currentValues[canvasId].toFixed(1) + ' ' + dataRanges[canvasId].label, centerX, centerY + 30);
-
+            
             // 세련된 화살표 그리기
             drawPointer();
           }
