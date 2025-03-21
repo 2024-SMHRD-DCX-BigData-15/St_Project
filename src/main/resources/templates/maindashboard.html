@@ -171,8 +171,14 @@ function toggleNotifications() {
 
                 tankDiv.innerHTML = `
                     <h4>수조관리시스템 (${displayNumber}번 수조) <!-- ✅ 화면에서 보이는 번호 -->
-                        <button class="edit-btn" onclick="editTank(${tank.tankIdx})">수정</button>
-                        <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">삭제</button>
+	                    <div class="button-group">
+	                    <button class="edit-btn" onclick="editTank(${tank.tankIdx})">
+	                        <img src="/image/1.png" width="20" height="20">
+	                    </button>
+	                    <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">
+	                        <img src="/image/2.png" width="20" height="20">
+	                    </button>
+	                </div>
                     </h4>
                     <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
                         <div class="image-container">
