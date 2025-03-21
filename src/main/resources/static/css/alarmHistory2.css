@@ -298,7 +298,7 @@ body {
   left: -250px;
   padding: 20px;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 1100;
   overflow-y: auto;
   transition: left 0.3s ease;
 }
@@ -335,6 +335,7 @@ body {
   padding: 10px;
   border-radius: 8px;
   transition: background-color 0.3s;
+  pointer-events: auto;
 }
 
 .sidebar-menu a:hover {
