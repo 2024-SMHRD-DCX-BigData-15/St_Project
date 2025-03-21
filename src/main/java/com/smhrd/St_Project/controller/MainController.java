@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +38,7 @@ public class MainController {
     
     @GetMapping("/maindashboard")
     public String mainDashboard(HttpSession session) {
-        // ✅ 세션에 로그인 정보 확인
+        // ✅ 세션에서 로그인 정보 확인
         MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
 
         if (loginUser == null) {
@@ -45,8 +46,29 @@ public class MainController {
             return "redirect:/login";
         }
 
+        // ✅ 관리자 계정 확인 후 관리자 페이지로 이동
+        if ("admin".equals(loginUser.getUserId())) {
+            System.out.println("✅ 관리자 계정 로그인 감지! 관리자 페이지로 이동");
+            return "redirect:/admin";
+        }
+
         System.out.println("✅ 대시보드 접근 허용: " + loginUser.getUserId());
-        return "maindashboard"; // ✅ 로그인 성공 후 이동할 페이지
+        return "maindashboard";
+    }
+
+    @GetMapping("/admin")
+    public String adminDashboard(HttpSession session) {
+        // ✅ 세션에서 로그인 정보 확인
+        MemberEntity loginUser = (MemberEntity) session.getAttribute("loginUser");
+
+        // ✅ 관리자가 아니라면 접근 차단
+        if (loginUser == null || !"admin".equals(loginUser.getUserId())) {
+            System.out.println("🚨 접근 오류: 관리자 계정이 아님! 로그인 페이지로 이동");
+            return "redirect:/login";
+        }
+
+        System.out.println("✅ 관리자 페이지 접근 허용: " + loginUser.getUserId());
+        return "admin";
     }
 
     @GetMapping("/edit/{id}")
@@ -107,5 +129,10 @@ public class MainController {
     @GetMapping("/alarmHistory2")
     public String alarmHistory2() {
         return "alarmHistory2"; // alarmHistory2.html 템플릿을 반환 (thymeleaf 사용 시 resources/templates/login.html 필요)
+    }
+    
+    @PostMapping("/admin")
+    public String admin() {
+        return "admin"; 
     }
 }

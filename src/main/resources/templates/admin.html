@@ -70,7 +70,7 @@
     </div>
 
     <script>
-              document.getElementById('hamburger-menu').addEventListener('click', function() {
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
         // 사이드바 열기/닫기 토글
         document.getElementById('sidebar').classList.toggle('open');
         
@@ -100,55 +100,79 @@
 
 
         // 서버에서 사용자 데이터 받아오기
-        fetch('/api/users')  // 여기에 실제 DB에서 데이터를 가져오는 API 엔드포인트 URL을 입력하세요
-            .then(response => response.json())  // JSON 형식으로 응답받기
-            .then(users => {
-                const tbody = document.getElementById('approval-table-body');
-                
-                // 서버에서 받은 데이터를 테이블에 추가
-                users.forEach(user => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${user.id}</td>
-                        <td>${user.name}</td>
-                        <td>${user.address}</td>
-                        <td>${user.contact}</td>
-                        <td>${user.joinDate}</td>
-                        <td><span class="status-pending">${user.status}</span></td>
-                        <td>
-                            <button class="approve-btn">승인</button>
-                            <button class="reject-btn">거부</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
+        document.addEventListener("DOMContentLoaded", function () {
+    fetch('/api/member')
+        .then(response => response.json())
+        .then(users => {
+            const tbody = document.getElementById('approval-table-body');
 
-                // 승인 및 거부 버튼 클릭 이벤트 추가
-                document.querySelectorAll('.approve-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        let row = this.closest('tr');
-                        row.querySelector('.status-pending').textContent = '승인됨';
-                        row.querySelector('.status-pending').classList.remove('status-pending');
-                        row.querySelector('.status-pending').classList.add('status-approved');
-                        this.disabled = true; // 승인 버튼 비활성화
-                        row.querySelector('.reject-btn').disabled = true; // 거부 버튼 비활성화
-                    });
-                });
-
-                document.querySelectorAll('.reject-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        let row = this.closest('tr');
-                        row.querySelector('.status-pending').textContent = '거부됨';
-                        row.querySelector('.status-pending').classList.remove('status-pending');
-                        row.querySelector('.status-pending').classList.add('status-rejected');
-                        this.disabled = true; // 거부 버튼 비활성화
-                        row.querySelector('.approve-btn').disabled = true; // 승인 버튼 비활성화
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('데이터를 가져오는 데 실패했습니다:', error);
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.userId}</td>
+                    <td>${user.userName}</td>
+                    <td>${user.userAdd}</td>
+                    <td>${user.userPhone}</td>
+                    <td>${user.joinedAt}</td>
+                    <td>
+                        <span class="status ${user.userStatus === 'Y' ? 'status-pending' : 'status-approved'}">
+                            ${user.userStatus === 'Y' ? '대기 중' : '승인됨'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="approve-btn" ${user.userStatus === 'N' ? 'disabled' : ''}>승인</button>
+                        <button class="reject-btn" ${user.userStatus === 'Y' ? 'disabled' : ''}>거부</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
             });
+
+            document.querySelectorAll('.approve-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    let row = this.closest('tr');
+                    let userId = row.querySelector('td:first-child').textContent.trim();
+
+                    fetch(`/api/member/approve/${userId}`, { method: "PUT" })
+                        .then(response => {
+                            if (!response.ok) throw new Error(`❌ 서버 응답 오류: ${response.status}`);
+                            return response.text();
+                        })
+                        .then(data => {
+                            console.log("✅ 회원 승인 성공:", data);
+                            row.querySelector('.status').textContent = '승인됨';
+                            row.querySelector('.status').classList.remove('status-pending');
+                            row.querySelector('.status').classList.add('status-approved');
+                            row.querySelector('.approve-btn').disabled = true;
+                            row.querySelector('.reject-btn').disabled = false;
+                        })
+                        .catch(error => console.error("❌ 회원 승인 실패:", error));
+                });
+            });
+
+            document.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    let row = this.closest('tr');
+                    let userId = row.querySelector('td:first-child').textContent.trim();
+
+                    fetch(`/api/member/reject/${userId}`, { method: "PUT" })
+                        .then(response => {
+                            if (!response.ok) throw new Error(`❌ 서버 응답 오류: ${response.status}`);
+                            return response.text();
+                        })
+                        .then(data => {
+                            console.log("❌ 회원 거부 성공:", data);
+                            row.querySelector('.status').textContent = '대기 중';
+                            row.querySelector('.status').classList.remove('status-approved');
+                            row.querySelector('.status').classList.add('status-pending');
+                            row.querySelector('.approve-btn').disabled = false;
+                            row.querySelector('.reject-btn').disabled = true;
+                        })
+                        .catch(error => console.error("❌ 회원 거부 실패:", error));
+                });
+            });
+        })
+        .catch(error => console.error("❌ 데이터 가져오기 실패:", error));
+});
     </script>
 </body>
 </html>

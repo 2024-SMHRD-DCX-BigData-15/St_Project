@@ -1,6 +1,11 @@
 package com.smhrd.St_Project.repository;
 
 import com.smhrd.St_Project.entity.MemberEntity;
+
+import jakarta.transaction.Transactional;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +27,19 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String> {
                       @Param("userAdd") String userAdd,
                       @Param("userPhone") String userPhone);
 
+    
+    // ✅ 승인 대기 중인 회원 목록 조회 (user_status가 "Y" 또는 "N"인 모든 회원 가져오기)
+    List<MemberEntity> findByUserStatusIn(List<String> statuses);
+
+    // ✅ 회원 승인 (user_status를 "N"으로 변경)
+    @Modifying
+    @Transactional
+    @Query("UPDATE MemberEntity m SET m.userStatus = 'N' WHERE m.userId = :userId AND m.userStatus = 'Y'")
+    void approveUser(String userId);
+
+    // ✅ 회원 거부 (user_status를 "Y"로 변경)
+    @Modifying
+    @Transactional
+    @Query("UPDATE MemberEntity m SET m.userStatus = 'Y' WHERE m.userId = :userId AND m.userStatus = 'N'")
+    void rejectUser(String userId);
 }
