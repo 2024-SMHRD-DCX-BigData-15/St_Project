@@ -440,6 +440,21 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("❌ 알람 업데이트 초기화 실패:", error));
 });
+
+//-------------- [ 세션 유지하는 백엔드 코드 ] -------------------------------- 
+	window.onload = function () {
+	let userId = `[[${session.loginUser?.userId}]]`;
+	loadTanks(userId);
+
+	// ✅ 세션 유지 요청 (5분마다 실행)
+	setInterval(function() {
+    fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
+        .then(response => console.log('✅ 세션 유지 요청 보냄'))
+        .catch(error => console.error('❌ 세션 유지 실패', error));
+	}, 5 * 60 * 1000); // 5분마다 요청
+};
+//------------------------------------------------------------------------
+
     </script>
 
   </body>

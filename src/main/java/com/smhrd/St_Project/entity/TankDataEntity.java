@@ -46,7 +46,7 @@ public class TankDataEntity {
     @Column(name = "record_date", nullable = false)
     private Timestamp recordDate;  // 기록 날짜 (TIMESTAMP)
 
-    // ✅ Getter에서 소수점 3자리 반올림 후 2자리까지 표시
+    // ✅ Getter에서 소수점 4자리 반올림 후 3자리까지 표시
     public BigDecimal getWaterPh() {
         return roundValue(this.waterPh);
     }
