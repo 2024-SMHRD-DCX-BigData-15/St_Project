@@ -287,16 +287,33 @@
          * @param {number} min - 최소값
          * @param {number} max - 최대값
          */
-        function updateGauge(chartId, value, min, max) {
-            if (value === null || value === undefined) return;
-            const percentage = ((value - min) / (max - min)) * 100;
+         
+         //---------------------------------------------화살표 표시-----------------------------------------------
+         function updateGauge(chartId, value, min, max) {
+        	    if (value === null || value === undefined) return;
+        	    
+        	    const percentage = ((value - min) / (max - min)) * 100;
+        	    const angle = Math.PI + (percentage / 100) * Math.PI; // 범위를 반원(180도)으로 매핑
 
-            const ctx = document.getElementById(chartId).getContext("2d");
-            ctx.clearRect(0, 0, 200, 200);
+        	    const ctx = document.getElementById(chartId).getContext("2d");
+        	    ctx.clearRect(0, 0, 200, 200);
 
-            ctx.fillStyle = "blue";
-            ctx.fillRect(50, 100, 100, percentage);
-        }
+        	    // 배경 게이지 그리기
+        	    drawGaugeOnCanvas(chartId, document.getElementById(chartId));
+
+        	    // 화살표 그리기
+        	    const centerX = 100;
+        	    const centerY = 150;
+        	    const len = 80;
+        	    
+        	    ctx.beginPath();
+        	    ctx.moveTo(centerX, centerY);
+        	    ctx.lineTo(centerX + Math.cos(angle) * len, centerY + Math.sin(angle) * len);
+        	    ctx.strokeStyle = '#4A90E2';
+        	    ctx.lineWidth = 4;
+        	    ctx.stroke();
+        	}
+
        //----------------------------------------------------------------------------------
 
 
@@ -465,38 +482,39 @@
         /**
  * 🔹 최신 수조 데이터를 가져와 화면을 갱신하는 함수
  */
-function fetchLatestTankData() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tankIdx = urlParams.get("tankIdx");
+ 
+ //----------------------------------[화살표 갱신 함수, 수조 업데이트]----------------------------------
+ function fetchLatestTankData() {
+	    const urlParams = new URLSearchParams(window.location.search);
+	    const tankIdx = urlParams.get("tankIdx");
 
-    if (tankIdx) {
-        console.log(`🚀 최신 데이터 요청: tankIdx=${tankIdx}`);
+	    if (tankIdx) {
+	        fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+	            .then(response => response.json())
+	            .then(data => {
+	                console.log("✅ 최신 수조 데이터 로드 완료:", data);
 
-        fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`❌ HTTP 오류: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("✅ 최신 수조 데이터 로드 완료:", data);
+	                document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
+	                document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
+	                document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
+	                document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
+	                document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
+	                document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
 
-                // ✅ HTML 요소 업데이트 (최신 데이터로 변경)
-                document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
-                document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
-                document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
-                document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
-                document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
-                document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
+	                // ✅ 데이터에 따라 화살표 업데이트
+	                updateGauge('chart-1', data.waterPh, 6.5, 8.5);
+	                updateGauge('chart-2', data.waterDo, 4.0, 8.0);
+	                updateGauge('chart-3', data.waterTemp, 20.0, 30.0);
+	                updateGauge('chart-4', data.waterSalt, 10.0, 35.0);
+	                updateGauge('chart-5', data.waterAmmonia, 0.0, 2.0);
+	                updateGauge('chart-6', data.waterNitrogen, 0.0, 1.0);
+	            })
+	            .catch(error => {
+	                console.error("❌ 수조 데이터 로드 실패:", error);
+	            });
+	    }
+	}
 
-                console.log("🔄 화면 갱신 완료!");
-            })
-            .catch(error => {
-                console.error("❌ 수조 데이터 로드 실패:", error);
-            });
-    }
-}
 			//---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]----------------------
 			/**
 			 * 🔹 일정 주기마다 최신 데이터를 가져오는 함수 (자동 갱신)
@@ -508,7 +526,7 @@ function fetchLatestTankData() {
 			    fetchLatestTankData();
 			
 			    // ✅ 10초마다 자동 갱신 (10000ms = 10초)
-			    setInterval(fetchLatestTankData, 10000*6*60*24);
+			    setInterval(fetchLatestTankData, 1000*30);
 			}
 			
 			// ✅ 페이지가 완전히 로드된 후 자동 갱신 시작
@@ -690,7 +708,7 @@ function fetchLatestTankData() {
 			  fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
 			  setInterval(() => {
 			    fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
-			  }, 1000*60*60*24); // 갱신
+			  }, 1000*30); // 갱신
 			}
 			// ▶ 서버에서 데이터 받아 그래프 갱신
 			function fetchLatestTankDataForGraph(dataKey, labels, values, chart) {
@@ -721,6 +739,8 @@ function fetchLatestTankData() {
 			  }
 			}
 
+			
+			
 			
     </script>
 
