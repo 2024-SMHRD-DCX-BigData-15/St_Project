@@ -550,6 +550,58 @@ function fetchLatestTankData() {
 			
 			let realtimeChart = null; // 현재 그래프 저장용
 			
+			// ★★★ 여기에서 초기 빈 그래프를 설정 ★★★
+			window.onload = function() {
+			  const ctx = document.getElementById('aihubGraph').getContext('2d');
+
+			  // 초기 빈 그래프 생성
+			  realtimeChart = new Chart(ctx, {
+			    type: 'line',
+			    data: {
+			      labels: [],
+			      datasets: [{
+			        label: '데이터 없음',
+			        data: [],
+			        borderColor: '#4A90E2',
+			        backgroundColor: 'rgba(74, 144, 226, 0.2)',
+			        fill: true,
+			        tension: 0.3
+			      }]
+			    },
+			    options: {
+			      responsive: true,
+			      maintainAspectRatio: false,
+			      scales: {
+			        x: {
+			          title: {
+			            display: true,
+			            text: '실시간 데이터',
+			            color: '#ffffff',
+			            font: { size: 14 }
+			          },
+			          ticks: { display: true, color: '#ffffff', font: { size: 12 } }
+			        },
+			        y: {
+			          title: { display: false },
+			          ticks: { color: '#ffffff', font: { size: 12 },
+			          padding: 10
+			          }
+			        }
+			      },
+			      plugins: {
+			        legend: { display: false },
+			        title: {
+			          display: true,
+			          color: '#ffffff',
+			          font: { size: 16 },
+			          padding: { top: 10, bottom: 20 }
+			        }
+			      }
+			    }
+			  });
+			};
+			// ★★★ 초기화 코드 끝 ★★★
+			
 			// ▶ 그래프 출력 함수
 			function showGraphFor(chartId, label) {
 			  const ctx = document.getElementById('aihubGraph').getContext('2d');
