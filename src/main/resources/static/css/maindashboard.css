@@ -238,7 +238,7 @@ body {
   border-radius: 0.5rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.2);
   margin-top: 1.875rem;
-  height: 20vh;
+  height: 28vh;
   overflow-y: hidden;
   cursor: pointer;
   transition: box-shadow 0.3s ease;
@@ -251,22 +251,36 @@ body {
 .alarm-log-container h5 {
   font-size: 1rem;
   color: #fff;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .alarm-content {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: #fff;
   line-height: 1.5;
   padding-top: 0.25rem;
 }
 
 .alarm-content strong {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   display: block;
   margin-bottom: 0.25rem;
 }
+
+.alarm-summary {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.alarm-item {
+    font-size: 0.9rem;
+    color: #fff;
+    line-height: 1.5;
+    margin-bottom: 0.3rem;
+}
+
 
 /* 기본 스타일 */
 body {

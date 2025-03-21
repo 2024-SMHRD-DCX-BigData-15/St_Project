@@ -181,7 +181,7 @@ function toggleNotifications() {
                         <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
                     </div>
                     <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
-                        <h5>수조 알람</h5>
+                        <h5>수조 알람 로그</h5>
                         <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
                     </div>
                 `;
@@ -401,10 +401,14 @@ async function updateAlarmContent(tankIdx) {
 
         const totalActive = criticalCount + warningCount;
         alarmContent.innerHTML = `
-            🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건<br>
+        	<div class="alarm-summary">
+            	🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건
+            </div>            	
             ${latestAlarms.map(alarm => `
-              ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
-            `).join("<br>")}
+            	<div class="alarm-item">
+              		${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
+            	</div>
+              `).join("")}
         `;
 
         alarmContent.style.cursor = "pointer";
