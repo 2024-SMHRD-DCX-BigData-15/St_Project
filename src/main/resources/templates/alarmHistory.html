@@ -70,6 +70,7 @@
           <section class="section">
             <h2 class="section-title">요약</h2>
             <div class="summary-stats">
+              <p>현재 위험 상태: <span id="criticalCount">0</span>건</p>
               <p>현재 경고 상태: <span id="warningCount">0</span>건</p>
               <p>오늘 발생한 경고: <span id="todayWarningCount">0</span>건</p>
             </div>
@@ -171,9 +172,15 @@
 
     // 알람 로그 렌더링 (항상 5행 유지)
     function renderAlarmLog(logs = alarmLogs) {
-      alarmLogTable.innerHTML = "";
-      const filteredLogs = logs.filter(log => log.status === "⚠️ 경고")
-        .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
+	  alarmLogTable.innerHTML = "";
+	  // "위험"
+	  const criticalLogs = logs.filter(log => log.status === "🚨 위험")
+	    .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
+	  // "경고"
+	  const warningLogs = logs.filter(log => log.status === "⚠️ 경고")
+	    .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
+	  const filteredLogs = [...criticalLogs, ...warningLogs];
+      
       const start = (currentLogPage - 1) * logsPerPage;
       const end = start + logsPerPage;
       const paginatedLogs = filteredLogs.slice(start, end);
@@ -214,10 +221,12 @@
 
     // 요약 통계 업데이트
     function updateSummaryStats() {
+      const criticalCount = alarmLogs.filter(log => log.status === "🚨 위험").length;
       const warningCount = alarmLogs.filter(log => log.status === "⚠️ 경고").length;
       const today = new Date().toISOString().slice(0, 10);
       const todayWarningCount = alarmLogs.filter(log => log.timestamp.includes(today) && log.status === "⚠️ 경고").length;
 
+      document.getElementById("criticalCount").textContent = criticalCount;
       document.getElementById("warningCount").textContent = warningCount;
       document.getElementById("todayWarningCount").textContent = todayWarningCount;
     }
