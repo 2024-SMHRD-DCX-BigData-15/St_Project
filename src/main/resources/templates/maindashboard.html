@@ -220,74 +220,93 @@ window.onload = function () {
      }
  }
 //--------------------------------------------------차트 그려주는 함수 ---------------------------------------------------------
- async function renderTankChart(tank) {
-     const ctx = document.getElementById(`tankChart-${tank.tankIdx}`).getContext('2d');
-     let latestData = await fetchLatestTankData(tank.tankIdx);
+ // 차트 인스턴스를 저장할 객체
+const chartInstances = {};
 
-     if (!latestData) return;
+async function renderTankChart(tank) {
+    const canvasId = `tankChart-${tank.tankIdx}`;
+    const ctx = document.getElementById(canvasId).getContext('2d');
 
-     new Chart(ctx, {
-       type: 'bar',
-       data: {
-         labels: ['산성도', '용존산소', '수온', '염도', '암모니아', '아질산'],
-         datasets: [{
-           label: `${tank.tankIdx}번 수조 데이터`,
-           data: [
-             latestData.waterPh,
-             latestData.waterDo,
-             latestData.waterTemp,
-             latestData.waterSalt,
-             latestData.waterAmmonia,
-             latestData.waterNitrogen
-           ],
-           backgroundColor: 'rgba(75, 192, 192, 0.6)',
-           borderColor: 'rgba(75, 192, 192, 1)',
-           borderWidth: 1,
-           barThickness: 23,
-           categoryPercentage: 0.9,
-           barPercentage: 0.95
-         }]
-       },
-       options: {
-         indexAxis: 'y',
-         responsive: false, // 반응형 비활성화
-         maintainAspectRatio: false, // 종횡비 유지 비활성화
-         layout: {
-           padding: {
-             left: 0,
-             right: 0,
-             top: 0,
-             bottom: 0
-           }
-         },
-         scales: {
-           x: {
-             beginAtZero: true,
-             display: false
-           },
-           y: {
-             display: true,
-             ticks: {
-               font: { size: 13 },
-               padding: 2
-             }
-           }
-         },
-         plugins: {
-           legend: {
-             display: false
-           },
-           tooltip: {
-             enabled: false
-           }
-         }
-       }
-     });
-   }
+    // 기존 차트가 있으면 제거
+    if (chartInstances[canvasId]) {
+        chartInstances[canvasId].destroy();
+    }
+
+    // 최신 데이터 가져오기
+    let latestData = await fetchLatestTankData(tank.tankIdx);
+    if (!latestData) {
+        console.error(`Tank ${tank.tankIdx} 데이터 로드 실패`);
+        return;
+    }
+
+    // 새 차트 생성
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['산성도', '용존산소', '수온', '염도', '암모니아', '아질산'],
+            datasets: [{
+                label: `${tank.tankIdx}번 수조 데이터`,
+                data: [
+                    latestData.waterPh,
+                    latestData.waterDo,
+                    latestData.waterTemp,
+                    latestData.waterSalt,
+                    latestData.waterAmmonia,
+                    latestData.waterNitrogen
+                ],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                barThickness: 23,
+                categoryPercentage: 0.9,
+                barPercentage: 0.95
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: false,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    display: false
+                },
+                y: {
+                    display: true,
+                    ticks: {
+                        font: { size: 13 },
+                        padding: 2
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: false
+                }
+            }
+        }
+    });
+}
 //----------------------------------------------------------------------------------------------------------
 window.onload = function () {
     let userId = `[[${session.loginUser?.userId}]]`;
     loadTanks(userId);
+    
+ // 10초마다 데이터 갱신
+    setInterval(() => {
+        loadTanks(userId);
+    }, 10000); // 10초 간격
 };
 
 
