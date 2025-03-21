@@ -181,7 +181,7 @@ function toggleNotifications() {
                         <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
                     </div>
                     <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
-                        <h5>수조 알람</h5>
+                        <h5>수조 알람 로그</h5>
                         <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
                     </div>
                 `;
@@ -401,10 +401,14 @@ async function updateAlarmContent(tankIdx) {
 
         const totalActive = criticalCount + warningCount;
         alarmContent.innerHTML = `
-            🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건<br>
+        	<div class="alarm-summary">
+            	🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건
+            </div>            	
             ${latestAlarms.map(alarm => `
-              ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
-            `).join("<br>")}
+            	<div class="alarm-item">
+              		${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
+            	</div>
+              `).join("")}
         `;
 
         alarmContent.style.cursor = "pointer";
@@ -436,6 +440,21 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("❌ 알람 업데이트 초기화 실패:", error));
 });
+
+//-------------- [ 세션 유지하는 백엔드 코드 ] -------------------------------- 
+	window.onload = function () {
+	let userId = `[[${session.loginUser?.userId}]]`;
+	loadTanks(userId);
+
+	// ✅ 세션 유지 요청 (5분마다 실행)
+	setInterval(function() {
+    fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
+        .then(response => console.log('✅ 세션 유지 요청 보냄'))
+        .catch(error => console.error('❌ 세션 유지 실패', error));
+	}, 5 * 60 * 1000); // 5분마다 요청
+};
+//------------------------------------------------------------------------
+
     </script>
 
   </body>
