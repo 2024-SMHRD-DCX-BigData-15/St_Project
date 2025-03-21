@@ -289,7 +289,7 @@
          */
          
          //---------------------------------------------화살표 표시-----------------------------------------------
-        document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", function () {
     // 전역 변수 정의
     const canvasElements = [
         document.getElementById('chart-1'),
@@ -318,7 +318,32 @@
         'chart-6': dataRanges['chart-6'].initial,
     };
 
-    // 게이지 업데이트 함수
+    // 각 캔버스별 현재 각도와 목표 각도 관리
+    const angles = {
+        'chart-1': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-2': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-3': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-4': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-5': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-6': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+    };
+
+    // 애니메이션 진행 상태 관리
+    const animationStates = {
+        'chart-1': { animating: false },
+        'chart-2': { animating: false },
+        'chart-3': { animating: false },
+        'chart-4': { animating: false },
+        'chart-5': { animating: false },
+        'chart-6': { animating: false },
+    };
+
+    // 이징 함수 (easeOutQuad)
+    function easeOutQuad(t) {
+        return 1 - (1 - t) * (1 - t);
+    }
+
+    // 게이지 업데이트 함수 (부드러운 애니메이션 추가)
     function updateGauge(chartId, value, min, max) {
         if (value === null || value === undefined || isNaN(value)) {
             console.warn(`updateGauge: 유효하지 않은 값 - chartId: ${chartId}, value: ${value}`);
@@ -327,32 +352,65 @@
 
         console.log(`updateGauge 호출 - chartId: ${chartId}, value: ${value}, min: ${min}, max: ${max}`);
 
+        const percentage = ((value - min) / (max - min)) * 100;
+        const targetAngle = Math.PI + (percentage / 100) * Math.PI;
+        angles[chartId].target = targetAngle;
+
+        // 애니메이션 시작
+        if (!animationStates[chartId].animating) {
+            animationStates[chartId].animating = true;
+            animateGauge(chartId);
+        }
+    }
+
+    // 애니메이션 함수
+    function animateGauge(chartId) {
         const canvas = document.getElementById(chartId);
         const ctx = canvas.getContext("2d");
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
 
-        // 캔버스 지우기
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        const startAngle = angles[chartId].current;
+        const targetAngle = angles[chartId].target;
+        const duration = 1000; // 애니메이션 지속 시간 (1초)
+        let startTime = null;
 
-        // 배경 게이지 그리기
-        drawGaugeOnCanvas(chartId, canvas);
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1); // 0에서 1까지 진행
+            const easedProgress = easeOutQuad(progress);
 
-        // 화살표 그리기
-        const percentage = ((value - min) / (max - min)) * 100;
-        const angle = Math.PI + (percentage / 100) * Math.PI;
-        const centerX = canvasWidth / 2;
-        const centerY = canvasHeight - 50;
-        const len = 80;
+            // 현재 각도를 목표 각도로 보간
+            angles[chartId].current = startAngle + (targetAngle - startAngle) * easedProgress;
 
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX + Math.cos(angle) * len, centerY + Math.sin(angle) * len);
-        ctx.strokeStyle = '#4A90E2';
-        ctx.lineWidth = 4;
-        ctx.stroke();
+            // 캔버스 지우기
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        console.log(`화살표 각도 - chartId: ${chartId}, percentage: ${percentage}, angle: ${angle}`);
+            // 배경 게이지 그리기
+            drawGaugeOnCanvas(chartId, canvas);
+
+            // 화살표 그리기
+            const centerX = canvasWidth / 2;
+            const centerY = canvasHeight - 50;
+            const len = 80;
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + Math.cos(angles[chartId].current) * len, centerY + Math.sin(angles[chartId].current) * len);
+            ctx.strokeStyle = '#4A90E2';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // 애니메이션이 끝나지 않았으면 계속 진행
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                animationStates[chartId].animating = false;
+            }
+        }
+
+        requestAnimationFrame(step);
     }
 
     // 게이지 배경 그리기 함수
@@ -485,13 +543,13 @@
                     currentValues['chart-6'] = parseFloat(data.waterNitrogen) || currentValues['chart-6'];
                     console.log("업데이트된 currentValues:", currentValues);
 
-                    // 화살표 업데이트
-                    updateGauge('chart-1', currentValues['chart-1'], 0.0, 8.5);
-                    updateGauge('chart-2', currentValues['chart-2'], 0.0, 8.0);
-                    updateGauge('chart-3', currentValues['chart-3'], 0.0, 30.0);
-                    updateGauge('chart-4', currentValues['chart-4'], 0.0, 35.0);
-                    updateGauge('chart-5', currentValues['chart-5'], 0.0, 2.0);
-                    updateGauge('chart-6', currentValues['chart-6'], 0.0, 1.0);
+                    // 화살표 업데이트 (부드러운 애니메이션)
+                    updateGauge('chart-1', currentValues['chart-1'], dataRanges['chart-1'].min, dataRanges['chart-1'].max);
+                    updateGauge('chart-2', currentValues['chart-2'], dataRanges['chart-2'].min, dataRanges['chart-2'].max);
+                    updateGauge('chart-3', currentValues['chart-3'], dataRanges['chart-3'].min, dataRanges['chart-3'].max);
+                    updateGauge('chart-4', currentValues['chart-4'], dataRanges['chart-4'].min, dataRanges['chart-4'].max);
+                    updateGauge('chart-5', currentValues['chart-5'], dataRanges['chart-5'].min, dataRanges['chart-5'].max);
+                    updateGauge('chart-6', currentValues['chart-6'], dataRanges['chart-6'].min, dataRanges['chart-6'].max);
                 })
                 .catch(error => {
                     console.error("❌ 수조 데이터 로드 실패:", error);
