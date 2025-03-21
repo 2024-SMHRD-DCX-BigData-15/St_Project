@@ -74,7 +74,7 @@ public class TankDataEntity {
     // ✅ 공통 반올림 함수
     private BigDecimal roundValue(BigDecimal value) {
         if (value == null) return BigDecimal.ZERO; // null 방지
-        return value.setScale(3, RoundingMode.HALF_UP)  // 소수점 3자리에서 반올림
-                    .setScale(2, RoundingMode.HALF_UP); // 소수점 2자리까지 유지
+        return value.setScale(4, RoundingMode.HALF_UP)  // 소수점 3자리에서 반올림
+                    .setScale(3, RoundingMode.HALF_UP); // 소수점 2자리까지 유지
     }
 }
