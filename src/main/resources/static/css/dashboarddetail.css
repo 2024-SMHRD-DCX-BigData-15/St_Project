@@ -130,7 +130,7 @@ body {
 /* 데이터 카드 */
 .card {
   padding: 20px;
-  background-color: #1e2a37;
+  background-color: 0 4px 8px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   color: white;
   margin: 10px 0;
@@ -161,7 +161,7 @@ body {
   cursor: pointer; /* 손 모양 커서 */
   transition: all 0.2s ease; /* 부드러운 전환 효과 */
   position: relative; /* 애니메이션 시 레이아웃 안정성 */
-  background-color: #1e2a37; /* 기본 배경색 (기존 스타일 유지 가정) */
+  background-color:  #252c41; /* 기본 배경색 (기존 스타일 유지 가정) */
 }
 
 .card.clicked {
