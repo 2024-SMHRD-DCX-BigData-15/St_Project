@@ -219,7 +219,7 @@ window.onload = function () {
          return null;
      }
  }
-
+//--------------------------------------------------차트 그려주는 함수 ---------------------------------------------------------
  async function renderTankChart(tank) {
      const ctx = document.getElementById(`tankChart-${tank.tankIdx}`).getContext('2d');
      let latestData = await fetchLatestTankData(tank.tankIdx);
@@ -284,7 +284,7 @@ window.onload = function () {
        }
      });
    }
-
+//----------------------------------------------------------------------------------------------------------
 window.onload = function () {
     let userId = `[[${session.loginUser?.userId}]]`;
     loadTanks(userId);
@@ -294,6 +294,7 @@ window.onload = function () {
 /**
  * 🔹 특정 tankIdx의 최신 수질 데이터를 불러오는 함수
  */
+ //---------------------------------------------최신 수질 데이터를 불러오는 함수 -------------------------------------
 async function fetchLatestTankData(tankIdx) {
     try {
         let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
@@ -307,7 +308,7 @@ async function fetchLatestTankData(tankIdx) {
         return null;
     }
 }
-
+//-------------------------------------------------------------------------------------------------------
 /**
  * 🔹 수조 수정 페이지로 이동하는 함수
  */
