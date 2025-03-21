@@ -72,7 +72,6 @@
             <div class="summary-stats">
               <p>현재 경고 상태: <span id="warningCount">0</span>건</p>
               <p>오늘 발생한 경고: <span id="todayWarningCount">0</span>건</p>
-              <p>미확인 알람: <span id="unconfirmedCount">0</span>건</p>
             </div>
           </section>
 
@@ -218,11 +217,9 @@
       const warningCount = alarmLogs.filter(log => log.status === "⚠️ 경고").length;
       const today = new Date().toISOString().slice(0, 10);
       const todayWarningCount = alarmLogs.filter(log => log.timestamp.includes(today) && log.status === "⚠️ 경고").length;
-      const unconfirmedCount = alarmLogs.filter(log => log.action === "미확인" && log.status === "⚠️ 경고").length;
 
       document.getElementById("warningCount").textContent = warningCount;
       document.getElementById("todayWarningCount").textContent = todayWarningCount;
-      document.getElementById("unconfirmedCount").textContent = unconfirmedCount;
     }
 
     // 로그 섹션 업데이트
