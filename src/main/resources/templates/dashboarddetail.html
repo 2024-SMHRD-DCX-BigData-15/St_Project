@@ -563,7 +563,7 @@
     fetchLatestTankData();
 
     // 5초마다 자동 갱신 (30초에서 5초로 줄여서 테스트 용이하게)
-    setInterval(fetchLatestTankData, 1000);
+    setInterval(fetchLatestTankData, 1000*60*60*24);
 });
 
 			//---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]------------------------
@@ -577,7 +577,7 @@
 			    fetchLatestTankData();
 			
 			    // ✅ 10초마다 자동 갱신 (10000ms = 10초)
-			    setInterval(fetchLatestTankData, 1000);
+			    setInterval(fetchLatestTankData, 1000*60*60*24);
 			}
 			
 			// ✅ 페이지가 완전히 로드된 후 자동 갱신 시작
@@ -759,7 +759,7 @@
 			  fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
 			  setInterval(() => {
 			    fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
-			  }, 1000*30); // 갱신
+			  }, 1000*60*60*24); // 갱신
 			}
 			// ▶ 서버에서 데이터 받아 그래프 갱신
 			function fetchLatestTankDataForGraph(dataKey, labels, values, chart) {
