@@ -110,15 +110,17 @@ body {
 .approval-table th, .approval-table td {
     padding: 12px;
     text-align: center;
+    /*
     border: 1px solid #444;
+    */
 }
 
 .approval-table th {
-    background-color: #252c41;
+    background-color: transparent;
 }
 
 .approval-table td {
-    background-color: #333;
+    background-color: rgba(37, 44, 65, 0.3);
 }
 
 .approval-table button {
