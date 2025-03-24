@@ -9,8 +9,7 @@
     <title>관제센터 대시보드</title>
   </head>
   <body>
-
-<!-- 햄버거 버튼 -->
+    <!-- 햄버거 버튼 -->
     <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
     <!-- 사이드바 -->
@@ -42,175 +41,183 @@
       </ul>
     </div>
 
-      <!-- 메인 콘텐츠 -->
-      <main class="main-content">
-        <header class="header">
-          <h1 class="page-title">세부관제시스템</h1>
-          
-          <div class="user-info">
-          
-            <div th:if="${session.loginUser != null}">
-    		<p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
-		  </div>
-		    <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+      <header class="header">
+        <h1 class="page-title">세부관제시스템</h1>
+        <div class="user-info">
+          <div th:if="${session.loginUser != null}">
+            <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 이름 출력 -->
           </div>
+          <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
+        </div>
+      </header>
+
+      <!-- 6개의 데이터 카드 -->
+      <!-- 데이터 표시 -->
+      <section class="dashboard-cards">
+        <!-- 산성도 -->
+        <div class="card card-ph">
+          <h4>산성도</h4>
+          <div class="data-container">
+            <canvas id="chart-1" width="200" height="200"></canvas>
           </div>
-        </header>
+        </div>
 
-        <!-- 6개의 데이터 카드 -->
-        <!-- 데이터 표시 -->
-		<section class="dashboard-cards">
-		    <!-- 산성도 -->
-		    <div class="card card-ph">
-		        <h4>산성도</h4>
-		        <div class="data-container">
-		            <div id="phValue" class="data-box">-</div>
-		            <canvas id="chart-1" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		
-		    <!-- 용존산소 -->
-		    <div class="card card-oxygen">
-		        <h4>용존산소</h4>
-		        <div class="data-container">
-		            <div id="oxygenValue" class="data-box">-</div>
-		            <canvas id="chart-2" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		
-		    <!-- 수온 -->
-		    <div class="card card-temperature">
-		        <h4>수온</h4>
-		        <div class="data-container">
-		            <div id="temperatureValue" class="data-box">-</div>
-		            <canvas id="chart-3" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		
-		    <!-- 염도 -->
-		    <div class="card card-salinity">
-		        <h4>염도</h4>
-		        <div class="data-container">
-		            <div id="salinityValue" class="data-box">-</div>
-		            <canvas id="chart-4" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		
-		    <!-- 암모니아 -->
-		    <div class="card card-ammonia">
-		        <h4>암모니아</h4>
-		        <div class="data-container">
-		            <div id="ammoniaValue" class="data-box">-</div>
-		            <canvas id="chart-5" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		
-		    <!-- 아질산 -->
-		    <div class="card card-nitrite">
-		        <h4>아질산</h4>
-		        <div class="data-container">
-		            <div id="nitriteValue" class="data-box">-</div>
-		            <canvas id="chart-6" width="200" height="200"></canvas>
-		        </div>
-		    </div>
-		</section>
-
-
-        <!-- 수조정보와 실시간 그래프 -->
-        <section class="dashboard-cards">
-		    <div class="tank-info">
-			    <h4>수조정보</h4><br>
-			    <p><strong>수조 ID:</strong> <span th:text="${selectedTank?.tankIdx ?: '정보 없음'}"></span></p>
-			    <p><strong>직경:</strong> <span th:text="${selectedTank?.tankWidth ?: '정보 없음'}"></span> m</p>
-			    <p><strong>높이:</strong> <span th:text="${selectedTank?.tankHeight ?: '정보 없음'}"></span> m</p>
-			    <p><strong>위치:</strong> <span th:text="${selectedTank?.tankLocation ?: '정보 없음'}"></span></p>
-			    <p><strong>품종:</strong> <span th:text="${selectedTank?.fishType ?: '정보 없음'}"></span></p>
-			    <p><strong>사육 개시일:</strong><span th:text="${selectedTank?.startedAt != null ? #temporals.format(selectedTank.startedAt, 'yyyy-MM-dd') : '정보 없음'}"></span></p>
-			    <canvas id="tank-data"></canvas>
-			</div>
-			<div class="card card-graph">
-            <div class="graph-container" >
-              <!-- AI 허브 데이터를 활용한 그래프 삽입 영역 /30초마다 변경되게 -->
-              <canvas id="aihubGraph"></canvas>
-            </div>
+        <!-- 용존산소 -->
+        <div class="card card-oxygen">
+          <h4>용존산소</h4>
+          <div class="data-container">
+            <canvas id="chart-2" width="200" height="200"></canvas>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
 
-        <script>
-        /**
-         * 🔹 로그아웃 함수 (쿠키 삭제 후 서버 요청)
-         */
-        function handleLogout() {
-            console.log("🚀 로그아웃 요청");
+        <!-- 수온 -->
+        <div class="card card-temperature">
+          <h4>수온</h4>
+          <div class="data-container">
+            <canvas id="chart-3" width="200" height="200"></canvas>
+          </div>
+        </div>
 
-            // ✅ 자동 로그인 관련 쿠키 삭제
-            deleteCookie("autoLoginId");
-            deleteCookie("autoLoginPw");
+        <!-- 염도 -->
+        <div class="card card-salinity">
+          <h4>염도</h4>
+          <div class="data-container">
+            <canvas id="chart-4" width="200" height="200"></canvas>
+          </div>
+        </div>
 
-            // ✅ 로그아웃 요청 보내기
-            fetch("/logout", { method: "GET" })
-                .then(() => {
-                    alert("로그아웃 완료!");
-                    window.location.href = "/login"; // 로그인 페이지로 이동
-                });
-        }
+        <!-- 암모니아 -->
+        <div class="card card-ammonia">
+          <h4>암모니아</h4>
+          <div class="data-container">
+            <canvas id="chart-5" width="200" height="200"></canvas>
+          </div>
+        </div>
 
-        /**
-         * 🔹 쿠키 삭제 함수
-         */
-        function deleteCookie(name) {
-            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
-        }
+        <!-- 아질산 -->
+        <div class="card card-nitrite">
+          <h4>아질산</h4>
+          <div class="data-container">
+            <canvas id="chart-6" width="200" height="200"></canvas>
+          </div>
+        </div>
+      </section>
 
-     // 햄버거 버튼으로 사이드바 토글
-        hamburgerBtn.addEventListener("click", () => {
-          sidebar.classList.toggle("active");
-        });
+      <!-- 수조정보와 실시간 그래프 -->
+      <section class="dashboard-cards">
+        <div class="tank-info">
+          <h4>수조정보</h4><br>
+          <p><strong>수조 ID:</strong> <span th:text="${selectedTank?.tankIdx ?: '정보 없음'}"></span></p>
+          <p><strong>직경:</strong> <span th:text="${selectedTank?.tankWidth ?: '정보 없음'}"></span> m</p>
+          <p><strong>높이:</strong> <span th:text="${selectedTank?.tankHeight ?: '정보 없음'}"></span> m</p>
+          <p><strong>위치:</strong> <span th:text="${selectedTank?.tankLocation ?: '정보 없음'}"></span></p>
+          <p><strong>품종:</strong> <span th:text="${selectedTank?.fishType ?: '정보 없음'}"></span></p>
+          <p><strong>사육 개시일:</strong><span th:text="${selectedTank?.startedAt != null ? #temporals.format(selectedTank.startedAt, 'yyyy-MM-dd') : '정보 없음'}"></span></p>
+          <canvas id="tank-data"></canvas>
+        </div>
+        <div class="card card-graph">
+          <div class="graph-container">
+            <!-- AI 허브 데이터를 활용한 그래프 삽입 영역 /30초마다 변경되게 -->
+            <canvas id="aihubGraph"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
 
-        // 서브 메뉴 토글 기능
-        const toggleMenus = document.querySelectorAll(".toggle-menu");
-        toggleMenus.forEach(menu => {
-          menu.addEventListener("click", (e) => {
-            const subMenu = menu.nextElementSibling;
-            if (subMenu && subMenu.classList.contains("sub-menu")) {
-              e.preventDefault(); // 링크 기본 동작 방지
-              subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-            }
+    <script>
+      // 전역 변수 정의
+      const dataRanges = {
+        'chart-1': { min: 7.5, max: 9.0, label: 'pH' }, // 산성도
+        'chart-2': { min: 5.0, max: 10.0, label: 'O₂ (mg/L)' }, // 용존산소
+        'chart-3': { min: 26.0, max: 38.0, label: '°C' }, // 수온
+        'chart-4': { min: 0.5, max: 45.0, label: 'ppt' }, // 염도
+        'chart-5': { min: 0.0, max: 0.16, label: 'NH₃ (mg/L)' }, // 암모니아
+        'chart-6': { min: 0.0, max: 0.5, label: 'NO₂ (mg/L)' }, // 아질산
+      };
+
+      let currentValues = {
+        'chart-1': null,
+        'chart-2': null,
+        'chart-3': null,
+        'chart-4': null,
+        'chart-5': null,
+        'chart-6': null,
+      };
+
+      let realtimeChart = null; // 현재 그래프 저장용
+
+      /**
+       * 🔹 로그아웃 함수 (쿠키 삭제 후 서버 요청)
+       */
+      function handleLogout() {
+        console.log("🚀 로그아웃 요청");
+
+        // ✅ 자동 로그인 관련 쿠키 삭제
+        deleteCookie("autoLoginId");
+        deleteCookie("autoLoginPw");
+
+        // ✅ 로그아웃 요청 보내기
+        fetch("/logout", { method: "GET" })
+          .then(() => {
+            alert("로그아웃 완료!");
+            window.location.href = "/login"; // 로그인 페이지로 이동
           });
+      }
+
+      /**
+       * 🔹 쿠키 삭제 함수
+       */
+      function deleteCookie(name) {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+      }
+
+      // 햄버거 버튼으로 사이드바 토글
+      document.getElementById("hamburgerBtn").addEventListener("click", () => {
+        document.getElementById("sidebar").classList.toggle("active");
+      });
+
+      // 서브 메뉴 토글 기능
+      const toggleMenus = document.querySelectorAll(".toggle-menu");
+      toggleMenus.forEach(menu => {
+        menu.addEventListener("click", (e) => {
+          const subMenu = menu.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
+            e.preventDefault(); // 링크 기본 동작 방지
+            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          }
         });
+      });
 
+      // 알림 로그
+      function toggleNotifications() {
+        var log = document.getElementById("notificationLog");
+        if (log) {
+          log.style.display = log.style.display === "block" ? "none" : "block";
+        }
+      }
 
-        // 알림 로그
-		        function toggleNotifications() {
-		  var log = document.getElementById("notificationLog");
-		  log.style.display = log.style.display === "block" ? "none" : "block";
-		}
-
-        
-     // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
-        document.querySelectorAll('.toggle-menu').forEach(menu => {
-          menu.addEventListener('click', function() {
-            const subMenu = this.nextElementSibling; // 클릭된 항목 바로 다음의 ul.sub-menu
-
-            // 이미 열려 있는 경우 숨기기
+      // "수조 관리"와 "회원 정보 관리"를 클릭할 때 sub-menu 열기
+      document.querySelectorAll('.toggle-menu').forEach(menu => {
+        menu.addEventListener('click', function() {
+          const subMenu = this.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
             if (subMenu.classList.contains('open')) {
               subMenu.classList.remove('open');
             } else {
-              // 다른 메뉴들은 닫히게 함
               document.querySelectorAll('.sub-menu').forEach(menu => {
                 menu.classList.remove('open');
               });
-
-              // 클릭된 메뉴만 열기
               subMenu.classList.add('open');
             }
-          });
+          }
         });
+      });
 
-
-        // Get canvas elements for each chart
+      //---------------------------------------------화살표 표시-----------------------------------------------
+      document.addEventListener("DOMContentLoaded", function () {
+        // 전역 변수 정의
         const canvasElements = [
           document.getElementById('chart-1'),
           document.getElementById('chart-2'),
@@ -220,162 +227,65 @@
           document.getElementById('chart-6'),
         ];
 
-        // 데이터 범위 및 초기값 설정
-        const dataRanges = {
-          'chart-1': { min: 6.5, max: 8.5, initial: 7.5, label: 'pH' }, // 산성도
-          'chart-2': { min: 4.0, max: 8.0, initial: 6.0, label: 'O₂ (mg/L)' }, // 용존산소
-          'chart-3': { min: 20.0, max: 30.0, initial: 25.0, label: '°C' }, // 수온
-          'chart-4': { min: 10.0, max: 35.0, initial: 20.0, label: 'ppt' }, // 염도
-          'chart-5': { min: 0.0, max: 2.0, initial: 0.5, label: 'NH₃ (mg/L)' }, // 암모니아
-          'chart-6': { min: 0.0, max: 1.0, initial: 0.2, label: 'NO₂ (mg/L)' }, // 아질산
+        // 각 캔버스별 현재 각도와 목표 각도 관리
+        const angles = {
+          'chart-1': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+          'chart-2': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+          'chart-3': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+          'chart-4': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+          'chart-5': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+          'chart-6': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
         };
-        
 
-        // 각 캔버스별 현재 값과 알림 상태 저장
-        const currentValues = {
-          'chart-1': dataRanges['chart-1'].initial,
-          'chart-2': dataRanges['chart-2'].initial,
-          'chart-3': dataRanges['chart-3'].initial,
-          'chart-4': dataRanges['chart-4'].initial,
-          'chart-5': dataRanges['chart-5'].initial,
-          'chart-6': dataRanges['chart-6'].initial,
+        // 애니메이션 진행 상태 관리
+        const animationStates = {
+          'chart-1': { animating: false },
+          'chart-2': { animating: false },
+          'chart-3': { animating: false },
+          'chart-4': { animating: false },
+          'chart-5': { animating: false },
+          'chart-6': { animating: false },
         };
-        const alertStates = {
-          'chart-1': false,
-          'chart-2': false,
-          'chart-3': false,
-          'chart-4': false,
-          'chart-5': false,
-          'chart-6': false,
-        };
-        
-        //---------------------[최신 수질 데이터 불러오기 백엔드 스크립트]----------------------
-        document.addEventListener("DOMContentLoaded", function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tankIdx = urlParams.get("tankIdx");
 
-            if (tankIdx) {
-                fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`❌ HTTP 오류: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("✅ 최신 수조 데이터 로드 완료:", data);
+        // 이징 함수 (easeOutQuad)
+        function easeOutQuad(t) {
+          return 1 - (1 - t) * (1 - t);
+        }
 
-                        document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
-                        document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
-                        document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
-                        document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
-                        document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
-                        document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
-                    })
-                    .catch(error => {
-                        console.error("❌ 수조 데이터 로드 실패:", error);
-                    });
-            }
-        });
-
-
-
-        /**
-         * 🔹 게이지 차트 업데이트 함수
-         * @param {string} chartId - 캔버스 ID
-         * @param {number} value - 현재 값
-         * @param {number} min - 최소값
-         * @param {number} max - 최대값
-         */
-         
-         //---------------------------------------------화살표 표시-----------------------------------------------
-      document.addEventListener("DOMContentLoaded", function () {
-    // 전역 변수 정의
-    const canvasElements = [
-        document.getElementById('chart-1'),
-        document.getElementById('chart-2'),
-        document.getElementById('chart-3'),
-        document.getElementById('chart-4'),
-        document.getElementById('chart-5'),
-        document.getElementById('chart-6'),
-    ];
-
-    const dataRanges = {
-        'chart-1': { min: 0.0, max: 10.0, initial: 7.5, label: 'pH' },
-        'chart-2': { min: 0.0, max: 10.0, initial: 6.0, label: 'O₂ (mg/L)' },
-        'chart-3': { min: 0.0, max: 30.0, initial: 25.0, label: '°C' },
-        'chart-4': { min: 0.0, max: 10.0, initial: 20.0, label: 'ppt' },
-        'chart-5': { min: 0.0, max: 10.0, initial: 0.5, label: 'NH₃ (mg/L)' },
-        'chart-6': { min: 0.0, max: 10.0, initial: 0.2, label: 'NO₂ (mg/L)' },
-    };
-
-    const currentValues = {
-        'chart-1': dataRanges['chart-1'].initial,
-        'chart-2': dataRanges['chart-2'].initial,
-        'chart-3': dataRanges['chart-3'].initial,
-        'chart-4': dataRanges['chart-4'].initial,
-        'chart-5': dataRanges['chart-5'].initial,
-        'chart-6': dataRanges['chart-6'].initial,
-    };
-
-    // 각 캔버스별 현재 각도와 목표 각도 관리
-    const angles = {
-        'chart-1': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        'chart-2': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        'chart-3': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        'chart-4': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        'chart-5': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        'chart-6': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-    };
-
-    // 애니메이션 진행 상태 관리
-    const animationStates = {
-        'chart-1': { animating: false },
-        'chart-2': { animating: false },
-        'chart-3': { animating: false },
-        'chart-4': { animating: false },
-        'chart-5': { animating: false },
-        'chart-6': { animating: false },
-    };
-
-    // 이징 함수 (easeOutQuad)
-    function easeOutQuad(t) {
-        return 1 - (1 - t) * (1 - t);
-    }
-
-    // 게이지 업데이트 함수 (부드러운 애니메이션 추가)
-    function updateGauge(chartId, value, min, max) {
-        if (value === null || value === undefined || isNaN(value)) {
+        // 게이지 업데이트 함수 (부드러운 애니메이션 추가)
+        function updateGauge(chartId, value, min, max) {
+          if (value === null || value === undefined || isNaN(value)) {
             console.warn(`updateGauge: 유효하지 않은 값 - chartId: ${chartId}, value: ${value}`);
             return;
-        }
+          }
 
-        console.log(`updateGauge 호출 - chartId: ${chartId}, value: ${value}, min: ${min}, max: ${max}`);
+          // currentValues 갱신
+          currentValues[chartId] = value;
 
-        const percentage = ((value - min) / (max - min)) * 100;
-        const targetAngle = Math.PI + (percentage / 100) * Math.PI;
-        angles[chartId].target = targetAngle;
+          const percentage = ((value - min) / (max - min)) * 100;
+          const targetAngle = Math.PI + (percentage / 100) * Math.PI;
+          angles[chartId].target = targetAngle;
 
-        // 애니메이션 시작
-        if (!animationStates[chartId].animating) {
+          // 애니메이션 시작
+          if (!animationStates[chartId].animating) {
             animationStates[chartId].animating = true;
             animateGauge(chartId);
+          }
         }
-    }
 
-    // 애니메이션 함수
-    function animateGauge(chartId) {
-        const canvas = document.getElementById(chartId);
-        const ctx = canvas.getContext("2d");
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
+        // 애니메이션 함수
+        function animateGauge(chartId) {
+          const canvas = document.getElementById(chartId);
+          const ctx = canvas.getContext("2d");
+          const canvasWidth = canvas.width;
+          const canvasHeight = canvas.height;
 
-        const startAngle = angles[chartId].current;
-        const targetAngle = angles[chartId].target;
-        const duration = 1000; // 애니메이션 지속 시간 (1초)
-        let startTime = null;
+          const startAngle = angles[chartId].current;
+          const targetAngle = angles[chartId].target;
+          const duration = 1000; // 애니메이션 지속 시간 (1초)
+          let startTime = null;
 
-        function step(timestamp) {
+          function step(timestamp) {
             if (!startTime) startTime = timestamp;
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / duration, 1); // 0에서 1까지 진행
@@ -398,50 +308,60 @@
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(centerX + Math.cos(angles[chartId].current) * len, centerY + Math.sin(angles[chartId].current) * len);
-            ctx.strokeStyle = '#4A90E2';
+            ctx.strokeStyle = 'red';
             ctx.lineWidth = 4;
             ctx.stroke();
 
+            // 데이터 값 그리기 (화살표 시작점과 게이지 사이에 위치)
+            const value = currentValues[chartId] ? currentValues[chartId].toFixed(3) : '-'; // 소수점 3자리까지 표시
+            ctx.fillStyle = '#fff'; // 텍스트 색상 (흰색)
+            ctx.font = 'bold 20px Arial'; // 텍스트 스타일
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const radius = 100; // 게이지 반지름 (drawGaugeOnCanvas에서 정의됨)
+            const textY = centerY - radius / 3; // 화살표 시작점과 게이지 사이에 위치
+            ctx.fillText(value, centerX, textY);
+
             // 애니메이션이 끝나지 않았으면 계속 진행
             if (progress < 1) {
-                requestAnimationFrame(step);
+              requestAnimationFrame(step);
             } else {
-                animationStates[chartId].animating = false;
+              animationStates[chartId].animating = false;
             }
+          }
+
+          requestAnimationFrame(step);
         }
 
-        requestAnimationFrame(step);
-    }
+        // 게이지 배경 그리기 함수
+        function drawGaugeOnCanvas(canvasId, canvas) {
+          const ctx = canvas.getContext('2d');
+          const canvasWidth = canvas.width;
+          const canvasHeight = canvas.height;
+          const centerX = canvasWidth / 2;
+          const centerY = canvasHeight - 50;
+          const radius = 100;
+          const gaugeWidth = 30;
 
-    // 게이지 배경 그리기 함수
-    function drawGaugeOnCanvas(canvasId, canvas) {
-        const ctx = canvas.getContext('2d');
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const centerX = canvasWidth / 2;
-        const centerY = canvasHeight - 50;
-        const radius = 100;
-        const gaugeWidth = 30;
+          const colors = {
+            normal: ['#32cd32', '#90ee90'],
+            warning: ['#ffa500', '#ffd580'],
+            danger: ['#ff4500', '#ff7f7f']
+          };
 
-        const colors = {
-            normal: '#A2E1DB',
-            warning: '#FFDBCC',
-            danger: '#FCB9AA'
-        };
-
-        const fixedData = {
+          const fixedData = {
             normal: 33,
             warning: 33,
             danger: 34
-        };
+          };
 
-        const labels = {
+          const labels = {
             normal: '정상',
             warning: '경고',
             danger: '위험'
-        };
+          };
 
-        function drawGauge() {
+          function drawGauge() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
             const totalAngle = Math.PI;
@@ -453,348 +373,301 @@
 
             let currentAngle = startAngle;
 
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + normalAngle);
-            ctx.lineTo(centerX + Math.cos(currentAngle + normalAngle) * (radius - gaugeWidth), centerY + Math.sin(currentAngle + normalAngle) * (radius - gaugeWidth));
-            ctx.arc(centerX, centerY, radius - gaugeWidth, currentAngle + normalAngle, currentAngle, true);
-            ctx.closePath();
-            ctx.fillStyle = colors.normal;
-            ctx.fill();
+            // 그림자 설정
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            ctx.shadowBlur = 10;
+            ctx.lineWidth = 2;
 
+            // 게이지 그리기
+            drawSection(currentAngle, normalAngle, colors.normal);
             currentAngle += normalAngle;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + warningAngle);
-            ctx.lineTo(centerX + Math.cos(currentAngle + warningAngle) * (radius - gaugeWidth), centerY + Math.sin(currentAngle + warningAngle) * (radius - gaugeWidth));
-            ctx.arc(centerX, centerY, radius - gaugeWidth, currentAngle + warningAngle, currentAngle, true);
-            ctx.closePath();
-            ctx.fillStyle = colors.warning;
-            ctx.fill();
-
+            drawSection(currentAngle, warningAngle, colors.warning);
             currentAngle += warningAngle;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + dangerAngle);
-            ctx.lineTo(centerX + Math.cos(currentAngle + dangerAngle) * (radius - gaugeWidth), centerY + Math.sin(currentAngle + dangerAngle) * (radius - gaugeWidth));
-            ctx.arc(centerX, centerY, radius - gaugeWidth, currentAngle + dangerAngle, currentAngle, true);
-            ctx.closePath();
-            ctx.fillStyle = colors.danger;
-            ctx.fill();
+            drawSection(currentAngle, dangerAngle, colors.danger);
+
+            ctx.shadowBlur = 0; // 그림자 해제
 
             drawLabels(startAngle, normalAngle, warningAngle, dangerAngle);
-        }
+          }
 
-        function drawLabels(startAngle, normalAngle, warningAngle, dangerAngle) {
+          function drawSection(start, angle, colorPair) {
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, colorPair[0]);
+            gradient.addColorStop(1, colorPair[1]);
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, start, start + angle);
+            ctx.arc(centerX, centerY, radius - gaugeWidth, start + angle, start, true);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.strokeStyle = '#333'; // 테두리
+            ctx.stroke();
+          }
+
+          function drawLabels(startAngle, normalAngle, warningAngle, dangerAngle) {
             const labelRadius = radius - gaugeWidth / 2;
-            ctx.fillStyle = 'black';
-            ctx.font = '14px Arial';
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 15px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             const angles = [
-                startAngle + normalAngle / 2,
-                startAngle + normalAngle + warningAngle / 2,
-                startAngle + normalAngle + warningAngle + dangerAngle / 2
+              startAngle + normalAngle / 2,
+              startAngle + normalAngle + warningAngle / 2,
+              startAngle + normalAngle + warningAngle + dangerAngle / 2
             ];
             const texts = [labels.normal, labels.warning, labels.danger];
 
             angles.forEach((angle, i) => {
-                const x = centerX + Math.cos(angle) * labelRadius;
-                const y = centerY + Math.sin(angle) * labelRadius;
-                ctx.fillText(texts[i], x, y);
+              const x = centerX + Math.cos(angle) * labelRadius;
+              const y = centerY + Math.sin(angle) * labelRadius;
+              ctx.fillText(texts[i], x, y);
             });
+          }
+
+          drawGauge();
         }
 
-        drawGauge();
-    }
+        // 초기 캔버스 그리기
+        canvasElements.forEach(canvas => {
+          drawGaugeOnCanvas(canvas.id, canvas);
+        });
 
-    // 초기 캔버스 그리기
-    canvasElements.forEach(canvas => {
-        drawGaugeOnCanvas(canvas.id, canvas);
-    });
+        // 최신 수조 데이터 가져오기
+        function fetchLatestTankData() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const tankIdx = urlParams.get("tankIdx");
 
-    // 실시간 그래프 캔버스 (빈 상태 유지)
-    const aihubGraph = document.getElementById('aihubGraph').getContext('2d');
+          if (tankIdx) {
+            fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`❌ HTTP 오류: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(data => {
+                console.log("✅ 최신 수조 데이터 로드 완료:", data);
 
-    // 최신 수조 데이터 가져오기
-    function fetchLatestTankData() {
+                // currentValues 업데이트
+                currentValues['chart-1'] = parseFloat(data.waterPh);
+                currentValues['chart-2'] = parseFloat(data.waterDo);
+                currentValues['chart-3'] = parseFloat(data.waterTemp);
+                currentValues['chart-4'] = parseFloat(data.waterSalt);
+                currentValues['chart-5'] = parseFloat(data.waterAmmonia);
+                currentValues['chart-6'] = parseFloat(data.waterNitrogen);
+
+                // 화살표 업데이트 (부드러운 애니메이션)
+                updateGauge('chart-1', currentValues['chart-1'], dataRanges['chart-1'].min, dataRanges['chart-1'].max);
+                updateGauge('chart-2', currentValues['chart-2'], dataRanges['chart-2'].min, dataRanges['chart-2'].max);
+                updateGauge('chart-3', currentValues['chart-3'], dataRanges['chart-3'].min, dataRanges['chart-3'].max);
+                updateGauge('chart-4', currentValues['chart-4'], dataRanges['chart-4'].min, dataRanges['chart-4'].max);
+                updateGauge('chart-5', currentValues['chart-5'], dataRanges['chart-5'].min, dataRanges['chart-5'].max);
+                updateGauge('chart-6', currentValues['chart-6'], dataRanges['chart-6'].min, dataRanges['chart-6'].max);
+              })
+              .catch(error => {
+                console.error("❌ 수조 데이터 로드 실패:", error);
+              });
+          } else {
+            console.warn("tankIdx가 URL에 없습니다.");
+          }
+        }
+
+        // 페이지 로드 후 데이터 가져오기 시작
+        fetchLatestTankData();
+
+        // 24시간마다 자동 갱신
+        setInterval(fetchLatestTankData, 1000*60*60*24);
+      });
+
+      //---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]------------------------
+      function startAutoRefresh() {
+        fetchLatestTankData();
+        setInterval(fetchLatestTankData, 1000*60*60*24);
+      }
+
+      // 페이지가 완전히 로드된 후 자동 갱신 시작
+      document.addEventListener("DOMContentLoaded", startAutoRefresh);
+
+      // 클릭 이벤트 및 실시간 데이터
+      const cardElements = document.querySelectorAll('.card');
+      let labelsMap = {};
+      let valuesMap = {};
+
+      cardElements.forEach(card => {
+        const canvas = card.querySelector('canvas');
+        const chartId = canvas.id;
+        labelsMap[chartId] = [];
+        valuesMap[chartId] = [];
+
+        card.addEventListener('click', () => {
+          cardElements.forEach(c => {
+            c.classList.remove('clicked', 'animate-click');
+          });
+
+          card.classList.add('clicked', 'animate-click');
+          setTimeout(() => {
+            card.classList.remove('animate-click');
+          }, 300);
+
+          const label = dataRanges[chartId].label;
+          showGraphFor(chartId, label);
+        });
+      });
+
+      // 초기 빈 그래프 설정
+      window.onload = function() {
+        const ctx = document.getElementById('aihubGraph').getContext('2d');
+        realtimeChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [{
+              label: '데이터 없음',
+              data: [],
+              borderColor: '#4A90E2',
+              backgroundColor: 'rgba(74, 144, 226, 0.2)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: '실시간 데이터',
+                  color: '#ffffff',
+                  font: { size: 14 }
+                },
+                ticks: { display: true, color: '#ffffff', font: { size: 12 } }
+              },
+              y: {
+                title: { display: false },
+                ticks: { color: '#ffffff', font: { size: 12 }, padding: 10 }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                color: '#ffffff',
+                font: { size: 16 },
+                padding: { top: 10, bottom: 20 }
+              }
+            }
+          }
+        });
+      };
+
+      // 그래프 출력 함수
+      function showGraphFor(chartId, label) {
+        const ctx = document.getElementById('aihubGraph').getContext('2d');
+        const valueKeyMap = {
+          'chart-1': 'waterPh',
+          'chart-2': 'waterDo',
+          'chart-3': 'waterTemp',
+          'chart-4': 'waterSalt',
+          'chart-5': 'waterAmmonia',
+          'chart-6': 'waterNitrogen'
+        };
+        const dataKey = valueKeyMap[chartId];
+
+        if (realtimeChart) {
+          realtimeChart.destroy();
+        }
+
+        realtimeChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labelsMap[chartId],
+            datasets: [{
+              label: `${label} 실시간 데이터`,
+              data: valuesMap[chartId],
+              borderColor: '#4A90E2',
+              backgroundColor: 'rgba(74, 144, 226, 0.2)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: '실시간 데이터',
+                  color: '#ffffff',
+                  font: { size: 14 }
+                },
+                ticks: { display: true, color: '#ffffff', font: { size: 12 } }
+              },
+              y: {
+                title: { display: false },
+                ticks: { color: '#ffffff', font: { size: 12 } }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: label,
+                color: '#ffffff',
+                font: { size: 16 },
+                padding: { top: 10, bottom: 20 }
+              }
+            }
+          }
+        });
+
+        // 즉시 데이터 불러오기
+        fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
+
+        // 기존 setInterval 제거 (중복 방지)
+        if (window.graphInterval) {
+          clearInterval(window.graphInterval);
+        }
+
+        // 24시간마다 갱신
+        window.graphInterval = setInterval(() => {
+          fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
+        }, 1000*60*60*24);
+      }
+
+      // 서버에서 데이터 받아 그래프 갱신
+      function fetchLatestTankDataForGraph(chartId, dataKey, labels, values, chart) {
         const urlParams = new URLSearchParams(window.location.search);
         const tankIdx = urlParams.get("tankIdx");
 
         if (tankIdx) {
-            console.log(`fetchLatestTankData 호출 - tankIdx: ${tankIdx}`);
-            fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("✅ 최신 수조 데이터 로드 완료:", data);
+          fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+            .then(response => response.json())
+            .then(data => {
+              const value = parseFloat(data[dataKey]);
+              const now = new Date();
+              const timeLabel = now.toLocaleTimeString();
 
-                    // 텍스트 업데이트
-                    document.getElementById("phValue").textContent = data.waterPh || "정보 없음";
-                    document.getElementById("oxygenValue").textContent = data.waterDo || "정보 없음";
-                    document.getElementById("temperatureValue").textContent = data.waterTemp || "정보 없음";
-                    document.getElementById("salinityValue").textContent = data.waterSalt || "정보 없음";
-                    document.getElementById("ammoniaValue").textContent = data.waterAmmonia || "정보 없음";
-                    document.getElementById("nitriteValue").textContent = data.waterNitrogen || "정보 없음";
+              if (!isNaN(value)) {
+                labels.push(timeLabel);
+                values.push(value);
 
-                    // currentValues 업데이트 및 디버깅 로그
-                    currentValues['chart-1'] = parseFloat(data.waterPh) || currentValues['chart-1'];
-                    currentValues['chart-2'] = parseFloat(data.waterDo) || currentValues['chart-2'];
-                    currentValues['chart-3'] = parseFloat(data.waterTemp) || currentValues['chart-3'];
-                    currentValues['chart-4'] = parseFloat(data.waterSalt) || currentValues['chart-4'];
-                    currentValues['chart-5'] = parseFloat(data.waterAmmonia) || currentValues['chart-5'];
-                    currentValues['chart-6'] = parseFloat(data.waterNitrogen) || currentValues['chart-6'];
-                    console.log("업데이트된 currentValues:", currentValues);
+                if (labels.length > 10) {
+                  labels.shift();
+                  values.shift();
+                }
 
-                    // 화살표 업데이트 (부드러운 애니메이션)
-                    updateGauge('chart-1', currentValues['chart-1'], dataRanges['chart-1'].min, dataRanges['chart-1'].max);
-                    updateGauge('chart-2', currentValues['chart-2'], dataRanges['chart-2'].min, dataRanges['chart-2'].max);
-                    updateGauge('chart-3', currentValues['chart-3'], dataRanges['chart-3'].min, dataRanges['chart-3'].max);
-                    updateGauge('chart-4', currentValues['chart-4'], dataRanges['chart-4'].min, dataRanges['chart-4'].max);
-                    updateGauge('chart-5', currentValues['chart-5'], dataRanges['chart-5'].min, dataRanges['chart-5'].max);
-                    updateGauge('chart-6', currentValues['chart-6'], dataRanges['chart-6'].min, dataRanges['chart-6'].max);
-                })
-                .catch(error => {
-                    console.error("❌ 수조 데이터 로드 실패:", error);
-                });
-        } else {
-            console.warn("tankIdx가 URL에 없습니다.");
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = values;
+                chart.update();
+              }
+            })
+            .catch(err => console.error("❌ 그래프 데이터 로드 실패:", err));
         }
-    }
-
-    // 페이지 로드 후 데이터 가져오기 시작
-    fetchLatestTankData();
-
-    // 5초마다 자동 갱신 (30초에서 5초로 줄여서 테스트 용이하게)
-    setInterval(fetchLatestTankData, 1000*60*60*24);
-});
-
-			//---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]------------------------
-			/**
-			 * 🔹 일정 주기마다 최신 데이터를 가져오는 함수 (자동 갱신)
-			 */
-			function startAutoRefresh() {
-			    console.log("⏳ 자동 갱신 시작 (10초 간격)");
-			
-			    // ✅ 최초 실행 (페이지 로딩 후 즉시 데이터 가져오기)
-			    fetchLatestTankData();
-			
-			    // ✅ 10초마다 자동 갱신 (10000ms = 10초)
-			    setInterval(fetchLatestTankData, 1000*60*60*24);
-			}
-			
-			// ✅ 페이지가 완전히 로드된 후 자동 갱신 시작
-			document.addEventListener("DOMContentLoaded", startAutoRefresh);
-			//-------------------------------------------------------------------------------
-			
-			
-			// 클릭 이벤트 및 실시간 데이터 -성권-
-			// 카드 요소들을 선택
-		const cardElements = document.querySelectorAll('.card');
-
-			// 각 카드에 클릭 이벤트 추가
-			cardElements.forEach(card => {
-			  card.addEventListener('click', () => {
-			    // 모든 카드의 클릭 상태 초기화
-			    cardElements.forEach(c => {
-			      c.classList.remove('clicked', 'animate-click');
-			    });
-			
-			    // 클릭된 카드에 효과 적용
-			    card.classList.add('clicked', 'animate-click');
-			
-			    // 애니메이션 후 'animate-click' 제거 (300ms)
-			    setTimeout(() => {
-			      card.classList.remove('animate-click');
-			    }, 300);
-			
-			    // 기존 그래프 표시 로직
-			    const canvas = card.querySelector('canvas'); // 카드 내의 캔버스 요소
-			    const chartId = canvas.id; // 캔버스 ID 가져오기
-			    const label = dataRanges[chartId].label; // 해당 ID에 맞는 라벨
-			    showGraphFor(chartId, label); // 그래프 출력 함수 호출
-			  });
-			});
-			
-			let realtimeChart = null; // 현재 그래프 저장용
-			
-			// ★★★ 여기에서 초기 빈 그래프를 설정 ★★★
-			window.onload = function() {
-			  const ctx = document.getElementById('aihubGraph').getContext('2d');
-
-			  // 초기 빈 그래프 생성
-			  realtimeChart = new Chart(ctx, {
-			    type: 'line',
-			    data: {
-			      labels: [],
-			      datasets: [{
-			        label: '데이터 없음',
-			        data: [],
-			        borderColor: '#4A90E2',
-			        backgroundColor: 'rgba(74, 144, 226, 0.2)',
-			        fill: true,
-			        tension: 0.3
-			      }]
-			    },
-			    options: {
-			      responsive: true,
-			      maintainAspectRatio: false,
-			      scales: {
-			        x: {
-			          title: {
-			            display: true,
-			            text: '실시간 데이터',
-			            color: '#ffffff',
-			            font: { size: 14 }
-			          },
-			          ticks: { display: true, color: '#ffffff', font: { size: 12 } }
-			        },
-			        y: {
-			          title: { display: false },
-			          ticks: { color: '#ffffff', font: { size: 12 },
-			          padding: 10
-			          }
-			        }
-			      },
-			      plugins: {
-			        legend: { display: false },
-			        title: {
-			          display: true,
-			          color: '#ffffff',
-			          font: { size: 16 },
-			          padding: { top: 10, bottom: 20 }
-			        }
-			      }
-			    }
-			  });
-			};
-			// ★★★ 초기화 코드 끝 ★★★
-			
-			// ▶ 그래프 출력 함수
-			function showGraphFor(chartId, label) {
-			  const ctx = document.getElementById('aihubGraph').getContext('2d');
-			  const valueKeyMap = {
-			    'chart-1': 'waterPh',
-			    'chart-2': 'waterDo',
-			    'chart-3': 'waterTemp',
-			    'chart-4': 'waterSalt',
-			    'chart-5': 'waterAmmonia',
-			    'chart-6': 'waterNitrogen'
-			  };
-			  const dataKey = valueKeyMap[chartId];
-			
-			  let labels = [];
-			  let values = [];
-			
-			  // 기존 그래프 제거
-			  if (realtimeChart) {
-			    realtimeChart.destroy();
-			  }
-			
-			  // 새 그래프 생성
-			  realtimeChart = new Chart(ctx, {
-			    type: 'line',
-			    data: {
-			      labels: labels, // X축 레이블 (시간 등)
-			      datasets: [{
-			        label: `${label} 실시간 데이터`, // 범례 레이블
-			        data: values,
-			        borderColor: '#4A90E2',
-			        backgroundColor: 'rgba(74, 144, 226, 0.2)',
-			        fill: true,
-			        tension: 0.3
-			      }]
-			    },
-			    options: {
-			      responsive: true,
-			      maintainAspectRatio: false, // 종횡비 유지 비활성화
-			      scales: {
-			        x: {
-			          title: {
-			            display: true,
-			            text: '실시간 데이터',
-			            color: '#ffffff',
-			            font: {
-			              size: 14
-			            }
-			          },
-			          ticks: {
-			            display: true, // X축 레이블 표시 유지
-			            color: '#ffffff',
-			            font: {
-			              size: 12
-			            }
-			          }
-			        },
-			        y: {
-			          title: {
-			            display: false // Y축 제목 숨김
-			          },
-			          ticks: {
-			            color: '#ffffff',
-			            font: {
-			              size: 12
-			            }
-			          }
-			        }
-			      },
-			      plugins: {
-			        legend: {
-			          display: false // 범례(데이터셋의 label)를 숨김
-			        },
-			        title: {
-			          display: true,
-			          text: label, // Y축 제목("pH")을 상단에 표시
-			          color: '#ffffff',
-			          font: {
-			            size: 16
-			          },
-			          padding: {
-			            top: 10,
-			            bottom: 20
-			          }
-			        }
-			      }
-			    }
-			  });
-
-			  // 즉시 데이터 불러오기 + 30초마다 갱신
-			  fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
-			  setInterval(() => {
-			    fetchLatestTankDataForGraph(dataKey, labels, values, realtimeChart);
-			  }, 1000*60*60*24); // 갱신
-			}
-			// ▶ 서버에서 데이터 받아 그래프 갱신
-			function fetchLatestTankDataForGraph(dataKey, labels, values, chart) {
-			  const urlParams = new URLSearchParams(window.location.search);
-			  const tankIdx = urlParams.get("tankIdx");
-
-			  if (tankIdx) {
-			    fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
-			      .then(response => response.json())
-			      .then(data => {
-			        const value = data[dataKey];
-			        const now = new Date();
-			        const timeLabel = now.toLocaleTimeString();
-
-			        if (value !== null && value !== undefined) {
-			          labels.push(timeLabel);
-			          values.push(value);
-
-			          if (labels.length > 10) { // 10개까지만 유지
-			            labels.shift();
-			            values.shift();
-			          }
-
-			          chart.update();
-			        }
-			      })
-			      .catch(err => console.error("❌ 그래프 데이터 로드 실패:", err));
-			  }
-			}
-
-			
-			
-			
+      }
     </script>
-
-
   </body>
 </html>
