@@ -71,7 +71,10 @@
       </main>
 
     <script>
-  //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
+    
+	
+    
+    
     //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
 function handleLogout() {
     console.log("🚀 로그아웃 요청");
@@ -219,6 +222,13 @@ window.onload = function () {
          return null;
      }
  }
+ 
+//🔹 정규화 함수 (min-max scaling)
+ function normalize(value, min, max) {
+     if (max === min) return 0; // 분모 0 방지
+     return (value - min) / (max - min);
+ }		
+ 
 //--------------------------------------------------차트 그려주는 함수 ---------------------------------------------------------
  // 차트 인스턴스를 저장할 객체
 const chartInstances = {};
@@ -247,12 +257,12 @@ async function renderTankChart(tank) {
             datasets: [{
                 label: `${tank.tankIdx}번 수조 데이터`,
                 data: [
-                    latestData.waterPh,
-                    latestData.waterDo,
-                    latestData.waterTemp,
-                    latestData.waterSalt,
-                    latestData.waterAmmonia,
-                    latestData.waterNitrogen
+                	 normalize(latestData.waterPh, 7.5, 9.0),          // 산성도
+                     normalize(latestData.waterDo, 5, 10),             // 용존산소
+                     normalize(latestData.waterTemp, 26, 30),          // 수온
+                 	 normalize(latestData.waterSalt, 0.5, 45),            // 염도
+                   	 normalize(latestData.waterAmmonia, 0, 0.16),         // 암모니아
+                   	 normalize(latestData.waterNitrogen, 0, 5)         // 아질산
                 ],
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
@@ -487,6 +497,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	}, 5 * 60 * 1000); // 5분마다 요청
 };
 //------------------------------------------------------------------------
+
+
 
     </script>
 

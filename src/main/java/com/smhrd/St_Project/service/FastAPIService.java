@@ -1,35 +1,48 @@
 package com.smhrd.St_Project.service;
+ 
+ import org.springframework.http.*;
+ import org.springframework.stereotype.Service;
+ import org.springframework.web.client.RestTemplate;
+ 
+ import java.util.*;
+ 
+ @Service
+ public class FastAPIService {
+ 
+     private final RestTemplate restTemplate = new RestTemplate();
+ 
+     public List<Double> getPredictionFromFlask() {
+    	    Map<String, Object> body = new HashMap<>();
+    	    body.put("data", "Spring에서 보낸 요청");
 
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+    	    HttpHeaders headers = new HttpHeaders();
+    	    headers.setContentType(MediaType.APPLICATION_JSON);
+    	    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-import java.util.*;
+    	    ResponseEntity<Map> response = restTemplate.postForEntity(
+    	            "http://localhost:8000/predict", entity, Map.class
+    	    );
 
-@Service
-public class FastAPIService {
+    	    // 👉 여기서 반환값이 리스트이므로 이렇게 처리!
+    	    Object rawValue = response.getBody().get("prediction");
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    	    if (rawValue instanceof List<?>) {
+    	        List<?> rawList = (List<?>) rawValue;
 
-    public List<Double> getPredictionFromFlask() {
-        Map<String, Object> body = new HashMap<>();
-        body.put("input", "dummy");
+    	        // 👉 숫자 리스트로 안전하게 변환
+    	        List<Double> predictionList = new ArrayList<>();
+    	        for (Object item : rawList) {
+    	            if (item instanceof Number) {
+    	                predictionList.add(((Number) item).doubleValue());
+    	            }
+    	        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+    	        System.out.println("✅ 예측 결과 리스트: " + predictionList);
+    	        return predictionList;
+    	    } else {
+    	        throw new IllegalStateException("예측 결과 형식이 올바르지 않습니다: " + rawValue);
+    	    }
+    	}
 
-        // 응답 받기
-        ResponseEntity<Map> response = restTemplate.postForEntity(
-                "http://localhost:8000/predict",
-                entity,
-                Map.class
-        );
 
-        // 받아온 prediction 데이터 꺼내기
-        List<List<Double>> prediction = (List<List<Double>>) response.getBody().get("prediction");
-
-        // 안에 있는 첫 번째 결과만 꺼내서 리턴
-        return prediction.get(0);
-    }
-}
+ }
