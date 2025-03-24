@@ -399,13 +399,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function updateAlarmContent(tankIdx) {
     try {
-        // 실제 API 호출
+        // 실제 API 호출 (테스트 데이터 대신 주석 해제해서 사용)
         // let response = await fetch(`/tank/alarm?tankIdx=${tankIdx}`);
         // if (!response.ok) throw new Error(`❌ 알람 데이터 요청 오류: ${response.status}`);
         // let alarms = await response.json();
 
-        // 테스트 데이터
-        // 아래 테스트 데이터를 삭제하고, 위의 실제 데이터 로직을 사용
+        // 테스트 데이터 (나중에 실제 API로 교체)
         let alarms = [
             { "timestamp": "2025-03-18T15:03:00", "message": "용존산소 4mg/L", "status": "critical" },
             { "timestamp": "2025-03-18T15:00:00", "message": "염도 이상", "status": "warning" },
@@ -416,28 +415,36 @@ async function updateAlarmContent(tankIdx) {
         // 테스트 데이터 끝
         
         let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
-        let criticalCount = 0, warningCount = 0;
-        let latestAlarms = [];
+        let alarmContainer = document.getElementById(`alarm-log-${tankIdx}`);
 
-        alarms.forEach(alarm => {
-            if (alarm.status === "critical") criticalCount++;
-            else if (alarm.status === "warning") warningCount++;
-            if (latestAlarms.length < 4) latestAlarms.push(alarm); // 최신 4건만 표시
-        });
+        alarms.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-        const totalActive = criticalCount + warningCount;
+        const latestAlarm = alarms[0];
         alarmContent.innerHTML = `
-        	<div class="alarm-summary">
-            	🚨 위험 ${criticalCount}건  ⚠️ 경고 ${warningCount}건
-            </div>            	
-            ${latestAlarms.map(alarm => `
-            	<div class="alarm-item">
-              		${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
-            	</div>
-              `).join("")}
+            <div class="alarm-item">
+                ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
+            </div>
         `;
 
-        alarmContent.style.cursor = "pointer";
+        alarmContainer.addEventListener("mouseenter", () => {
+            const latestFourAlarms = alarms.slice(0, 4); // 최근 4건
+            alarmContent.innerHTML = latestFourAlarms
+                .map(alarm => `
+                    <div class="alarm-item">
+                        ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
+                    </div>
+                `)
+                .join("");
+        });
+
+        alarmContainer.addEventListener("mouseleave", () => {
+            alarmContent.innerHTML = `
+                <div class="alarm-item">
+                    ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
+                </div>
+            `;
+        });
+
         alarmContent.addEventListener("click", () => {
             window.location.href = "/alarmHistory";
         });
@@ -447,7 +454,7 @@ async function updateAlarmContent(tankIdx) {
     }
 }
 
-/* 주기적 알람 업데이트 (5초마다) */
+/* 주기적 알람 업데이트 */
 function startAlarmUpdates(tankIds) {
     tankIds.forEach(tankIdx => {
         updateAlarmContent(tankIdx); // 초기 호출
