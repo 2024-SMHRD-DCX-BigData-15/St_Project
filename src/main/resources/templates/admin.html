@@ -41,6 +41,11 @@
                         <!-- 서버에서 데이터를 받아와서 동적으로 여기에 삽입됩니다 -->
                     </tbody>
                 </table>
+                <div class="pagination">
+        			<button id="prev-btn" class="page-btn" disabled>이전</button>
+       				<button id="next-btn" class="page-btn">다음</button>
+       			</div>
+                
             </section>
         </main>
     </div>
@@ -82,34 +87,52 @@
     }
 
 
-        // 서버에서 사용자 데이터 받아오기
-        document.addEventListener("DOMContentLoaded", function () {
-        	const scrollY = window.scrollY;
-    fetch('/api/member')
+    // 서버에서 사용자 데이터 받아오기
+    document.addEventListener("DOMContentLoaded", function () {
+    	const itemsPerPage = 7;
+        let currentPage = 1;
+        let users = [];
+        const tbody = document.getElementById('approval-table-body');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        fetch('/api/member')
         .then(response => response.json())
-        .then(users => {
-            const tbody = document.getElementById('approval-table-body');
+        .then(data => {
+            users = data; // 받아온 데이터를 저장
+            renderPage(currentPage); // 첫 페이지 렌더링
 
-            users.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.userId}</td>
-                    <td>${user.userName}</td>
-                    <td>${user.userAdd}</td>
-                    <td>${user.userPhone}</td>
-                    <td>${user.joinedAt}</td>
-                    <td>
-                        <span class="status ${user.userStatus === 'Y' ? 'status-pending' : 'status-approved'}">
-                            ${user.userStatus === 'Y' ? '대기 중' : '승인됨'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="approve-btn" ${user.userStatus === 'N' ? 'disabled' : ''}>승인</button>
-                        <button class="reject-btn" ${user.userStatus === 'Y' ? 'disabled' : ''}>거부</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+            // 수정: 페이지 렌더링 함수 추가 (페이징 처리)
+            function renderPage(page) {
+                tbody.innerHTML = ''; // 기존 내용 지우기
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const paginatedUsers = users.slice(start, end);
+
+                // 테이블에 데이터 추가
+                paginatedUsers.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.userId}</td>
+                        <td>${user.userName}</td>
+                        <td>${user.userAdd}</td>
+                        <td>${user.userPhone}</td>
+                        <td>${user.joinedAt}</td>
+                        <td>
+                            <span class="status ${user.userStatus === 'Y' ? 'status-pending' : 'status-approved'}">
+                                ${user.userStatus === 'Y' ? '대기 중' : '승인됨'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="approve-btn" ${user.userStatus === 'N' ? 'disabled' : ''}>승인</button>
+                            <button class="reject-btn" ${user.userStatus === 'Y' ? 'disabled' : ''}>거부</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                prevBtn.disabled = page === 1;
+                nextBtn.disabled = end >= users.length;
 
             document.querySelectorAll('.approve-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
@@ -128,6 +151,11 @@
                             row.querySelector('.status').classList.add('status-approved');
                             row.querySelector('.approve-btn').disabled = true;
                             row.querySelector('.reject-btn').disabled = false;
+
+                            const userIndex = users.findIndex(u => u.userId === userId);
+                            if (userIndex !== -1) {
+                                users[userIndex].userStatus = 'N';
+                            }
                         })
                         .catch(error => console.error("❌ 회원 승인 실패:", error));
                 });
@@ -150,13 +178,35 @@
                             row.querySelector('.status').classList.add('status-pending');
                             row.querySelector('.approve-btn').disabled = false;
                             row.querySelector('.reject-btn').disabled = true;
+
+                            // 수정: 데이터 업데이트 (승인/거부 후 데이터 동기화)
+                            const userIndex = users.findIndex(u => u.userId === userId);
+                            if (userIndex !== -1) {
+                                users[userIndex].userStatus = 'Y';
+                            }
                         })
                         .catch(error => console.error("❌ 회원 거부 실패:", error));
                 });
             });
+        }
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage * itemsPerPage < users.length) {
+                    currentPage++;
+                    renderPage(currentPage);
+                }
+            });
         })
         .catch(error => console.error("❌ 데이터 가져오기 실패:", error));
-});
+});   
+            
     </script>
 </body>
 </html>
