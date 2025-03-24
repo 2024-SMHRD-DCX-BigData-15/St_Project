@@ -184,10 +184,15 @@ function toggleNotifications() {
 	                </div>
                     </h4>
                     <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-                        <div class="image-container">
-                            <img src="/image/tank.png" alt="Tank Image" class="image" width="150" height="150">
-                        </div>
                         <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
+                        <div class="tank-data">
+                        <p><span id="ph-${tank.tankIdx}"></span></p>
+                        <p><span id="do-${tank.tankIdx}"></span></p>
+                        <p><span id="temp-${tank.tankIdx}"></span></p>
+                        <p><span id="salt-${tank.tankIdx}"></span></p>
+                        <p><span id="ammonia-${tank.tankIdx}"></span></p>
+                        <p><span id="nitrogen-${tank.tankIdx}"></span></p>
+                    </div>
                     </div>
                     <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
                         <h5>수조 알람 로그</h5>
@@ -207,10 +212,7 @@ function toggleNotifications() {
 }
 
 // ✅ 페이지 로드 시 수조 데이터 불러오기
-window.onload = function () {
-    let userId = `[[${session.loginUser?.userId}]]`;
-    loadTanks(userId);
-};
+
 
  async function fetchLatestTankData(tankIdx) {
      try {
@@ -249,6 +251,87 @@ async function renderTankChart(tank) {
         return;
     }
 
+    // 텍스트 데이터 업데이트
+    document.getElementById(`ph-${tank.tankIdx}`).textContent = latestData.waterPh;
+    document.getElementById(`do-${tank.tankIdx}`).textContent = latestData.waterDo;
+    document.getElementById(`temp-${tank.tankIdx}`).textContent = latestData.waterTemp;
+    document.getElementById(`salt-${tank.tankIdx}`).textContent = latestData.waterSalt;
+    document.getElementById(`ammonia-${tank.tankIdx}`).textContent = latestData.waterAmmonia;
+    document.getElementById(`nitrogen-${tank.tankIdx}`).textContent = latestData.waterNitrogen;
+
+    // 데이터 값 배열
+    const dataValues = [
+        latestData.waterPh,
+        latestData.waterDo,
+        latestData.waterTemp,
+        latestData.waterSalt,
+        latestData.waterAmmonia,
+        latestData.waterNitrogen
+    ];
+
+    // 범위 정의 (정상, 경고, 위험)
+    const ranges = [
+        // 산성도
+        { normalMin: 7.5, normalMax: 9.0, warningMin: 7.3, warningMax: 9.2 },
+        // 용존산소
+        { normalMin: 4.0, normalMax: 10.0, warningMin: 3.502, warningMax: 15.0 },
+        // 수온
+        { normalMin: 26.0, normalMax: 30.0, warningMin: 24.77, warningMax: 31.0 },
+        // 염도
+        { normalMin: 0.5, normalMax: 45.0, warningMin: 15.0, warningMax: 45.0 },
+        // 암모니아
+        { normalMin: 0.0, normalMax: 0.16, warningMin: 0.0, warningMax: 0.21 },
+        // 아질산
+        { normalMin: 0.0, normalMax: 5.0, warningMin: 0.001, warningMax: 6.0 }
+    ];
+
+    // 색상 설정 함수
+    const getColor = (value, range) => {
+        const { normalMin, normalMax, warningMin, warningMax } = range;
+        if (value >= normalMin && value <= normalMax) {
+            return {
+                background: '#32cd32', // 정상: 초록색
+                border: '#90ee90'
+            };
+        } else if (value >= warningMin && value <= warningMax) {
+            return {
+                background: '#ffa500', // 경고: 노란색
+                border: '#ffd580'
+            };
+        } else {
+            return {
+                background: '#ff4500', // 위험: 빨간색
+                border: '#ff7f7f'
+            };
+        }
+    };
+
+    // 각 데이터 값에 따라 색상 배열 생성
+    const backgroundColors = [];
+    const borderColors = [];
+    dataValues.forEach((value, index) => {
+        const range = ranges[index];
+        const colors = getColor(value, range);
+        backgroundColors.push(colors.background);
+        borderColors.push(colors.border);
+    });
+
+    // 텍스트 색상 동기화
+    const textElements = [
+        document.getElementById(`ph-${tank.tankIdx}`),
+        document.getElementById(`do-${tank.tankIdx}`),
+        document.getElementById(`temp-${tank.tankIdx}`),
+        document.getElementById(`salt-${tank.tankIdx}`),
+        document.getElementById(`ammonia-${tank.tankIdx}`),
+        document.getElementById(`nitrogen-${tank.tankIdx}`)
+    ];
+
+    dataValues.forEach((value, index) => {
+        const range = ranges[index];
+        const colors = getColor(value, range);
+        textElements[index].style.color = colors.border; // 텍스트 색상을 바 색상과 동기화
+    });
+
     // 새 차트 생성
     chartInstances[canvasId] = new Chart(ctx, {
         type: 'bar',
@@ -257,15 +340,15 @@ async function renderTankChart(tank) {
             datasets: [{
                 label: `${tank.tankIdx}번 수조 데이터`,
                 data: [
-                	 normalize(latestData.waterPh, 7.3, 9.2),          // 산성도
-                     normalize(latestData.waterDo, 3.502, 15.0),             // 용존산소
-                     normalize(latestData.waterTemp, 24.77, 31.0),          // 수온
-                 	 normalize(latestData.waterSalt, 15.0, 45.0),         // 염도
-                   	 normalize(latestData.waterAmmonia, 0.0, 0.21),      // 암모니아
-                   	 normalize(latestData.waterNitrogen, 0.001, 6.0)         // 아질산
+                    normalize(latestData.waterPh, 7.3, 9.2),
+                    normalize(latestData.waterDo, 3.502, 15.0),
+                    normalize(latestData.waterTemp, 24.77, 31.0),
+                    normalize(latestData.waterSalt, 15.0, 45.0),
+                    normalize(latestData.waterAmmonia, 0.0, 0.21),
+                    normalize(latestData.waterNitrogen, 0.001, 6.0)
                 ],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: backgroundColors, // 동적 색상 배열
+                borderColor: borderColors,         // 동적 색상 배열
                 borderWidth: 1,
                 barThickness: 23,
                 categoryPercentage: 0.9,
@@ -293,7 +376,8 @@ async function renderTankChart(tank) {
                     display: true,
                     ticks: {
                         font: { size: 13 },
-                        padding: 2
+                        padding: 2,
+                        color: '#ffffff'
                     }
                 }
             },
@@ -304,20 +388,16 @@ async function renderTankChart(tank) {
                 tooltip: {
                     enabled: false
                 }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuad'
             }
         }
     });
 }
 //----------------------------------------------------------------------------------------------------------
-window.onload = function () {
-    let userId = `[[${session.loginUser?.userId}]]`;
-    loadTanks(userId);
-    
- // 10초마다 데이터 갱신
-    setInterval(() => {
-        loadTanks(userId);
-    }, 1000*60*60*24); // 10초 간격
-};
+
 
 
 /**
@@ -485,16 +565,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //-------------- [ 세션 유지하는 백엔드 코드 ] -------------------------------- 
-	window.onload = function () {
-	let userId = `[[${session.loginUser?.userId}]]`;
-	loadTanks(userId);
+window.onload = function () {
+    let userId = `[[${session.loginUser?.userId}]]`;
+    
+    // 수조 데이터 로드
+    loadTanks(userId);
 
-	// ✅ 세션 유지 요청 (5분마다 실행)
-	setInterval(function() {
-    fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
-        .then(response => console.log('✅ 세션 유지 요청 보냄'))
-        .catch(error => console.error('❌ 세션 유지 실패', error));
-	}, 5 * 60 * 1000); // 5분마다 요청
+    // 10초마다 데이터 갱신 (주기를 10초로 변경, 원래 의도대로)
+    setInterval(() => {
+        loadTanks(userId);
+    }, 1000 * 10);
+
+    // 세션 유지 요청 (5분마다 실행)
+    setInterval(function() {
+        fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
+            .then(response => console.log('✅ 세션 유지 요청 보냄'))
+            .catch(error => console.error('❌ 세션 유지 실패', error));
+    }, 5 * 60 * 1000);
 };
 //------------------------------------------------------------------------
 

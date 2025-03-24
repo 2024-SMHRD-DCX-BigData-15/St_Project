@@ -15,10 +15,23 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  margin: 0; /* 기본 여백을 제거 */
-  overflow-x: hidden; /* 가로 스크롤 비활성화 */
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  margin: 0;
+  overflow-x: hidden;  /* 가로 스크롤 비활성화 */
+  overflow-y: scroll;  /* 항상 스크롤 영역 활성화 */
 }
+
+/* 스크롤바를 숨기는 부분 */
+body::-webkit-scrollbar {
+  width: 0; /* 크기를 0으로 설정하여 안 보이게 함 */
+  height: 0; /* 세로/가로 스크롤바 크기 0으로 설정 */
+}
+
+body {
+  -ms-overflow-style: none; /* IE와 Edge에서 스크롤바 숨김 */
+  scrollbar-width: none;    /* Firefox에서 스크롤바 숨김 */
+}
+
+
 
 /* 페이지 레이아웃을 위한 wrapper */
 .wrapper {
@@ -37,7 +50,8 @@ body {
   max-width: 1200px; /* 최대 너비 설정 */
   overflow-y: auto;
   box-sizing: border-box;
-  padding-top: 80px; /* 헤더 높이만큼 여백 추가 */
+  padding-top: 30px; /* 헤더 높이만큼 여백 추가 */
+  margin-bottom:180px;
 }
 
 /* 헤더 */
@@ -179,22 +193,40 @@ body {
   flex: 1;
 }
 
-.tank-info {
-  background-color: #252c41;
-  padding: 10px; /* 패딩 줄임 */
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex; /* flexbox로 수평 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
-  gap: 10px; /* 이미지와 그래프 간 간격 */
+/* 부모 요소 */
+.parent-container {
+  display: flex;                /* flexbox 사용 */
+  justify-content: center;      /* 가로 중앙 정렬 */
+  align-items: center;          /* 세로 중앙 정렬 */
+  height: 100vh;                /* 화면 전체 높이 */
 }
 
-.tank-image {
-  width: 40px; /* 이미지 크기 */
-  height: 40px;
-  object-fit: cover; /* 이미지 비율 유지 */
-  border-radius: 4px; /* 모서리 둥글게 */
+/* .tank-info */
+.tank-info {
+  background-color: #252c41;
+  padding: 10px; /* 패딩 유지 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex; /* flexbox 유지 */
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 추가 */
+  gap: 10px;
+  flex-direction: row; /* 가로 배치 */
+  width: 100%; /* 부모 요소의 너비를 100%로 설정 */
+  max-width: 600px; /* 최대 너비를 제한하여 콘텐츠가 너무 넓어지지 않도록 */
+  margin: 0 auto; /* 좌우 마진을 auto로 설정하여 가운데 정렬 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨기기 */
 }
+
+/* .tank-data */
+.tank-data {
+  display: flex;
+  flex-direction: column; /* 수치는 세로로 나열 */
+  gap: 5px; /* 각 항목 간 간격 설정 */
+  flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
+}
+
+
 
 
 
