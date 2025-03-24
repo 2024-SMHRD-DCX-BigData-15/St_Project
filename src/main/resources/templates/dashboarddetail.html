@@ -217,75 +217,170 @@
 
       //---------------------------------------------화살표 표시-----------------------------------------------
       document.addEventListener("DOMContentLoaded", function () {
-        // 전역 변수 정의
-        const canvasElements = [
-          document.getElementById('chart-1'),
-          document.getElementById('chart-2'),
-          document.getElementById('chart-3'),
-          document.getElementById('chart-4'),
-          document.getElementById('chart-5'),
-          document.getElementById('chart-6'),
-        ];
+    // 전역 변수 정의
+    const canvasElements = [
+        document.getElementById('chart-1'),
+        document.getElementById('chart-2'),
+        document.getElementById('chart-3'),
+        document.getElementById('chart-4'),
+        document.getElementById('chart-5'),
+        document.getElementById('chart-6'),
+    ];
 
-        // 각 캔버스별 현재 각도와 목표 각도 관리
-        const angles = {
-          'chart-1': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-          'chart-2': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-          'chart-3': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-          'chart-4': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-          'chart-5': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-          'chart-6': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
-        };
+    // 각 캔버스별 현재 각도와 목표 각도 관리
+    const angles = {
+        'chart-1': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-2': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-3': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-4': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-5': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+        'chart-6': { current: Math.PI + (50 / 100) * Math.PI, target: Math.PI + (50 / 100) * Math.PI },
+    };
 
-        // 애니메이션 진행 상태 관리
-        const animationStates = {
-          'chart-1': { animating: false },
-          'chart-2': { animating: false },
-          'chart-3': { animating: false },
-          'chart-4': { animating: false },
-          'chart-5': { animating: false },
-          'chart-6': { animating: false },
-        };
+    // 애니메이션 진행 상태 관리
+    const animationStates = {
+        'chart-1': { animating: false },
+        'chart-2': { animating: false },
+        'chart-3': { animating: false },
+        'chart-4': { animating: false },
+        'chart-5': { animating: false },
+        'chart-6': { animating: false },
+    };
 
-        // 이징 함수 (easeOutQuad)
-        function easeOutQuad(t) {
-          return 1 - (1 - t) * (1 - t);
+    // 현재 값 관리
+    const currentValues = {
+        'chart-1': null,
+        'chart-2': null,
+        'chart-3': null,
+        'chart-4': null,
+        'chart-5': null,
+        'chart-6': null,
+    };
+
+    // ranges 배열 정의
+    const ranges = [
+        // 산성도 (waterPh, chart-1)
+        {
+            danger1Max: 7.68,      // 위험: 7.3 ~ 7.68
+            warning1Min: 7.68, warning1Max: 8.06, // 경고: 7.68 ~ 8.06
+            normalMin: 8.06, normalMax: 8.44,     // 정상: 8.06 ~ 8.44
+            warning2Min: 8.44, warning2Max: 8.82, // 경고: 8.44 ~ 8.82
+            danger2Min: 8.82,     // 위험: 8.82 ~ 9.2
+            min: 7.3, max: 9.2    // 전체 범위
+        },
+        // 용존산소 (waterDo, chart-2)
+        {
+            danger1Max: 5.8016,      // 위험: 3.502 ~ 5.8016
+            warning1Min: 5.8016, warning1Max: 8.1012, // 경고: 5.8016 ~ 8.1012
+            normalMin: 8.1012, normalMax: 10.4008,    // 정상: 8.1012 ~ 10.4008
+            warning2Min: 10.4008, warning2Max: 12.7004, // 경고: 10.4008 ~ 12.7004
+            danger2Min: 12.7004,     // 위험: 12.7004 ~ 15.0
+            min: 3.502, max: 15.0    // 전체 범위
+        },
+        // 수온 (waterTemp, chart-3)
+        {
+            danger1Max: 26.016,      // 위험: 24.77 ~ 26.016
+            warning1Min: 26.016, warning1Max: 27.262, // 경고: 26.016 ~ 27.262
+            normalMin: 27.262, normalMax: 28.508,     // 정상: 27.262 ~ 28.508
+            warning2Min: 28.508, warning2Max: 29.754, // 경고: 28.508 ~ 29.754
+            danger2Min: 29.754,      // 위험: 29.754 ~ 31.0
+            min: 24.77, max: 31.0    // 전체 범위
+        },
+        // 염도 (waterSalt, chart-4)
+        {
+            danger1Max: 21.0,      // 위험: 15.0 ~ 21.0
+            warning1Min: 21.0, warning1Max: 27.0, // 경고: 21.0 ~ 27.0
+            normalMin: 27.0, normalMax: 33.0,     // 정상: 27.0 ~ 33.0
+            warning2Min: 33.0, warning2Max: 39.0, // 경고: 33.0 ~ 39.0
+            danger2Min: 39.0,      // 위험: 39.0 ~ 45.0
+            min: 15.0, max: 45.0   // 전체 범위
+        },
+        // 암모니아 (waterAmmonia, chart-5)
+        {
+            danger1Max: 0.042,      // 위험: 0.0 ~ 0.042
+            warning1Min: 0.042, warning1Max: 0.084, // 경고: 0.042 ~ 0.084
+            normalMin: 0.084, normalMax: 0.126,     // 정상: 0.084 ~ 0.126
+            warning2Min: 0.126, warning2Max: 0.168, // 경고: 0.126 ~ 0.168
+            danger2Min: 0.168,      // 위험: 0.168 ~ 0.21
+            min: 0.0, max: 0.21     // 전체 범위
+        },
+        // 아질산 (waterNitrogen, chart-6)
+        {
+            danger1Max: 1.2008,      // 위험: 0.001 ~ 1.2008
+            warning1Min: 1.2008, warning1Max: 2.4006, // 경고: 1.2008 ~ 2.4006
+            normalMin: 2.4006, normalMax: 3.6004,     // 정상: 2.4006 ~ 3.6004
+            warning2Min: 3.6004, warning2Max: 4.8002, // 경고: 3.6004 ~ 4.8002
+            danger2Min: 4.8002,      // 위험: 4.8002 ~ 6.0
+            min: 0.001, max: 6.0     // 전체 범위
         }
+    ];
 
-        // 게이지 업데이트 함수 (부드러운 애니메이션 추가)
-        function updateGauge(chartId, value, min, max) {
-          if (value === null || value === undefined || isNaN(value)) {
+    // 캔버스 ID와 인덱스 매핑
+    const chartIndexMap = {
+        'chart-1': 0, // waterPh
+        'chart-2': 1, // waterDo
+        'chart-3': 2, // waterTemp
+        'chart-4': 3, // waterSalt
+        'chart-5': 4, // waterAmmonia
+        'chart-6': 5  // waterNitrogen
+    };
+
+    // 이징 함수 (easeOutQuad)
+    function easeOutQuad(t) {
+        return 1 - (1 - t) * (1 - t);
+    }
+
+    // 게이지 업데이트 함수 (부드러운 애니메이션 추가)
+    function updateGauge(chartId, value, min, max) {
+        if (value === null || value === undefined || isNaN(value)) {
             console.warn(`updateGauge: 유효하지 않은 값 - chartId: ${chartId}, value: ${value}`);
             return;
-          }
-
-          // currentValues 갱신
-          currentValues[chartId] = value;
-
-          const percentage = ((value - min) / (max - min)) * 100;
-          const targetAngle = Math.PI + (percentage / 100) * Math.PI;
-          angles[chartId].target = targetAngle;
-
-          // 애니메이션 시작
-          if (!animationStates[chartId].animating) {
-            animationStates[chartId].animating = true;
-            animateGauge(chartId);
-          }
         }
 
-        // 애니메이션 함수
-        function animateGauge(chartId) {
-          const canvas = document.getElementById(chartId);
-          const ctx = canvas.getContext("2d");
-          const canvasWidth = canvas.width;
-          const canvasHeight = canvas.height;
+        // currentValues 갱신
+        currentValues[chartId] = value;
 
-          const startAngle = angles[chartId].current;
-          const targetAngle = angles[chartId].target;
-          const duration = 1000; // 애니메이션 지속 시간 (1초)
-          let startTime = null;
+        // 캔버스 ID에 따라 해당 ranges 인덱스 가져오기
+        const rangeIndex = chartIndexMap[chartId];
+        const range = ranges[rangeIndex];
 
-          function step(timestamp) {
+        // 전체 숫자 범위
+        const totalRange = range.max - range.min;
+
+        // 값을 범위 내로 클램프
+        const clampedValue = Math.max(range.min, Math.min(value, range.max));
+
+        // 값을 0~1 사이로 정규화
+        const normalizedValue = (clampedValue - range.min) / totalRange;
+
+        // 게이지의 전체 각도 (180도 = Math.PI)
+        const totalAngle = Math.PI;
+        const startAngle = Math.PI;
+
+        // 목표 각도 계산
+        const targetAngle = startAngle + normalizedValue * totalAngle;
+        angles[chartId].target = targetAngle;
+
+        // 애니메이션 시작
+        if (!animationStates[chartId].animating) {
+            animationStates[chartId].animating = true;
+            animateGauge(chartId);
+        }
+    }
+
+    // 애니메이션 함수
+    function animateGauge(chartId) {
+        const canvas = document.getElementById(chartId);
+        const ctx = canvas.getContext("2d");
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+
+        const startAngle = angles[chartId].current;
+        const targetAngle = angles[chartId].target;
+        const duration = 1000; // 애니메이션 지속 시간 (1초)
+        let startTime = null;
+
+        function step(timestamp) {
             if (!startTime) startTime = timestamp;
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / duration, 1); // 0에서 1까지 진행
@@ -324,52 +419,67 @@
 
             // 애니메이션이 끝나지 않았으면 계속 진행
             if (progress < 1) {
-              requestAnimationFrame(step);
+                requestAnimationFrame(step);
             } else {
-              animationStates[chartId].animating = false;
+                animationStates[chartId].animating = false;
             }
-          }
-
-          requestAnimationFrame(step);
         }
 
-        // 게이지 배경 그리기 함수
-        function drawGaugeOnCanvas(canvasId, canvas) {
-          const ctx = canvas.getContext('2d');
-          const canvasWidth = canvas.width;
-          const canvasHeight = canvas.height;
-          const centerX = canvasWidth / 2;
-          const centerY = canvasHeight - 50;
-          const radius = 100;
-          const gaugeWidth = 30;
+        requestAnimationFrame(step);
+    }
 
-          const colors = {
-            normal: ['#32cd32', '#90ee90'],
-            warning: ['#ffa500', '#ffd580'],
-            danger: ['#ff4500', '#ff7f7f']
-          };
+    // 게이지 배경 그리기 함수
+    function drawGaugeOnCanvas(canvasId, canvas) {
+        const ctx = canvas.getContext('2d');
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const centerX = canvasWidth / 2;
+        const centerY = canvasHeight - 50;
+        const radius = 100;
+        const gaugeWidth = 30;
 
-          const fixedData = {
-            normal: 33,
-            warning: 33,
-            danger: 34
-          };
+        const colors = {
+            danger1: ['#ff4500', '#ff7f7f'],  // 첫 번째 위험
+            warning1: ['#ffa500', '#ffd580'], // 첫 번째 경고
+            normal: ['#32cd32', '#90ee90'],   // 정상
+            warning2: ['#ffa500', '#ffd580'], // 두 번째 경고
+            danger2: ['#ff4500', '#ff7f7f']   // 두 번째 위험
+        };
 
-          const labels = {
+        const labels = {
+            danger1: '위험',
+            warning1: '경고',
             normal: '정상',
-            warning: '경고',
-            danger: '위험'
-          };
+            warning2: '경고',
+            danger2: '위험'
+        };
 
-          function drawGauge() {
+        // 캔버스 ID에 따라 해당 ranges 인덱스 가져오기
+        const rangeIndex = chartIndexMap[canvasId];
+        const range = ranges[rangeIndex];
+
+        function drawGauge() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
             const totalAngle = Math.PI;
             const startAngle = Math.PI;
-            const total = fixedData.normal + fixedData.warning + fixedData.danger;
-            const normalAngle = (fixedData.normal / total) * totalAngle;
-            const warningAngle = (fixedData.warning / total) * totalAngle;
-            const dangerAngle = (fixedData.danger / total) * totalAngle;
+
+            // 전체 숫자 범위
+            const totalRange = range.max - range.min;
+
+            // 각 섹션의 숫자 범위
+            const danger1Range = range.danger1Max - range.min;
+            const warning1Range = range.warning1Max - range.warning1Min;
+            const normalRange = range.normalMax - range.normalMin;
+            const warning2Range = range.warning2Max - range.warning2Min;
+            const danger2Range = range.max - range.danger2Min;
+
+            // 각 섹션의 각도 계산 (숫자 범위 비율에 따라)
+            const danger1Angle = (danger1Range / totalRange) * totalAngle;
+            const warning1Angle = (warning1Range / totalRange) * totalAngle;
+            const normalAngle = (normalRange / totalRange) * totalAngle;
+            const warning2Angle = (warning2Range / totalRange) * totalAngle;
+            const danger2Angle = (danger2Range / totalRange) * totalAngle;
 
             let currentAngle = startAngle;
 
@@ -378,34 +488,34 @@
             ctx.shadowBlur = 10;
             ctx.lineWidth = 2;
 
-            // 게이지 그리기
-            drawSection(currentAngle, normalAngle, colors.normal);
+            // 게이지 그리기 (위험 → 경고 → 정상 → 경고 → 위험 순서)
+            drawSection(currentAngle, danger1Angle, colors.danger1);  // 첫 번째 위험
+            currentAngle += danger1Angle;
+            drawSection(currentAngle, warning1Angle, colors.warning1); // 첫 번째 경고
+            currentAngle += warning1Angle;
+            drawSection(currentAngle, normalAngle, colors.normal);    // 정상
             currentAngle += normalAngle;
-            drawSection(currentAngle, warningAngle, colors.warning);
-            currentAngle += warningAngle;
-            drawSection(currentAngle, dangerAngle, colors.danger);
+            drawSection(currentAngle, warning2Angle, colors.warning2); // 두 번째 경고
+            currentAngle += warning2Angle;
+            drawSection(currentAngle, danger2Angle, colors.danger2);  // 두 번째 위험
 
             ctx.shadowBlur = 0; // 그림자 해제
 
-            drawLabels(startAngle, normalAngle, warningAngle, dangerAngle);
-          }
+            drawLabels(startAngle, danger1Angle, warning1Angle, normalAngle, warning2Angle, danger2Angle);
+        }
 
-          function drawSection(start, angle, colorPair) {
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            gradient.addColorStop(0, colorPair[0]);
-            gradient.addColorStop(1, colorPair[1]);
-
+        function drawSection(start, angle, colorPair) {
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, start, start + angle);
             ctx.arc(centerX, centerY, radius - gaugeWidth, start + angle, start, true);
             ctx.closePath();
-            ctx.fillStyle = gradient;
+            ctx.fillStyle = colorPair[0]; // 첫 번째 색상만 사용 (그라디언트 제거)
             ctx.fill();
             ctx.strokeStyle = '#333'; // 테두리
             ctx.stroke();
-          }
+        }
 
-          function drawLabels(startAngle, normalAngle, warningAngle, dangerAngle) {
+        function drawLabels(startAngle, danger1Angle, warning1Angle, normalAngle, warning2Angle, danger2Angle) {
             const labelRadius = radius - gaugeWidth / 2;
             ctx.fillStyle = '#000';
             ctx.font = 'bold 15px Arial';
@@ -413,22 +523,23 @@
             ctx.textBaseline = 'middle';
 
             const angles = [
-              startAngle + normalAngle / 2,
-              startAngle + normalAngle + warningAngle / 2,
-              startAngle + normalAngle + warningAngle + dangerAngle / 2
+                startAngle + danger1Angle / 2,                    // 첫 번째 위험 라벨
+                startAngle + danger1Angle + warning1Angle / 2,    // 첫 번째 경고 라벨
+                startAngle + danger1Angle + warning1Angle + normalAngle / 2, // 정상 라벨
+                startAngle + danger1Angle + warning1Angle + normalAngle + warning2Angle / 2, // 두 번째 경고 라벨
+                startAngle + danger1Angle + warning1Angle + normalAngle + warning2Angle + danger2Angle / 2 // 두 번째 위험 라벨
             ];
-            const texts = [labels.normal, labels.warning, labels.danger];
+            const texts = [labels.danger1, labels.warning1, labels.normal, labels.warning2, labels.danger2];
 
             angles.forEach((angle, i) => {
-              const x = centerX + Math.cos(angle) * labelRadius;
-              const y = centerY + Math.sin(angle) * labelRadius;
-              ctx.fillText(texts[i], x, y);
+                const x = centerX + Math.cos(angle) * labelRadius;
+                const y = centerY + Math.sin(angle) * labelRadius;
+                ctx.fillText(texts[i], x, y);
             });
-          }
-
-          drawGauge();
         }
 
+        drawGauge();
+    }
         // 초기 캔버스 그리기
         canvasElements.forEach(canvas => {
           drawGaugeOnCanvas(canvas.id, canvas);

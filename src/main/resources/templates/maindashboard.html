@@ -269,38 +269,85 @@ async function renderTankChart(tank) {
         latestData.waterNitrogen
     ];
 
-    // 범위 정의 (정상, 경고, 위험)
+    // 범위 정의 (위험 → 경고 → 정상 → 경고 → 위험)
     const ranges = [
-        // 산성도
-        { normalMin: 7.5, normalMax: 9.0, warningMin: 7.3, warningMax: 9.2 },
-        // 용존산소
-        { normalMin: 4.0, normalMax: 10.0, warningMin: 3.502, warningMax: 15.0 },
-        // 수온
-        { normalMin: 26.0, normalMax: 30.0, warningMin: 24.77, warningMax: 31.0 },
-        // 염도
-        { normalMin: 0.5, normalMax: 45.0, warningMin: 15.0, warningMax: 45.0 },
-        // 암모니아
-        { normalMin: 0.0, normalMax: 0.16, warningMin: 0.0, warningMax: 0.21 },
-        // 아질산
-        { normalMin: 0.0, normalMax: 5.0, warningMin: 0.001, warningMax: 6.0 }
+        // 산성도 (waterPh)
+        {
+            danger1Max: 7.3,      // 위험: 7.3 미만
+            warning1Min: 7.3, warning1Max: 7.5, // 경고: 7.3 ~ 7.5
+            normalMin: 7.5, normalMax: 9.0,     // 정상: 7.5 ~ 9.0
+            warning2Min: 9.0, warning2Max: 9.2, // 경고: 9.0 ~ 9.2
+            danger2Min: 9.2      // 위험: 9.2 초과
+        },
+        // 용존산소 (waterDo)
+        {
+            danger1Max: 3.502,      // 위험: 3.502 미만
+            warning1Min: 3.502, warning1Max: 4.0, // 경고: 3.502 ~ 4.0
+            normalMin: 4.0, normalMax: 10.0,      // 정상: 4.0 ~ 10.0
+            warning2Min: 10.0, warning2Max: 15.0, // 경고: 10.0 ~ 15.0
+            danger2Min: 15.0      // 위험: 15.0 초과
+        },
+        // 수온 (waterTemp)
+        {
+            danger1Max: 24.77,      // 위험: 24.77 미만
+            warning1Min: 24.77, warning1Max: 26.0, // 경고: 24.77 ~ 26.0
+            normalMin: 26.0, normalMax: 30.0,      // 정상: 26.0 ~ 30.0
+            warning2Min: 30.0, warning2Max: 31.0,  // 경고: 30.0 ~ 31.0
+            danger2Min: 31.0      // 위험: 31.0 초과
+        },
+        // 염도 (waterSalt)
+        {
+            danger1Max: 15.0,      // 위험: 15.0 미만
+            warning1Min: 15.0, warning1Max: 20.0, // 경고: 15.0 ~ 20.0
+            normalMin: 20.0, normalMax: 40.0,     // 정상: 20.0 ~ 40.0
+            warning2Min: 40.0, warning2Max: 45.0, // 경고: 40.0 ~ 45.0
+            danger2Min: 45.0      // 위험: 45.0 초과
+        },
+        // 암모니아 (waterAmmonia)
+        {
+            danger1Max: 0.0,      // 위험: 없음 (값이 음수가 될 수 없음)
+            warning1Min: 0.0, warning1Max: 0.05, // 경고: 0.0 ~ 0.05
+            normalMin: 0.05, normalMax: 0.16,    // 정상: 0.05 ~ 0.16
+            warning2Min: 0.16, warning2Max: 0.21, // 경고: 0.16 ~ 0.21
+            danger2Min: 0.21      // 위험: 0.21 초과
+        },
+        // 아질산 (waterNitrogen)
+        {
+            danger1Max: 0.001,      // 위험: 0.001 미만
+            warning1Min: 0.001, warning1Max: 0.01, // 경고: 0.001 ~ 0.01
+            normalMin: 0.01, normalMax: 5.0,       // 정상: 0.01 ~ 5.0
+            warning2Min: 5.0, warning2Max: 6.0,    // 경고: 5.0 ~ 6.0
+            danger2Min: 6.0      // 위험: 6.0 초과
+        }
     ];
 
-    // 색상 설정 함수
+    // 색상 설정 함수 (위험 → 경고 → 정상 → 경고 → 위험)
     const getColor = (value, range) => {
-        const { normalMin, normalMax, warningMin, warningMax } = range;
-        if (value >= normalMin && value <= normalMax) {
+        const { danger1Max, warning1Min, warning1Max, normalMin, normalMax, warning2Min, warning2Max, danger2Min } = range;
+
+        if (value <= danger1Max) {
             return {
-                background: '#32cd32', // 정상: 초록색
-                border: '#90ee90'
+                background: '#ff4500', // 위험: 빨간색
+                border: '#ff7f7f'
             };
-        } else if (value >= warningMin && value <= warningMax) {
+        } else if (value > danger1Max && value <= warning1Max) {
             return {
                 background: '#ffa500', // 경고: 노란색
                 border: '#ffd580'
             };
-        } else {
+        } else if (value > normalMin && value <= normalMax) {
             return {
-                background: '#ff4500', // 위험: 빨간색
+                background: '#32cd32', // 정상: 초록색
+                border: '#90ee90'
+            };
+        } else if (value > normalMax && value <= warning2Max) {
+            return {
+            	 background: '#ffa500', // 경고: 노란색
+                 border: '#ffd580'
+            };
+        } else if (value > danger2Min) {
+            return {
+            	background: '#ff4500', // 위험: 빨간색
                 border: '#ff7f7f'
             };
         }
@@ -548,7 +595,7 @@ async function updateAlarmContent(tankIdx) {
 function startAlarmUpdates(tankIds) {
     tankIds.forEach(tankIdx => {
         updateAlarmContent(tankIdx); // 초기 호출
-        setInterval(() => updateAlarmContent(tankIdx), 5000); // 5초마다 갱신
+        setInterval(() => updateAlarmContent(tankIdx), 100000); // 5초마다 갱신
     });
 }
 
