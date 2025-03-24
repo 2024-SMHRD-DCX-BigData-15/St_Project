@@ -257,12 +257,12 @@ async function renderTankChart(tank) {
             datasets: [{
                 label: `${tank.tankIdx}번 수조 데이터`,
                 data: [
-                	 normalize(latestData.waterPh, 7.5, 9.0),          // 산성도
-                     normalize(latestData.waterDo, 5, 10),             // 용존산소
-                     normalize(latestData.waterTemp, 26, 30),          // 수온
-                 	 normalize(latestData.waterSalt, 0.5, 45),            // 염도
-                   	 normalize(latestData.waterAmmonia, 0, 0.16),         // 암모니아
-                   	 normalize(latestData.waterNitrogen, 0, 5)         // 아질산
+                	 normalize(latestData.waterPh, 7.3, 9.2),          // 산성도
+                     normalize(latestData.waterDo, 3.502, 15.0),             // 용존산소
+                     normalize(latestData.waterTemp, 24.77, 31.0),          // 수온
+                 	 normalize(latestData.waterSalt, 15.0, 45.0),         // 염도
+                   	 normalize(latestData.waterAmmonia, 0.0, 0.21),      // 암모니아
+                   	 normalize(latestData.waterNitrogen, 0.001, 6.0)         // 아질산
                 ],
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
