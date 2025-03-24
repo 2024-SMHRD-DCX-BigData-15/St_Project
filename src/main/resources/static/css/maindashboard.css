@@ -248,7 +248,7 @@ body {
 .alarm-log-container:hover {
   height: 20vh;
   box-shadow: 0 0.375rem 0.9375rem rgba(0, 0, 0, 0.3);
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .alarm-content {
