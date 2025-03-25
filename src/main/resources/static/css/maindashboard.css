@@ -192,15 +192,6 @@ body {
 .control-item {
   flex: 1;
 }
-
-/* 부모 요소 */
-.parent-container {
-  display: flex;                /* flexbox 사용 */
-  justify-content: center;      /* 가로 중앙 정렬 */
-  align-items: center;          /* 세로 중앙 정렬 */
-  height: 100vh;                /* 화면 전체 높이 */
-}
-
 /* .tank-info */
 .tank-info {
   background-color: #252c41;
@@ -225,6 +216,15 @@ body {
   gap: 5px; /* 각 항목 간 간격 설정 */
   flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
 }
+/* 부모 요소 */
+.parent-container {
+  display: flex;                /* flexbox 사용 */
+  justify-content: center;      /* 가로 중앙 정렬 */
+  align-items: center;          /* 세로 중앙 정렬 */
+  height: 100vh;                /* 화면 전체 높이 */
+}
+
+
 
 
 

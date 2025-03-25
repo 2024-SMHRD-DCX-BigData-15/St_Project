@@ -589,13 +589,13 @@
         fetchLatestTankData();
 
         // 24시간마다 자동 갱신
-        setInterval(fetchLatestTankData, 1000*60*60*24);
+        setInterval(fetchLatestTankData, 1000);
       });
 
       //---------------------[최신 수질 데이터 불러오기 자동 새로고침 백엔드 스크립트]------------------------
       function startAutoRefresh() {
         fetchLatestTankData();
-        setInterval(fetchLatestTankData, 1000*60*60*24);
+        setInterval(fetchLatestTankData, 1000);
       }
 
       // 페이지가 완전히 로드된 후 자동 갱신 시작
@@ -746,7 +746,7 @@
         // 24시간마다 갱신
         window.graphInterval = setInterval(() => {
           fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
-        }, 1000*60*60*24);
+        }, 1000);
       }
 
       // 서버에서 데이터 받아 그래프 갱신

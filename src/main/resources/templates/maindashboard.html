@@ -5,62 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="새우양식 관제시스템 대시보드" />
     <link rel="stylesheet" href="/css/maindashboard.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- ✅ Chart.js 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>관제센터 대시보드</title>
   </head>
   <body>
     <div class="wrapper">
-    
-<!-- 햄버거 버튼 -->
-    <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+      <!-- 햄버거 버튼 -->
+      <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
-    <!-- 사이드바 -->
-    <div class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h2>메뉴</h2>
+      <!-- 사이드바 -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>메뉴</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="/maindashboard" class="toggle-menu">홈</a></li>
+          <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
+          <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
+          <li>
+            <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+              <li><a href="/delete">회원 탈퇴</a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
-      <ul class="sidebar-menu">
-        <!-- 홈 -->
-        <li>
-          <a href="/maindashboard" class="toggle-menu">홈</a>
-        </li>
-        <!-- 수조 정보 등록 -->
-        <li>
-          <a href="/tank" class="toggle-menu">수조 정보 등록</a>
-        </li>
-        <!-- 알람 히스토리 -->
-        <li>
-          <a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a>
-        </li>
-        <!-- 회원 정보 관리 -->
-        <li>
-          <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-          <ul class="sub-menu">
-            <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
-            <li><a href="/delete">회원 탈퇴</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
 
       <!-- 메인 콘텐츠 -->
       <main class="main-content">
         <header class="header">
           <h1 class="page-title">양식관제시스템</h1>
-          
-          
           <div class="user-info">
-
-             
-          <div th:if="${session.loginUser != null}">
-          <p th:text="${session.loginUser.userId}"></p> <!-- 로그인된 사용자 아이디 출력 -->
-      </div>
-
-          <button class="logout-btn" onclick="handleLogout()">로그아웃</button> <!-- ✅ 수정된 로그아웃 버튼 -->
-          
-          <div th:if="${session.loginUser == null}">
-          <p>로그인해주세요.</p>
-      </div>
+            <div th:if="${session.loginUser != null}">
+              <p th:text="${session.loginUser.userId}"></p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            <div th:if="${session.loginUser == null}">
+              <p>로그인해주세요.</p>
+            </div>
           </div>
         </header>
 
@@ -69,572 +52,415 @@
           <div class="control-item"></div>
         </section>
       </main>
+    </div>
 
     <script>
-    
-	
-    
-    
-    //🔹 로그아웃 시 자동 로그인 관련 데이터 완전 삭제
-function handleLogout() {
-    console.log("🚀 로그아웃 요청");
-
-    const authToken = localStorage.getItem("authToken");
-
-    fetch("/api/member/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: authToken }),
-    })
-    .then(response => {
-        if (response.ok) {
+      // 로그아웃 함수
+      function handleLogout() {
+        console.log("🚀 로그아웃 요청");
+        const authToken = localStorage.getItem("authToken");
+        fetch("/api/member/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: authToken }),
+        })
+        .then(response => {
+          if (response.ok) {
             console.log("✅ 서버 로그아웃 성공");
-
             localStorage.removeItem("authToken");
             localStorage.removeItem("autoLogin");
             localStorage.removeItem("savedUserId");
             localStorage.removeItem("savedPassword");
             sessionStorage.clear();
-
             document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
             console.log("✅ 모든 저장소 데이터 삭제 완료");
-
             setTimeout(() => {
-                alert("✅ 로그아웃 완료!");
-                window.location.href = "/login";
+              alert("✅ 로그아웃 완료!");
+              window.location.href = "/login";
             }, 1000);
-        } else {
+          } else {
             console.warn("🚨 로그아웃 실패: 응답 오류");
+          }
+        })
+        .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+      }
+
+      // 쿠키 삭제 함수
+      function deleteCookie(name) {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+      }
+
+      // 햄버거 버튼으로 사이드바 토글
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const sidebar = document.getElementById("sidebar");
+      hamburgerBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // 서브 메뉴 토글 기능
+      const toggleMenus = document.querySelectorAll(".toggle-menu");
+      toggleMenus.forEach(menu => {
+        menu.addEventListener("click", (e) => {
+          const subMenu = menu.nextElementSibling;
+          if (subMenu && subMenu.classList.contains("sub-menu")) {
+            e.preventDefault();
+            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          }
+        });
+      });
+
+      // 수조 데이터를 불러와 화면에 추가 (최초 로드)
+      async function loadTanks(userId) {
+        console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
+        try {
+          let response = await fetch(`/tank/list?userId=${userId}`);
+          if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+          let tanks = await response.json();
+          console.log("✅ 수조 데이터 응답:", tanks);
+
+          tanks.sort((a, b) => a.tankIdx - b.tankIdx);
+          console.log("📌 정렬된 수조 데이터:", tanks);
+
+          let tankContainer = document.querySelector('.control-center');
+          tankContainer.innerHTML = ""; // 최초 로드 시만 비움
+
+          let displayNumber = 1;
+          for (let tank of tanks) {
+            if (tank.tank_delete === "N") {
+              let tankDiv = document.createElement('div');
+              tankDiv.classList.add('control-item');
+              tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
+              tankDiv.innerHTML = `
+                <h4>수조관리시스템 (${displayNumber}번 수조)
+                  <div class="button-group">
+                    <button class="edit-btn" onclick="editTank(${tank.tankIdx})">
+                      <img src="/image/1.png" width="20" height="20">
+                    </button>
+                    <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">
+                      <img src="/image/2.png" width="20" height="20">
+                    </button>
+                  </div>
+                </h4>
+                <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
+                  <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
+                  <div class="tank-data">
+                    <p><span id="ph-${tank.tankIdx}"></span></p>
+                    <p><span id="do-${tank.tankIdx}"></span></p>
+                    <p><span id="temp-${tank.tankIdx}"></span></p>
+                    <p><span id="salt-${tank.tankIdx}"></span></p>
+                    <p><span id="ammonia-${tank.tankIdx}"></span></p>
+                    <p><span id="nitrogen-${tank.tankIdx}"></span></p>
+                  </div>
+                </div>
+                <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
+                  <h5>수조 알람 로그</h5>
+                  <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
+                </div>
+              `;
+              tankContainer.appendChild(tankDiv);
+              await updateTankData(tank.tankIdx); // 최초 데이터 업데이트
+              displayNumber++;
+            }
+          }
+          return tanks.filter(tank => tank.tank_delete === "N").map(tank => tank.tankIdx);
+        } catch (error) {
+          console.error("❌ 오류 발생:", error);
+          return [];
         }
-    })
-    .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
-}
+      }
 
-/**
- * 🔹 쿠키 삭제 함수
- */
-function deleteCookie(name) {
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
-}
+      // 개별 수조 데이터 업데이트 함수
+      async function updateTankData(tankIdx) {
+        let latestData = await fetchLatestTankData(tankIdx);
+        if (latestData) {
+          document.getElementById(`ph-${tankIdx}`).textContent = latestData.waterPh;
+          document.getElementById(`do-${tankIdx}`).textContent = latestData.waterDo;
+          document.getElementById(`temp-${tankIdx}`).textContent = latestData.waterTemp;
+          document.getElementById(`salt-${tankIdx}`).textContent = latestData.waterSalt;
+          document.getElementById(`ammonia-${tankIdx}`).textContent = latestData.waterAmmonia;
+          document.getElementById(`nitrogen-${tankIdx}`).textContent = latestData.waterNitrogen;
+          await renderTankChart({ tankIdx }); // 차트 업데이트
+        }
+      }
 
-// 햄버거 버튼으로 사이드바 토글
-hamburgerBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-});
+      // 최신 수질 데이터 가져오기
+      async function fetchLatestTankData(tankIdx) {
+        try {
+          let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
+          if (!response.ok) throw new Error(`❌ 서버 응답 오류: ${response.status}`);
+          return await response.json();
+        } catch (error) {
+          console.error(`❌ 최신 데이터 가져오기 실패 (tankIdx=${tankIdx}):`, error);
+          return null;
+        }
+      }
 
-// 서브 메뉴 토글 기능
-const toggleMenus = document.querySelectorAll(".toggle-menu");
-toggleMenus.forEach(menu => {
-  menu.addEventListener("click", (e) => {
-    const subMenu = menu.nextElementSibling;
-    if (subMenu && subMenu.classList.contains("sub-menu")) {
-      e.preventDefault();
-      subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+      // 정규화 함수
+      function normalize(value, min, max) {
+        if (max === min) return 0;
+        return (value - min) / (max - min);
+      }
+
+      // 차트 인스턴스 저장 객체
+      const chartInstances = {};
+
+      // 차트 렌더링 함수
+   async function renderTankChart(tank) {
+  const canvasId = `tankChart-${tank.tankIdx}`;
+  const ctx = document.getElementById(canvasId).getContext('2d');
+
+  // 기존 차트 제거
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy();
+  }
+
+  // 최신 데이터 가져오기
+  let latestData = await fetchLatestTankData(tank.tankIdx);
+  if (!latestData) {
+    console.error(`Tank ${tank.tankIdx} 데이터 로드 실패`);
+    return;
+  }
+
+  // 수질 데이터 배열
+  const dataValues = [
+    latestData.waterPh,        // 산성도
+    latestData.waterDo,        // 용존산소
+    latestData.waterTemp,      // 수온
+    latestData.waterSalt,      // 염도
+    latestData.waterAmmonia,   // 암모니아
+    latestData.waterNitrogen   // 아질산
+  ];
+
+  // 각 수질 항목의 범위 정의 (위험 → 경고 → 정상 → 경고 → 위험)
+  const ranges = [
+    // 산성도 (pH)
+    {
+      dangerLow: 0.0,    dangerHigh: 7.3,   // 위험: 7.3 미만
+      warningLow: 7.3,   warningHigh: 7.5,  // 경고: 7.3 ~ 7.5
+      normalLow: 7.5,    normalHigh: 9.0,   // 정상: 7.5 ~ 9.0
+      warningHighLow: 9.0, warningHighHigh: 9.2, // 경고: 9.0 ~ 9.2
+      dangerHighLow: 9.2, dangerHighHigh: 14.0 // 위험: 9.2 초과
+    },
+    // 용존산소 (mg/L)
+    {
+      dangerLow: 0.0,    dangerHigh: 3.5,   // 위험: 3.5 미만
+      warningLow: 3.5,   warningHigh: 4.0,  // 경고: 3.5 ~ 4.0
+      normalLow: 5.0,    normalHigh: 10.0,  // 정상: 4.0 ~ 10.0
+      warningHighLow: 10.0, warningHighHigh: 15.0, // 경고: 10.0 ~ 15.0
+      dangerHighLow: 15.0, dangerHighHigh: 100.0 // 위험: 15.0 초과
+    },
+    // 수온 (°C)
+    {
+      dangerLow: 0.0,    dangerHigh: 24.8,  // 위험: 24.8 미만
+      warningLow: 24.8,  warningHigh: 26.0, // 경고: 24.8 ~ 26.0
+      normalLow: 26.0,   normalHigh: 30.0,  // 정상: 26.0 ~ 30.0
+      warningHighLow: 30.0, warningHighHigh: 31.0, // 경고: 30.0 ~ 31.0
+      dangerHighLow: 31.0, dangerHighHigh: 100.0 // 위험: 31.0 초과
+    },
+    // 염도 (ppt)
+    {
+      dangerLow: 0.0,    dangerHigh: 15.0,  // 위험: 15.0 미만
+      warningLow: 15.0,  warningHigh: 20.0, // 경고: 15.0 ~ 20.0
+      normalLow: 20.0,   normalHigh: 40.0,  // 정상: 20.0 ~ 40.0
+      warningHighLow: 40.0, warningHighHigh: 45.0, // 경고: 40.0 ~ 45.0
+      dangerHighLow: 45.0, dangerHighHigh: 100.0 // 위험: 45.0 초과
+    },
+    // 암모니아 (ppm)
+    {
+      dangerLow: -Infinity, dangerHigh: 0.0,  // 위험: 음수 (불가능)
+      warningLow: 0.0,   warningHigh: 0.05, // 경고: 0.0 ~ 0.05
+      normalLow: 0.05,   normalHigh: 0.16,  // 정상: 0.05 ~ 0.16
+      warningHighLow: 0.16, warningHighHigh: 0.21, // 경고: 0.16 ~ 0.21
+      dangerHighLow: 0.21, dangerHighHigh: 100.0 // 위험: 0.21 초과
+    },
+    // 아질산 (ppm)
+    {
+      dangerLow: 0.0,    dangerHigh: 0.001, // 위험: 0.001 미만
+      warningLow: 0.001, warningHigh: 0.01, // 경고: 0.001 ~ 0.01
+      normalLow: 0.01,   normalHigh: 5.0,   // 정상: 0.01 ~ 5.0
+      warningHighLow: 5.0, warningHighHigh: 6.0, // 경고: 5.0 ~ 6.0
+      dangerHighLow: 6.0, dangerHighHigh: 100.0 // 위험: 6.0 초과
+    }
+  ];
+
+  // 색상 결정 함수
+  const getColor = (value, range) => {
+    if (value < range.dangerHigh) return { background: '#ff4500', border: '#ff7f7f' }; // 위험 (낮음)
+    if (value >= range.warningLow && value <= range.warningHigh) return { background: '#ffa500', border: '#ffd580' }; // 경고 (낮음)
+    if (value >= range.normalLow && value <= range.normalHigh) return { background: '#32cd32', border: '#90ee90' }; // 정상
+    if (value > range.warningHighLow && value <= range.warningHighHigh) return { background: '#ffa500', border: '#ffd580' }; // 경고 (높음)
+    if (value > range.dangerHighLow) return { background: '#ff4500', border: '#ff7f7f' }; // 위험 (높음)
+  };
+
+  // 색상 배열 생성
+  const backgroundColors = [];
+  const borderColors = [];
+  dataValues.forEach((value, index) => {
+    const colors = getColor(value, ranges[index]);
+    backgroundColors.push(colors.background);
+    borderColors.push(colors.border);
+  });
+
+  // 텍스트 색상 동기화
+  const textElements = [
+    document.getElementById(`ph-${tank.tankIdx}`),
+    document.getElementById(`do-${tank.tankIdx}`),
+    document.getElementById(`temp-${tank.tankIdx}`),
+    document.getElementById(`salt-${tank.tankIdx}`),
+    document.getElementById(`ammonia-${tank.tankIdx}`),
+    document.getElementById(`nitrogen-${tank.tankIdx}`)
+  ];
+
+  dataValues.forEach((value, index) => {
+    const colors = getColor(value, ranges[index]);
+    textElements[index].style.color = colors.border;
+  });
+
+  // 차트 생성
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['산성도', '용존산소', '수온', '염도', '암모니아', '아질산'],
+      datasets: [{
+        label: `${tank.tankIdx}번 수조 데이터`,
+        data: [
+          normalize(latestData.waterPh, 7.3, 9.2),
+          normalize(latestData.waterDo, 3.5, 15.0),
+          normalize(latestData.waterTemp, 24.8, 31.0),
+          normalize(latestData.waterSalt, 15.0, 45.0),
+          normalize(latestData.waterAmmonia, 0.0, 0.21),
+          normalize(latestData.waterNitrogen, 0.001, 6.0)
+        ],
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+        barThickness: 23,
+        categoryPercentage: 0.9,
+        barPercentage: 0.95
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: false,
+      maintainAspectRatio: false,
+      layout: { padding: { left: 0, right: 0, top: 0, bottom: 0 } },
+      scales: {
+        x: { beginAtZero: true, display: false },
+        y: { display: true, ticks: { font: { size: 13 }, padding: 2, color: '#ffffff' } }
+      },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1000, easing: 'easeInOutQuad' }
     }
   });
-});
-
-// 알림 로그
-function toggleNotifications() {
-    var log = document.getElementById("notificationLog");
-    log.style.display = log.style.display === "block" ? "none" : "block";
 }
 
-    // 저장된 수조 데이터를 API에서 불러와 화면에 추가 (최신 데이터 먼저 가져옴)
- 	// 수조 데이터를 불러와 화면에 추가
- 	async function loadTanks(userId) {
-    console.log("🚀 서버로 수조 리스트 요청 중... userId:", userId);
+      // 수조 수정 페이지로 이동
+      function editTank(tankIdx) {
+        console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`);
+        window.location.href = `/tank/edit/${tankIdx}`;
+      }
 
-    try {
-        let response = await fetch(`/tank/list?userId=${userId}`);
-        if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
-
-        let tanks = await response.json();
-        console.log("✅ 수조 데이터 응답:", tanks);
-
-        // ✅ 1번이 위, 번호가 클수록 아래로 정렬 (tankIdx 기준 오름차순 정렬)
-        tanks.sort((a, b) => a.tankIdx - b.tankIdx);
-        console.log("📌 정렬된 수조 데이터:", tanks);
-
-        let tankContainer = document.querySelector('.control-center');
-        tankContainer.innerHTML = "";
-
-        // 🔹 화면에 보이는 번호 변수 (1부터 시작)
-        let displayNumber = 1;
-
-        // 🔹 화면에 수조 데이터 추가
-        for (let tank of tanks) {
-            if (tank.tank_delete === "N") { 
-                let latestData = await fetchLatestTankData(tank.tankIdx);
-
-                let tankDiv = document.createElement('div');
-                tankDiv.classList.add('control-item');
-                tankDiv.setAttribute("id", `tank-${tank.tankIdx}`);
-
-                tankDiv.innerHTML = `
-                    <h4>수조관리시스템 (${displayNumber}번 수조) <!-- ✅ 화면에서 보이는 번호 -->
-	                    <div class="button-group">
-	                    <button class="edit-btn" onclick="editTank(${tank.tankIdx})">
-	                        <img src="/image/1.png" width="20" height="20">
-	                    </button>
-	                    <button class="delete-btn" onclick="deleteTank(${tank.tankIdx})">
-	                        <img src="/image/2.png" width="20" height="20">
-	                    </button>
-	                </div>
-                    </h4>
-                    <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-                        <canvas id="tankChart-${tank.tankIdx}" width="300" height="200"></canvas>
-                        <div class="tank-data">
-                        <p><span id="ph-${tank.tankIdx}"></span></p>
-                        <p><span id="do-${tank.tankIdx}"></span></p>
-                        <p><span id="temp-${tank.tankIdx}"></span></p>
-                        <p><span id="salt-${tank.tankIdx}"></span></p>
-                        <p><span id="ammonia-${tank.tankIdx}"></span></p>
-                        <p><span id="nitrogen-${tank.tankIdx}"></span></p>
-                    </div>
-                    </div>
-                    <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
-                        <h5>수조 알람 로그</h5>
-                        <div class="alarm-content" id="alarm-content-${tank.tankIdx}"></div>
-                    </div>
-                `;
-
-                tankContainer.appendChild(tankDiv);
-                renderTankChart(tank); // 🔹 차트 렌더링
-
-                displayNumber++; // ✅ 다음 수조 번호 증가
-            }
+      // 수조 삭제 함수
+      async function deleteTank(tankIdx) {
+        console.log(`🚀 삭제 버튼 클릭됨: tankIdx=${tankIdx}`);
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+        try {
+          let response = await fetch(`/tank/delete/${tankIdx}`, { method: "PUT" });
+          if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+          alert("✅ 수조 삭제 완료!");
+          document.getElementById(`tank-${tankIdx}`).remove();
+        } catch (error) {
+          console.error("❌ 삭제 중 오류 발생:", error);
+          alert("❌ 삭제 실패!");
         }
-    } catch (error) {
-        console.error("❌ 오류 발생:", error);
-    }
-}
+      }
 
-// ✅ 페이지 로드 시 수조 데이터 불러오기
+      // 수조 상세 페이지로 이동
+      function goToDashboardDetail(tankIdx) {
+        console.log(`🚀 수조 상세 페이지 이동: tankIdx=${tankIdx}`);
+        window.location.href = `/dashboarddetail?tankIdx=${tankIdx}`;
+      }
 
-
- async function fetchLatestTankData(tankIdx) {
-     try {
-         let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
-         if (!response.ok) throw new Error(`❌ 서버 응답 오류: ${response.status}`);
-         return await response.json();
-     } catch (error) {
-         console.error(`❌ 최신 데이터 가져오기 실패 (tankIdx=${tankIdx}):`, error);
-         return null;
-     }
- }
- 
-//🔹 정규화 함수 (min-max scaling)
- function normalize(value, min, max) {
-     if (max === min) return 0; // 분모 0 방지
-     return (value - min) / (max - min);
- }		
- 
-//--------------------------------------------------차트 그려주는 함수 ---------------------------------------------------------
- // 차트 인스턴스를 저장할 객체
-const chartInstances = {};
-
-async function renderTankChart(tank) {
-    const canvasId = `tankChart-${tank.tankIdx}`;
-    const ctx = document.getElementById(canvasId).getContext('2d');
-
-    // 기존 차트가 있으면 제거
-    if (chartInstances[canvasId]) {
-        chartInstances[canvasId].destroy();
-    }
-
-    // 최신 데이터 가져오기
-    let latestData = await fetchLatestTankData(tank.tankIdx);
-    if (!latestData) {
-        console.error(`Tank ${tank.tankIdx} 데이터 로드 실패`);
-        return;
-    }
-
-    // 텍스트 데이터 업데이트
-    document.getElementById(`ph-${tank.tankIdx}`).textContent = latestData.waterPh;
-    document.getElementById(`do-${tank.tankIdx}`).textContent = latestData.waterDo;
-    document.getElementById(`temp-${tank.tankIdx}`).textContent = latestData.waterTemp;
-    document.getElementById(`salt-${tank.tankIdx}`).textContent = latestData.waterSalt;
-    document.getElementById(`ammonia-${tank.tankIdx}`).textContent = latestData.waterAmmonia;
-    document.getElementById(`nitrogen-${tank.tankIdx}`).textContent = latestData.waterNitrogen;
-
-    // 데이터 값 배열
-    const dataValues = [
-        latestData.waterPh,
-        latestData.waterDo,
-        latestData.waterTemp,
-        latestData.waterSalt,
-        latestData.waterAmmonia,
-        latestData.waterNitrogen
-    ];
-
-    // 범위 정의 (위험 → 경고 → 정상 → 경고 → 위험)
-    const ranges = [
-        // 산성도 (waterPh)
-        {
-            danger1Max: 7.3,      // 위험: 7.3 미만
-            warning1Min: 7.3, warning1Max: 7.5, // 경고: 7.3 ~ 7.5
-            normalMin: 7.5, normalMax: 9.0,     // 정상: 7.5 ~ 9.0
-            warning2Min: 9.0, warning2Max: 9.2, // 경고: 9.0 ~ 9.2
-            danger2Min: 9.2      // 위험: 9.2 초과
-        },
-        // 용존산소 (waterDo)
-        {
-            danger1Max: 3.502,      // 위험: 3.502 미만
-            warning1Min: 3.502, warning1Max: 4.0, // 경고: 3.502 ~ 4.0
-            normalMin: 4.0, normalMax: 10.0,      // 정상: 4.0 ~ 10.0
-            warning2Min: 10.0, warning2Max: 15.0, // 경고: 10.0 ~ 15.0
-            danger2Min: 15.0      // 위험: 15.0 초과
-        },
-        // 수온 (waterTemp)
-        {
-            danger1Max: 24.77,      // 위험: 24.77 미만
-            warning1Min: 24.77, warning1Max: 26.0, // 경고: 24.77 ~ 26.0
-            normalMin: 26.0, normalMax: 30.0,      // 정상: 26.0 ~ 30.0
-            warning2Min: 30.0, warning2Max: 31.0,  // 경고: 30.0 ~ 31.0
-            danger2Min: 31.0      // 위험: 31.0 초과
-        },
-        // 염도 (waterSalt)
-        {
-            danger1Max: 15.0,      // 위험: 15.0 미만
-            warning1Min: 15.0, warning1Max: 20.0, // 경고: 15.0 ~ 20.0
-            normalMin: 20.0, normalMax: 40.0,     // 정상: 20.0 ~ 40.0
-            warning2Min: 40.0, warning2Max: 45.0, // 경고: 40.0 ~ 45.0
-            danger2Min: 45.0      // 위험: 45.0 초과
-        },
-        // 암모니아 (waterAmmonia)
-        {
-            danger1Max: 0.0,      // 위험: 없음 (값이 음수가 될 수 없음)
-            warning1Min: 0.0, warning1Max: 0.05, // 경고: 0.0 ~ 0.05
-            normalMin: 0.05, normalMax: 0.16,    // 정상: 0.05 ~ 0.16
-            warning2Min: 0.16, warning2Max: 0.21, // 경고: 0.16 ~ 0.21
-            danger2Min: 0.21      // 위험: 0.21 초과
-        },
-        // 아질산 (waterNitrogen)
-        {
-            danger1Max: 0.001,      // 위험: 0.001 미만
-            warning1Min: 0.001, warning1Max: 0.01, // 경고: 0.001 ~ 0.01
-            normalMin: 0.01, normalMax: 5.0,       // 정상: 0.01 ~ 5.0
-            warning2Min: 5.0, warning2Max: 6.0,    // 경고: 5.0 ~ 6.0
-            danger2Min: 6.0      // 위험: 6.0 초과
-        }
-    ];
-
-    // 색상 설정 함수 (위험 → 경고 → 정상 → 경고 → 위험)
-    const getColor = (value, range) => {
-        const { danger1Max, warning1Min, warning1Max, normalMin, normalMax, warning2Min, warning2Max, danger2Min } = range;
-
-        if (value <= danger1Max) {
-            return {
-                background: '#ff4500', // 위험: 빨간색
-                border: '#ff7f7f'
-            };
-        } else if (value > danger1Max && value <= warning1Max) {
-            return {
-                background: '#ffa500', // 경고: 노란색
-                border: '#ffd580'
-            };
-        } else if (value > normalMin && value <= normalMax) {
-            return {
-                background: '#32cd32', // 정상: 초록색
-                border: '#90ee90'
-            };
-        } else if (value > normalMax && value <= warning2Max) {
-            return {
-            	 background: '#ffa500', // 경고: 노란색
-                 border: '#ffd580'
-            };
-        } else if (value > danger2Min) {
-            return {
-            	background: '#ff4500', // 위험: 빨간색
-                border: '#ff7f7f'
-            };
-        }
-    };
-
-    // 각 데이터 값에 따라 색상 배열 생성
-    const backgroundColors = [];
-    const borderColors = [];
-    dataValues.forEach((value, index) => {
-        const range = ranges[index];
-        const colors = getColor(value, range);
-        backgroundColors.push(colors.background);
-        borderColors.push(colors.border);
-    });
-
-    // 텍스트 색상 동기화
-    const textElements = [
-        document.getElementById(`ph-${tank.tankIdx}`),
-        document.getElementById(`do-${tank.tankIdx}`),
-        document.getElementById(`temp-${tank.tankIdx}`),
-        document.getElementById(`salt-${tank.tankIdx}`),
-        document.getElementById(`ammonia-${tank.tankIdx}`),
-        document.getElementById(`nitrogen-${tank.tankIdx}`)
-    ];
-
-    dataValues.forEach((value, index) => {
-        const range = ranges[index];
-        const colors = getColor(value, range);
-        textElements[index].style.color = colors.border; // 텍스트 색상을 바 색상과 동기화
-    });
-
-    // 새 차트 생성
-    chartInstances[canvasId] = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['산성도', '용존산소', '수온', '염도', '암모니아', '아질산'],
-            datasets: [{
-                label: `${tank.tankIdx}번 수조 데이터`,
-                data: [
-                    normalize(latestData.waterPh, 7.3, 9.2),
-                    normalize(latestData.waterDo, 3.502, 15.0),
-                    normalize(latestData.waterTemp, 24.77, 31.0),
-                    normalize(latestData.waterSalt, 15.0, 45.0),
-                    normalize(latestData.waterAmmonia, 0.0, 0.21),
-                    normalize(latestData.waterNitrogen, 0.001, 6.0)
-                ],
-                backgroundColor: backgroundColors, // 동적 색상 배열
-                borderColor: borderColors,         // 동적 색상 배열
-                borderWidth: 1,
-                barThickness: 23,
-                categoryPercentage: 0.9,
-                barPercentage: 0.95
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: false,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    display: false
-                },
-                y: {
-                    display: true,
-                    ticks: {
-                        font: { size: 13 },
-                        padding: 2,
-                        color: '#ffffff'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
-            },
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuad'
-            }
-        }
-    });
-}
-//----------------------------------------------------------------------------------------------------------
-
-
-
-/**
- * 🔹 특정 tankIdx의 최신 수질 데이터를 불러오는 함수
- */
- //---------------------------------------------최신 수질 데이터를 불러오는 함수 -------------------------------------
-async function fetchLatestTankData(tankIdx) {
-    try {
-        let response = await fetch(`/tank/data/latest?tankIdx=${tankIdx}`);
-        if (!response.ok) {
-            throw new Error(`❌ 서버 응답 오류: ${response.status}`);
-        }
-        let data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`❌ 최신 데이터 가져오기 실패 (tankIdx=${tankIdx}):`, error);
-        return null;
-    }
-}
-//-------------------------------------------------------------------------------------------------------
-/**
- * 🔹 수조 수정 페이지로 이동하는 함수
- */
-function editTank(tankIdx) {
-    console.log(`🚀 수정 페이지로 이동: tankIdx=${tankIdx}`);
-    window.location.href = `/tank/edit/${tankIdx}`;
-}
-
-/**
- * 🔹 수조 삭제 함수
- */
-async function deleteTank(tankIdx) {
-    console.log(`🚀 삭제 버튼 클릭됨: tankIdx=${tankIdx}`);
-
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-
-    try {
-        let response = await fetch(`/tank/delete/${tankIdx}`, { method: "PUT" });
-
-        if (!response.ok) {
-            throw new Error(`서버 응답 오류: ${response.status}`);
-        }
-
-        alert("✅ 수조 삭제 완료!");
-        document.getElementById(`tank-${tankIdx}`).remove();
-    } catch (error) {
-        console.error("❌ 삭제 중 오류 발생:", error);
-        alert("❌ 삭제 실패!");
-    }
-}
-
-/**
- * 🔹 수조 상세 페이지로 이동하는 함수
- */
-function goToDashboardDetail(tankIdx) {
-    console.log(`🚀 수조 상세 페이지 이동: tankIdx=${tankIdx}`);
-    window.location.href = `/dashboarddetail?tankIdx=${tankIdx}`;
-}
-
-/**
- * 🔹 모든 수조에 대해 자동 갱신 시작 (5초마다 실행)
- */
-function startAutoUpdateForTanks(tankIds) {
-    console.log("⏳ 모든 수조에 대한 자동 갱신 시작:", tankIds);
-
-    tankIds.forEach(tankIdx => {
-        fetchLatestTankData(tankIdx);
-        setInterval(() => fetchLatestTankData(tankIdx), 1000*60*60*24); // 추후 시간 변경하기 현재 하루로 설정
-    });
-}
-
-/**
- * 🔹 페이지 로드 시 수조 목록을 불러온 후, 자동 갱신 시작
- */
-document.addEventListener("DOMContentLoaded", function () {
-    let userId = `[[${session.loginUser?.userId}]]`;
-
-    fetch(`/tank/list?userId=${userId}`)
-        .then(response => response.json())
-        .then(tanks => {
-            let tankIds = tanks.filter(tank => tank.tank_delete === "N").map(tank => tank.tankIdx);
-            startAutoUpdateForTanks(tankIds);
-        })
-        .catch(error => console.error("❌ 수조 목록 불러오기 실패:", error));
-});
-
-
-/* 알람 데이터 가져오기 및 업데이트 */
-
-async function updateAlarmContent(tankIdx) {
-    try {
-        // 실제 API 호출 (테스트 데이터 대신 주석 해제해서 사용)
-        // let response = await fetch(`/tank/alarm?tankIdx=${tankIdx}`);
-        // if (!response.ok) throw new Error(`❌ 알람 데이터 요청 오류: ${response.status}`);
-        // let alarms = await response.json();
-
-        // 테스트 데이터 (나중에 실제 API로 교체)
-        let alarms = [
+      // 알람 데이터 업데이트
+      async function updateAlarmContent(tankIdx) {
+        try {
+          let alarms = [
             { "timestamp": "2025-03-18T15:03:00", "message": "용존산소 4mg/L", "status": "critical" },
             { "timestamp": "2025-03-18T15:00:00", "message": "염도 이상", "status": "warning" },
             { "timestamp": "2025-03-18T14:55:00", "message": "암모니아 0.5ppm", "status": "critical" },
             { "timestamp": "2025-03-18T14:50:00", "message": "수온 이상", "status": "warning" }
-        ];
-        console.log(`✅ 테스트 알람 데이터 (tankIdx=${tankIdx}):`, alarms);
-        // 테스트 데이터 끝
-        
-        let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
-        let alarmContainer = document.getElementById(`alarm-log-${tankIdx}`);
+          ];
+          console.log(`✅ 테스트 알람 데이터 (tankIdx=${tankIdx}):`, alarms);
 
-        alarms.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          let alarmContent = document.getElementById(`alarm-content-${tankIdx}`);
+          let alarmContainer = document.getElementById(`alarm-log-${tankIdx}`);
 
-        const latestAlarm = alarms[0];
-        alarmContent.innerHTML = `
+          alarms.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          const latestAlarm = alarms[0];
+          alarmContent.innerHTML = `
             <div class="alarm-item">
-                ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
+              ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
             </div>
-        `;
+          `;
 
-        alarmContainer.addEventListener("mouseenter", () => {
-            const latestFourAlarms = alarms.slice(0, 4); // 최근 4건
+          alarmContainer.addEventListener("mouseenter", () => {
+            const latestFourAlarms = alarms.slice(0, 4);
             alarmContent.innerHTML = latestFourAlarms
-                .map(alarm => `
-                    <div class="alarm-item">
-                        ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
-                    </div>
-                `)
-                .join("");
-        });
-
-        alarmContainer.addEventListener("mouseleave", () => {
-            alarmContent.innerHTML = `
+              .map(alarm => `
                 <div class="alarm-item">
-                    ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
+                  ${new Date(alarm.timestamp).toLocaleTimeString()} - ${alarm.message} (${alarm.status === "critical" ? "위험" : "경고"})
                 </div>
+              `)
+              .join("");
+          });
+
+          alarmContainer.addEventListener("mouseleave", () => {
+            alarmContent.innerHTML = `
+              <div class="alarm-item">
+                ${new Date(latestAlarm.timestamp).toLocaleTimeString()} - ${latestAlarm.message} (${latestAlarm.status === "critical" ? "위험" : "경고"})
+              </div>
             `;
-        });
+          });
 
-        alarmContent.addEventListener("click", () => {
+          alarmContent.addEventListener("click", () => {
             window.location.href = "/alarmHistory";
+          });
+        } catch (error) {
+          console.error(`❌ 알람 업데이트 실패 (tankIdx=${tankIdx}):`, error);
+          alarmContent.innerHTML = "알람 데이터를 불러오지 못했습니다.";
+        }
+      }
+
+      // 주기적 업데이트 시작
+      function startUpdates(tankIds) {
+        console.log("⏳ 자동 갱신 시작:", tankIds);
+        tankIds.forEach(tankIdx => {
+          updateTankData(tankIdx); // 초기 데이터 업데이트
+          updateAlarmContent(tankIdx); // 초기 알람 업데이트
+          setInterval(() => {
+            updateTankData(tankIdx); // 수조 데이터 갱신
+            updateAlarmContent(tankIdx); // 알람 로그 갱신
+          }, 5000); // 5초 간격으로 변경
         });
-    } catch (error) {
-        console.error(`❌ 알람 업데이트 실패 (tankIdx=${tankIdx}):`, error);
-        alarmContent.innerHTML = "알람 데이터를 불러오지 못했습니다.";
-    }
-}
+      }
 
-/* 주기적 알람 업데이트 */
-function startAlarmUpdates(tankIds) {
-    tankIds.forEach(tankIdx => {
-        updateAlarmContent(tankIdx); // 초기 호출
-        setInterval(() => updateAlarmContent(tankIdx), 100000); // 5초마다 갱신
-    });
-}
+      // 페이지 로드 시 초기화
+      window.onload = async function () {
+        let userId = `[[${session.loginUser?.userId}]]`;
+        
+        // 최초 수조 로드 및 tankIds 반환
+        const tankIds = await loadTanks(userId);
+        
+        // 주기적 업데이트 시작
+        startUpdates(tankIds);
 
-// 페이지 로드 시 알람 업데이트 시작
-document.addEventListener("DOMContentLoaded", function () {
-    let userId = `[[${session.loginUser?.userId}]]`;
-    fetch(`/tank/list?userId=${userId}`)
-        .then(response => response.json())
-        .then(tanks => {
-            let tankIds = tanks.filter(tank => tank.tank_delete === "N").map(tank => tank.tankIdx);
-            startAlarmUpdates(tankIds);
-        })
-        .catch(error => console.error("❌ 알람 업데이트 초기화 실패:", error));
-});
-
-//-------------- [ 세션 유지하는 백엔드 코드 ] -------------------------------- 
-window.onload = function () {
-    let userId = `[[${session.loginUser?.userId}]]`;
-    
-    // 수조 데이터 로드
-    loadTanks(userId);
-
-    // 10초마다 데이터 갱신 (주기를 10초로 변경, 원래 의도대로)
-    setInterval(() => {
-        loadTanks(userId);
-    }, 1000 * 10);
-
-    // 세션 유지 요청 (5분마다 실행)
-    setInterval(function() {
-        fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
+        // 세션 유지 요청 (5분마다)
+        setInterval(() => {
+          fetch('/keep-session-alive', { method: 'GET', credentials: 'include' })
             .then(response => console.log('✅ 세션 유지 요청 보냄'))
             .catch(error => console.error('❌ 세션 유지 실패', error));
-    }, 5 * 60 * 1000);
-};
-//------------------------------------------------------------------------
-
-
-
+        }, 5 * 60 * 1000);
+      };
     </script>
-
   </body>
 </html>
