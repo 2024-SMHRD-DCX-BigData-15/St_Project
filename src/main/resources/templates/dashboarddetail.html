@@ -107,7 +107,8 @@
       
 
       // 로그아웃 함수
-            function handleLogout() {
+       // 로그아웃 함수
+      function handleLogout() {
         console.log("🚀 로그아웃 요청");
         const authToken = localStorage.getItem("authToken");
         fetch("/api/member/logout", {
@@ -128,7 +129,7 @@
             setTimeout(() => {
               alert("✅ 로그아웃 완료!");
               window.location.href = "/login";
-            }, 1000);
+            }, 1000*60*60*24);
           } else {
             console.warn("🚨 로그아웃 실패: 응답 오류");
           }
@@ -164,7 +165,9 @@
           'chart-5': { min: 0.0, max: 0.5, label: 'NH₃ (mg/L)' },
           'chart-6': { min: 0.0, max: 5.2, label: 'NO₂ (mg/L)' },
         };
-
+		
+     
+     
         let gaugeValues = {
           'chart-1': null,
           'chart-2': null,
@@ -305,7 +308,7 @@
 
           const startAngle = angles[chartId].current;
           const targetAngle = angles[chartId].target;
-          const duration = 1000*60*60*24;
+          const duration = 1000;
           let startTime = null;
 
           function step(timestamp) {
@@ -461,7 +464,7 @@
 
         // 초기 데이터 로드 및 주기적 갱신
         fetchLatestTankData();
-        setInterval(fetchLatestTankData, 1000*60*60*24);
+        setInterval(fetchLatestTankData, 1000);
 
         // 클릭 이벤트 및 실시간 데이터
         const cardElements = document.querySelectorAll('.card');
@@ -553,7 +556,7 @@
           if (window.graphInterval) clearInterval(window.graphInterval);
           window.graphInterval = setInterval(() => {
             fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
-          }, 5000);
+          }, 1000);
         }
 
         function fetchLatestTankDataForGraph(chartId, dataKey, labels, values, chart) {
