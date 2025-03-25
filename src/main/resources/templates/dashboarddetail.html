@@ -107,19 +107,33 @@
       
 
       // 로그아웃 함수
-      function handleLogout() {
+            function handleLogout() {
         console.log("🚀 로그아웃 요청");
-        deleteCookie("autoLoginId");
-        deleteCookie("autoLoginPw");
-        fetch("/logout", { method: "GET" })
-          .then(() => {
-            alert("로그아웃 완료!");
-            window.location.href = "/login";
-          });
-      }
-
-      function deleteCookie(name) {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict;Secure`;
+        const authToken = localStorage.getItem("authToken");
+        fetch("/api/member/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: authToken }),
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log("✅ 서버 로그아웃 성공");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("autoLogin");
+            localStorage.removeItem("savedUserId");
+            localStorage.removeItem("savedPassword");
+            sessionStorage.clear();
+            document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            console.log("✅ 모든 저장소 데이터 삭제 완료");
+            setTimeout(() => {
+              alert("✅ 로그아웃 완료!");
+              window.location.href = "/login";
+            }, 1000);
+          } else {
+            console.warn("🚨 로그아웃 실패: 응답 오류");
+          }
+        })
+        .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
       }
 
       // DOMContentLoaded 이벤트
