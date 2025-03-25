@@ -16,8 +16,8 @@ body {
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  overflow-x: hidden;  /* 가로 스크롤 비활성화 */
-  overflow-y: scroll;  /* 항상 스크롤 영역 활성화 */
+  overflow-x: hidden; /* 가로 스크롤 비활성화 */
+  overflow-y: scroll; /* 항상 스크롤 영역 활성화 */
 }
 
 /* 스크롤바를 숨기는 부분 */
@@ -28,10 +28,8 @@ body::-webkit-scrollbar {
 
 body {
   -ms-overflow-style: none; /* IE와 Edge에서 스크롤바 숨김 */
-  scrollbar-width: none;    /* Firefox에서 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
 }
-
-
 
 /* 페이지 레이아웃을 위한 wrapper */
 .wrapper {
@@ -51,7 +49,7 @@ body {
   overflow-y: auto;
   box-sizing: border-box;
   padding-top: 30px; /* 헤더 높이만큼 여백 추가 */
-  margin-bottom:180px;
+  margin-bottom: 180px;
 }
 
 /* 헤더 */
@@ -70,7 +68,6 @@ body {
   z-index: 1000;
   gap: 200px;
 }
-
 
 .user-section {
   display: flex;
@@ -109,6 +106,7 @@ body {
   font-size: 14px;
   color: #333;
 }
+
 /* 페이지 제목 */
 .page-title {
   text-align: center;
@@ -120,13 +118,11 @@ body {
   margin: 0;
   padding: 10px 0;
   font-family: 'Arial', sans-serif;
-  background-color:rgb(15, 18, 59);
+  background-color: rgb(15, 18, 59);
   border-radius: 5px;
   width: 100%;
   display: inline-block;
 }
-
-
 
 .header .user-info {
   display: flex;
@@ -134,24 +130,22 @@ body {
   width: 100%;
 }
 
-
 /* user-name과 logout-btn 사이에 간격을 주기 위한 스타일 */
 .header .user-name {
   margin-right: 15px; /* 이름과 로그아웃 버튼 사이의 간격 */
   font-size: 13px;
-  flex-grow: 0; 
+  flex-grow: 0;
 }
 
 .logout-btn {
-  background-color: #7a4dff; /* 배경 색 */
+  background-color: #4A5375; /* 추천 색상: 연한 파란 회색 */
   color: white;
-  border: none;
+  border: 1px solid #2A3147; /* 테두리 색상: 어두운 파란 회색 */
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 13px;
-  transition: background-color 0.3s ease;
-  
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,14 +154,20 @@ body {
   white-space: nowrap;
 }
 
+.logout-btn:hover {
+  background-color: #6A7395; /* 호버 시 더 밝은 파란 회색 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 추가 */
+}
+
+.logout-btn:active {
+  transform: scale(0.98); /* 클릭 시 살짝 눌리는 효과 */
+}
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
-
 
 .user-name {
   font-size: 13px;
@@ -192,21 +192,23 @@ body {
 .control-item {
   flex: 1;
 }
+
 /* .tank-info */
 .tank-info {
-  background-color: #252c41;
-  padding: 10px; /* 패딩 유지 */
+  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
+  padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex; /* flexbox 유지 */
-  align-items: center; /* 수직 중앙 정렬 */
-  justify-content: center; /* 수평 중앙 정렬 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
-  flex-direction: row; /* 가로 배치 */
-  width: 100%; /* 부모 요소의 너비를 100%로 설정 */
-  max-width: 600px; /* 최대 너비를 제한하여 콘텐츠가 너무 넓어지지 않도록 */
-  margin: 0 auto; /* 좌우 마진을 auto로 설정하여 가운데 정렬 */
-  overflow: hidden; /* 내용이 넘칠 경우 숨기기 */
+  flex-direction: row;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
 }
 
 /* .tank-data */
@@ -216,20 +218,14 @@ body {
   gap: 5px; /* 각 항목 간 간격 설정 */
   flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
 }
+
 /* 부모 요소 */
 .parent-container {
-  display: flex;                /* flexbox 사용 */
-  justify-content: center;      /* 가로 중앙 정렬 */
-  align-items: center;          /* 세로 중앙 정렬 */
-  height: 100vh;                /* 화면 전체 높이 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-
-
-
-
-
-
-
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
@@ -260,16 +256,27 @@ body {
     flex-direction: column;
     align-items: center;
   }
+
+  /* tank-info 반응형 조정 */
+  .tank-info {
+    flex-direction: column;
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .tank-data {
+    align-items: center;
+    text-align: center;
+  }
 }
 
-
 /* 알람 */
-
 .alarm-log-container {
-  background-color: #252c41;
+  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
+  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
   padding: 0.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-top: 1.875rem;
   height: 8vh;
   overflow-y: hidden;
@@ -279,7 +286,7 @@ body {
 
 .alarm-log-container:hover {
   height: 20vh;
-  box-shadow: 0 0.375rem 0.9375rem rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   overflow-y: hidden;
 }
 
@@ -297,173 +304,188 @@ body {
   margin-bottom: 0.3rem;
 }
 
-
-/* 기본 스타일 */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #1e213a;
-  color: #ffffff;
-  line-height: 1.5;
-}
-
 /* 햄버거 버튼 스타일 */
 .hamburger-btn {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #ffffff;
-    font-size: 24px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    z-index: 1100;
-    transition: background-color 0.3s;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 1100;
+  transition: background-color 0.3s;
 }
 
 .hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* 사이드바 스타일 */
 .sidebar {
-    width: 190px;
-    background:  rgba(15, 18, 59, 0.95);
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: -250px; /* 기본적으로 숨김 */
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 1000;
-    overflow-y: auto;
-    transition: left 0.3s ease;
+  width: 190px;
+  background: rgba(15, 18, 59, 0.95);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -250px; /* 기본적으로 숨김 */
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 1000;
+  overflow-y: auto;
+  transition: left 0.3s ease;
 }
 
 .sidebar.active {
-    left: 0;
+  left: 0;
 }
 
 .sidebar-header {
-    color: #ffffff;
-    font-family: "Abel", Helvetica;
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    text-align: center;
+  color: #ffffff;
+  font-family: "Abel", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-menu li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .sidebar-menu a {
-    color: #ffffff;
-    text-decoration: none;
-    font-family: "Abel", Helvetica;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "Abel", Helvetica;
+  font-size: 16px;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 서브 메뉴 스타일 */
 .sub-menu {
-    display: none;
-    list-style: none;
-    padding-left: 20px;
-    margin-top: 5px;
+  display: none;
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
 }
 
 .sub-menu li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sub-menu a {
-    font-size: 14px;
-    padding: 8px;
-    color: #a0aec0;
+  font-size: 14px;
+  padding: 8px;
+  color: #a0aec0;
 }
 
 .sub-menu a:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* 모바일 반응형 */
 @media (max-width: 600px) {
-    .sidebar {
-        width: 200px;
-        left: -200px;
-    }
-    .sidebar.active {
-        left: 0;
-    }
-    .alarm-dashboard-screen .content {
-        padding: 10px;
-    }
-    .alarm-dashboard-screen th,
-    .alarm-dashboard-screen td {
-        padding: 8px 10px;
-        font-size: clamp(10px, 2vw, 14px);
-    }
-    .filter-section {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .filter-dropdown {
-        width: 100%;
-    }
-    .hamburger-btn {
-        font-size: 20px;
-    }
+  .sidebar {
+    width: 200px;
+    left: -200px;
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .alarm-dashboard-screen .content {
+    padding: 10px;
+  }
+  .alarm-dashboard-screen th,
+  .alarm-dashboard-screen td {
+    padding: 8px 10px;
+    font-size: clamp(10px, 2vw, 14px);
+  }
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .filter-dropdown {
+    width: 100%;
+  }
+  .hamburger-btn {
+    font-size: 20px;
+  }
 }
 
 h4 {
-    display: flex;
-    align-items: center;
-    margin-block-start: 1.33em;
-    margin-block-end: 1.33em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-    unicode-bidi: isolate;
-    gap: 320px; /* 제목과 버튼 그룹 간 간격 */
-    color: #fff;
+  display: flex;
+  align-items: center;
+  margin-block-start: 1.33em;
+  margin-block-end: 1.33em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+  gap: 320px; /* 제목과 버튼 그룹 간 간격 */
+  color: #fff;
 }
 
 .button-group {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 수정 버튼과 삭제 버튼 간 간격 */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 수정 버튼과 삭제 버튼 간 간격 */
 }
 
-.edit-btn, .delete-btn {
-    width: 20px;
-    height: 20px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    overflow: hidden;
+.edit-btn,
+.delete-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.edit-btn img, .delete-btn img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.edit-btn img,
+.delete-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+/* 깜빡이는 테두리 및 배경 애니메이션 */
+@keyframes blinkTankInfo {
+  0% {
+    border-color: #ff4500;
+    box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+    background-color: rgba(255, 69, 0, 0.1);
+  }
+  50% {
+    border-color: #4A5375; /* 기본 테두리 색상으로 복귀 */
+    box-shadow: none;
+    background-color: #2A3147; /* 기본 배경색으로 복귀 */
+  }
+  100% {
+    border-color: #ff4500;
+    box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+    background-color: rgba(255, 69, 0, 0.1);
+  }
+}
 
-
+/* 경고 상태일 때 적용할 클래스 */
+.blink-tank-info {
+  border: 2px solid #ff4500;
+  animation: blinkTankInfo 1.2s infinite;
+}

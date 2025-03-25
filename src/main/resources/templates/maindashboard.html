@@ -77,7 +77,7 @@
             setTimeout(() => {
               alert("✅ 로그아웃 완료!");
               window.location.href = "/login";
-            }, 1000);
+            }, 1000*60*60*24);
           } else {
             console.warn("🚨 로그아웃 실패: 응답 오류");
           }
@@ -207,7 +207,12 @@
       // 차트 렌더링 함수
    async function renderTankChart(tank) {
   const canvasId = `tankChart-${tank.tankIdx}`;
-  const ctx = document.getElementById(canvasId).getContext('2d');
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const tankInfo = canvas.closest('.tank-info'); // tank-info 요소 찾기
+
+  // 디버깅 로그 추가
+  console.log(`Rendering chart for tankIdx: ${tank.tankIdx}`);
 
   // 기존 차트 제거
   if (chartInstances[canvasId]) {
@@ -231,75 +236,94 @@
     latestData.waterNitrogen   // 아질산
   ];
 
-  // 각 수질 항목의 범위 정의 (위험 → 경고 → 정상 → 경고 → 위험)
+  // 각 수질 항목의 범위 정의 (경고 → 정상 → 경고)
   const ranges = [
     // 산성도 (pH)
     {
-      dangerLow: 0.0,    dangerHigh: 7.3,   // 위험: 7.3 미만
-      warningLow: 7.3,   warningHigh: 7.5,  // 경고: 7.3 ~ 7.5
-      normalLow: 7.5,    normalHigh: 9.0,   // 정상: 7.5 ~ 9.0
-      warningHighLow: 9.0, warningHighHigh: 9.2, // 경고: 9.0 ~ 9.2
-      dangerHighLow: 9.2, dangerHighHigh: 14.0 // 위험: 9.2 초과
+      warning1Min: 7.3,   warning1Max: 7.4,   // 경고: 7.3 ~ 7.4 (낮음)
+      normalMin: 7.5,     normalMax: 9.0,     // 정상: 7.5 ~ 9.0
+      warning2Min: 9.1,   warning2Max: 9.2,   // 경고: 9.1 ~ 9.2 (높음)
+      min: 7.3, max: 9.2   // 정규화 범위
     },
     // 용존산소 (mg/L)
     {
-      dangerLow: 0.0,    dangerHigh: 3.5,   // 위험: 3.5 미만
-      warningLow: 3.5,   warningHigh: 4.0,  // 경고: 3.5 ~ 4.0
-      normalLow: 5.0,    normalHigh: 10.0,  // 정상: 4.0 ~ 10.0
-      warningHighLow: 10.0, warningHighHigh: 15.0, // 경고: 10.0 ~ 15.0
-      dangerHighLow: 15.0, dangerHighHigh: 100.0 // 위험: 15.0 초과
+      warning1Min: 3.502,  warning1Max: 4.9,  // 낮음 경고 없음 (제거)
+      normalMin: 5.0,     normalMax: 10.0,    // 정상: 5.0 ~ 10.0
+      warning2Min: 10.1,  warning2Max: 15.0,  // 경고: 10.1 ~ 15.0 (높음)
+      min: 3.502, max: 15.0  // 정규화 범위
     },
     // 수온 (°C)
     {
-      dangerLow: 0.0,    dangerHigh: 24.8,  // 위험: 24.8 미만
-      warningLow: 24.8,  warningHigh: 26.0, // 경고: 24.8 ~ 26.0
-      normalLow: 26.0,   normalHigh: 30.0,  // 정상: 26.0 ~ 30.0
-      warningHighLow: 30.0, warningHighHigh: 31.0, // 경고: 30.0 ~ 31.0
-      dangerHighLow: 31.0, dangerHighHigh: 100.0 // 위험: 31.0 초과
+      warning1Min: 24.77, warning1Max: 26.0,  // 경고: 24.77 ~ 26.0 (낮음)
+      normalMin: 26.0,    normalMax: 30.0,    // 정상: 26.0 ~ 30.0
+      warning2Min: 31.0,  warning2Max: 31.0,  // 경고: 31.0 (높음)
+      min: 24.77, max: 31.0 // 정규화 범위
     },
     // 염도 (ppt)
     {
-      dangerLow: 0.0,    dangerHigh: 15.0,  // 위험: 15.0 미만
-      warningLow: 15.0,  warningHigh: 20.0, // 경고: 15.0 ~ 20.0
-      normalLow: 20.0,   normalHigh: 40.0,  // 정상: 20.0 ~ 40.0
-      warningHighLow: 40.0, warningHighHigh: 45.0, // 경고: 40.0 ~ 45.0
-      dangerHighLow: 45.0, dangerHighHigh: 100.0 // 위험: 45.0 초과
+      warning1Min: null,  warning1Max: null,  // 낮음 경고 없음 (제거)
+      normalMin: 0.5,     normalMax: 45.0,    // 정상: 0.5 ~ 45.0
+      warning2Min: 46.0,  warning2Max: 47.0,  // 경고: 46.0 ~ 47.0 (높음)
+      min: 0.5, max: 47.0  // 정규화 범위
     },
     // 암모니아 (ppm)
     {
-      dangerLow: -Infinity, dangerHigh: 0.0,  // 위험: 음수 (불가능)
-      warningLow: 0.0,   warningHigh: 0.05, // 경고: 0.0 ~ 0.05
-      normalLow: 0.05,   normalHigh: 0.16,  // 정상: 0.05 ~ 0.16
-      warningHighLow: 0.16, warningHighHigh: 0.21, // 경고: 0.16 ~ 0.21
-      dangerHighLow: 0.21, dangerHighHigh: 100.0 // 위험: 0.21 초과
+      warning1Min: null,  warning1Max: null,  // 낮음 경고 없음 (제거)
+      normalMin: 0.0,     normalMax: 0.16,    // 정상: 0.0 ~ 0.16
+      warning2Min: 0.3,   warning2Max: 0.5,   // 경고: 0.3 ~ 0.5 (높음)
+      min: 0.0, max: 0.5   // 정규화 범위
     },
     // 아질산 (ppm)
     {
-      dangerLow: 0.0,    dangerHigh: 0.001, // 위험: 0.001 미만
-      warningLow: 0.001, warningHigh: 0.01, // 경고: 0.001 ~ 0.01
-      normalLow: 0.01,   normalHigh: 5.0,   // 정상: 0.01 ~ 5.0
-      warningHighLow: 5.0, warningHighHigh: 6.0, // 경고: 5.0 ~ 6.0
-      dangerHighLow: 6.0, dangerHighHigh: 100.0 // 위험: 6.0 초과
+      warning1Min: 0.0001,  warning1Max: 0.09,  // 낮음 경고 없음 (제거)
+      normalMin: 0.0,     normalMax: 5.0,     // 정상: 0.0 ~ 5.0
+      warning2Min: 5.1,   warning2Max: 5.2,   // 경고: 5.1 ~ 5.2 (높음)
+      min: 0.0001, max: 5.2   // 정규화 범위
     }
   ];
 
-  // 색상 결정 함수
+  // 색상 결정 함수 (경고 → 정상 → 경고)
   const getColor = (value, range) => {
-    if (value < range.dangerHigh) return { background: '#ff4500', border: '#ff7f7f' }; // 위험 (낮음)
-    if (value >= range.warningLow && value <= range.warningHigh) return { background: '#ffa500', border: '#ffd580' }; // 경고 (낮음)
-    if (value >= range.normalLow && value <= range.normalHigh) return { background: '#32cd32', border: '#90ee90' }; // 정상
-    if (value > range.warningHighLow && value <= range.warningHighHigh) return { background: '#ffa500', border: '#ffd580' }; // 경고 (높음)
-    if (value > range.dangerHighLow) return { background: '#ff4500', border: '#ff7f7f' }; // 위험 (높음)
+    // null 값을 정상 범위 중간 값으로 처리
+    if (value === null) {
+      value = (range.normalMin + range.normalMax) / 2;
+    }
+
+    if (range.warning1Min !== null && range.warning1Max !== null && value >= range.warning1Min && value <= range.warning1Max) {
+      return { background: '#ff4500', border: '#ff7f7f', status: 'warning' }; // 경고 (낮음)
+    }
+    if (value >= range.normalMin && value <= range.normalMax) {
+      return { background: '#32cd32', border: '#90ee90', status: 'normal' }; // 정상
+    }
+    if (range.warning2Min !== null && range.warning2Max !== null && value >= range.warning2Min && value <= range.warning2Max) {
+      return { background: '#ff4500', border: '#ff7f7f', status: 'warning' }; // 경고 (높음)
+    }
+    return { background: '#ff4500', border: '#ff7f7f', status: 'warning' }; // 범위 밖은 경고로 처리
   };
 
-  // 색상 배열 생성
+  // 색상 배열 생성 및 경고 상태 확인
   const backgroundColors = [];
   const borderColors = [];
+  let hasWarning = false; // 경고 상태가 있는지 확인
+
   dataValues.forEach((value, index) => {
     const colors = getColor(value, ranges[index]);
     backgroundColors.push(colors.background);
     borderColors.push(colors.border);
+    if (colors.status === 'warning') {
+      hasWarning = true; // 경고 상태가 하나라도 있으면 true
+    }
   });
+
+  // 디버깅 로그 추가
+  console.log(`Tank ${tank.tankIdx} - Has Warning: ${hasWarning}`);
+
+  // tank-info에 깜빡이는 효과 적용
+  if (hasWarning) {
+    tankInfo.classList.add('blink-tank-info');
+  } else {
+    tankInfo.classList.remove('blink-tank-info');
+  }
 
   // 텍스트 색상 동기화
   const textElements = [
@@ -324,12 +348,12 @@
       datasets: [{
         label: `${tank.tankIdx}번 수조 데이터`,
         data: [
-          normalize(latestData.waterPh, 7.3, 9.2),
-          normalize(latestData.waterDo, 3.5, 15.0),
-          normalize(latestData.waterTemp, 24.8, 31.0),
-          normalize(latestData.waterSalt, 15.0, 45.0),
-          normalize(latestData.waterAmmonia, 0.0, 0.21),
-          normalize(latestData.waterNitrogen, 0.001, 6.0)
+          normalize(latestData.waterPh, ranges[0].min, ranges[0].max),
+          normalize(latestData.waterDo, ranges[1].min, ranges[1].max),
+          normalize(latestData.waterTemp, ranges[2].min, ranges[2].max),
+          normalize(latestData.waterSalt, ranges[3].min, ranges[3].max),
+          normalize(latestData.waterAmmonia, ranges[4].min, ranges[4].max),
+          normalize(latestData.waterNitrogen, ranges[5].min, ranges[5].max)
         ],
         backgroundColor: backgroundColors,
         borderColor: borderColors,
@@ -349,9 +373,15 @@
         y: { display: true, ticks: { font: { size: 13 }, padding: 2, color: '#ffffff' } }
       },
       plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      animation: { duration: 1000, easing: 'easeInOutQuad' }
+      animation: { duration: 1000*60*60*24, easing: 'easeInOutQuad' }
     }
   });
+}
+
+// 정규화 함수 (기존 유지)
+function normalize(value, min, max) {
+  if (max === min) return 0;
+  return (value - min) / (max - min);
 }
 
       // 수조 수정 페이지로 이동
