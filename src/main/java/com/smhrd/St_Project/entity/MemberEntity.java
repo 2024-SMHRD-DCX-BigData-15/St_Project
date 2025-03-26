@@ -40,10 +40,6 @@ public class MemberEntity {
     @JsonIgnore  // ✅ 무한 루프 방지
     private List<TankEntity> tanks;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore  // ✅ 무한 루프 방지
-    private List<AlarmEntity> alarms;
-
     @Column(name = "deleted_at", nullable = true)
     private Timestamp deletedAt;
 

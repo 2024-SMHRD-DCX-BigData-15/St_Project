@@ -11,7 +11,7 @@ package com.smhrd.St_Project.service;
  
      private final RestTemplate restTemplate = new RestTemplate();
  
-     public List<Double> getPredictionFromFlask() {
+     public List<List<Double>> getPredictionFromFlask() {
     	    Map<String, Object> body = new HashMap<>();
     	    body.put("data", "Spring에서 보낸 요청");
 
@@ -23,17 +23,22 @@ package com.smhrd.St_Project.service;
     	            "http://localhost:8000/predict", entity, Map.class
     	    );
 
-    	    // 👉 여기서 반환값이 리스트이므로 이렇게 처리!
     	    Object rawValue = response.getBody().get("prediction");
 
     	    if (rawValue instanceof List<?>) {
     	        List<?> rawList = (List<?>) rawValue;
+    	        List<List<Double>> predictionList = new ArrayList<>();
 
-    	        // 👉 숫자 리스트로 안전하게 변환
-    	        List<Double> predictionList = new ArrayList<>();
-    	        for (Object item : rawList) {
-    	            if (item instanceof Number) {
-    	                predictionList.add(((Number) item).doubleValue());
+    	        for (Object row : rawList) {
+    	            if (row instanceof List<?>) {
+    	                List<?> subList = (List<?>) row;
+    	                List<Double> doubleRow = new ArrayList<>();
+    	                for (Object num : subList) {
+    	                    if (num instanceof Number) {
+    	                        doubleRow.add(((Number) num).doubleValue());
+    	                    }
+    	                }
+    	                predictionList.add(doubleRow);
     	            }
     	        }
 
@@ -44,5 +49,6 @@ package com.smhrd.St_Project.service;
     	    }
     	}
 
+    	}
 
- }
+

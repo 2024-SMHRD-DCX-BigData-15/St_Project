@@ -14,7 +14,7 @@ public class AlarmRestController {
     }
 
     @GetMapping("/test-predict")
-    public List<Double> testPredict() {
+    public List<List<Double>> testPredict() {
         return FastAPIService.getPredictionFromFlask();
     }
 }

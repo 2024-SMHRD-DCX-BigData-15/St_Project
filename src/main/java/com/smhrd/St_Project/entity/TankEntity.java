@@ -46,10 +46,6 @@ public class TankEntity {
 
     @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // ✅ 무한 루프 방지
-    private List<EnvEntity> environments;
-
-    @OneToMany(mappedBy = "tank", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore  // ✅ 무한 루프 방지
     private List<AlarmEntity> alarms;
     
     // 추가된 필드 (삭제 여부)
