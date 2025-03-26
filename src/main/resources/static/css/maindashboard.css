@@ -432,9 +432,47 @@ body {
 }
 
 /* 알람 */
+
+/* 알람 패널 스타일 수정 */
 .alarm-log-container {
-  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
-  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
+  background: linear-gradient(135deg, rgba(10, 15, 40, 0.95), rgba(25, 35, 60, 0.85)); /* 다크 네이비 메탈릭 그라데이션 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: 1.875rem;
+  height: 8vh;
+  overflow-y: hidden;
+  transition: height 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.alarm-log-container:hover {
+  height: 20vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow-y: hidden;
+}
+
+.alarm-content {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+  padding-top: 0.25rem;
+}
+
+.alarm-item {
+  font-size: 0.9rem;
+  color: #ffffff;
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+  transition: color 0.3s ease;
+}
+
+
+/*
+.alarm-log-container {
+  background-color: #2A3147;
+  border: 1px solid #4A5375;
   padding: 0.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -464,6 +502,8 @@ body {
   line-height: 1.5;
   margin-bottom: 0.3rem;
 }
+
+*/
 
 /* 햄버거 버튼 스타일 */
 .hamburger-btn {
