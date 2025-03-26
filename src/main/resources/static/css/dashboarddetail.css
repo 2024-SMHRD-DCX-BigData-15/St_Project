@@ -7,7 +7,7 @@
 
 /* 전체 페이지 스타일 */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Abel", Helvetica;
   background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
   color: #ffffff;
   line-height: 1.5;
@@ -73,14 +73,14 @@ body {
 /* 페이지 제목 */
 .page-title {
   text-align: center;
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 400;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0;
   padding: 10px 0;
-  font-family: 'Arial', sans-serif;
+  font-family: "Abel", Helvetica;
   background-color: rgb(15, 18, 59);
   border-radius: 5px;
   width: 100%;
@@ -95,7 +95,7 @@ body {
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
   display: flex;
   align-items: center;

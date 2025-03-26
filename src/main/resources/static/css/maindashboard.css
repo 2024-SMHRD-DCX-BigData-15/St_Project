@@ -110,14 +110,14 @@ body {
 /* 페이지 제목 */
 .page-title {
   text-align: center;
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 400;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0;
   padding: 10px 0;
-  font-family: 'Arial', sans-serif;
+  font-family: "Abel", Helvetica;
   background-color: rgb(15, 18, 59);
   border-radius: 5px;
   width: 100%;
@@ -133,7 +133,7 @@ body {
 /* user-name과 logout-btn 사이에 간격을 주기 위한 스타일 */
 .header .user-name {
   margin-right: 15px; /* 이름과 로그아웃 버튼 사이의 간격 */
-  font-size: 13px;
+  font-size: 14px;
   flex-grow: 0;
 }
 
@@ -144,7 +144,7 @@ body {
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
   display: flex;
   align-items: center;
@@ -248,7 +248,7 @@ body {
   align-items: center;
   gap: 4px;
   color: #ffffff;
-  font-family: "Arial", sans-serif;
+  font-family: "Abel", Helvetica;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1); /* 더 부드러운 테두리 */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* 입체감 추가 */
