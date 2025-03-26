@@ -75,6 +75,10 @@ body {
     position: relative;
   }
   
+  .header-spacer {
+    flex: 1;
+  }
+  
   .header-title {
     position: absolute;
     left: 50%;
@@ -84,8 +88,8 @@ body {
     font-size: 20px;
     font-weight: 400;
     text-align: center;
-  }
-  
+    margin: 0;
+  }  
   
   .alarm-dashboard-screen .text-21 {
     color: #ffffff;
@@ -93,10 +97,10 @@ body {
     font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 1.2;
+    line-height: 1;
     white-space: nowrap;
-    margin-bottom: 6px;
-    text-align: left;
+    margin: 0;
+    text-align: center;
   }
   
   /* 필터링 및 검색 섹션 */
@@ -392,9 +396,12 @@ body {
     font-size: 14px;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: center; /* 내부 요소도 세로 중앙 정렬 */
     gap: 10px;
     padding-right: 20px;
+    margin: 0; /* 불필요한 마진 제거 */
+    flex: 1;
+    justify-content: flex-end; /* user-info 내부 요소를 오른쪽으로 정렬 */
   }
   
   .user-info p {
@@ -403,7 +410,7 @@ body {
   }
   
   .logout-btn {
-    background-color: #0075ff;
+    background-color: #4A5375;
     color: white;
     padding: 6px 12px;
     border: none;
@@ -411,12 +418,13 @@ body {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
+    line-height: 1;
   }
-  
-  .logout-btn:hover {
-    background-color: #005bb5;
-  }
-  
+
+.logout-btn:hover {
+  background-color: #6A7395;
+}
+
   /* 모바일 반응형 */
   @media (max-width: 600px) {
     .sidebar {
