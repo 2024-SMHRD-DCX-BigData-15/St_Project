@@ -278,8 +278,8 @@
 /* user-info 스타일 추가 */
 .user-info {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 55px;
+    right: 200px;
     color: #ffffff;
     font-family: "Abel", Helvetica;
     font-size: 14px;
@@ -288,30 +288,30 @@
     align-items: center;
     gap: 10px;
     z-index: 1200;
-    height: 100px;
-    line-height: 39px;
-    justify-content: center;
+    height: auto;
+    line-height: 1;
 }
 
 .user-info p {
     font-size: 16px;
     margin: 0;
-    line-height: 39px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
 }
 
 .logout-btn {
-    background-color: #0075ff;
+    background-color: #4A5375;
     color: white;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
-    height: 39px;
-    box-sizing: border-box;
+    line-height: 1;
 }
 
 .logout-btn:hover {
-    background-color: #005bb5;
+    background-color: #6A7395;
 }
