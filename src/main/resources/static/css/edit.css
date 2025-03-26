@@ -45,13 +45,12 @@
 .edit-screen .text-21 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
-    font-size: 30px;
+    font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 39px;
-    min-height: 39px;
+    line-height: 1.2;
     white-space: nowrap;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 /* 폼 스타일 */
