@@ -417,3 +417,46 @@ body {
     font-size: 20px;
   }
 }
+
+@keyframes blinkDataItem {
+  0% {
+    border-color: #ff4500;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
+    background-color: rgba(255, 69, 0, 0.15);
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  100% {
+    border-color: #ff4500;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
+    background-color: rgba(255, 69, 0, 0.15);
+  }
+}
+
+.blink-data-item {
+  border: 1px solid #ff4500;
+  animation: blinkDataItem 1.5s infinite;
+}
+
+.data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px; /* 캔버스와 데이터 값 사이의 간격 */
+}
+
+.data-value-container {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center;
+  margin-top: 10px; /* 캔버스와의 간격 조정 */
+}
+
+.data-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00ff00; /* 초록색 유지 */
+}
