@@ -60,7 +60,7 @@ body {
   transform: translateX(-22%); /* 가운데 정렬 */
   width: 100%;
   max-width: 1200px; /* 필요하면 설정 */
-  background-color: rgb(15, 18, 59);
+  background-color: transparent;
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
@@ -118,8 +118,8 @@ body {
   margin: 0;
   padding: 10px 0;
   font-family: "Abel", Helvetica;
-  background-color: rgb(15, 18, 59);
-  border-radius: 5px;
+  background-color: transparent;
+  border-radius: 0;
   width: 100%;
   display: inline-block;
 }
