@@ -195,7 +195,7 @@ body {
 
 /* .tank-info */
 .tank-info {
-  background-color: #2A3147; /* 기존 색상 유지 */
+  background: linear-gradient(145deg, #1a1f4a, #0f123b); /* body와 조화로운 깊은 파란 톤 */
   padding: 20px; /* 기본 패딩 */
   border-radius: 12px; /* 더 부드러운 모서리 */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* 더 깊은 그림자 */
@@ -208,7 +208,7 @@ body {
   max-width: 600px; /* 기본 최대 너비 */
   margin: 0 auto;
   overflow-x: hidden; /* 가로 스크롤 방지 */
-  border: 1px solid #4A5375; /* 기존 테두리 유지 */
+  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
   cursor: pointer;
   transition: box-shadow 0.3s ease, transform 0.2s ease, max-width 0.3s ease, padding 0.3s ease; /* 부드러운 전환 효과 */
 }
@@ -370,6 +370,7 @@ body {
     font-size: 12px;
   }
 }
+
 /* 부모 요소 */
 .parent-container {
   display: flex;
@@ -432,7 +433,6 @@ body {
 }
 
 /* 알람 */
-
 h5 {
   font-size: 1em;
   font-weight: bold;
@@ -444,8 +444,8 @@ h5 {
 }
 
 .alarm-log-container {
-  background: linear-gradient(135deg, rgba(10, 15, 40, 0.95), rgba(25, 35, 60, 0.85));
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #151a3f, #0a0e2a); /* 더 어두운 파란 톤으로 조정 */
+  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
   padding: 0.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -477,7 +477,6 @@ h5 {
   margin-bottom: 0.3rem;
   transition: color 0.3s ease;
 }
-
 
 /* 햄버거 버튼 스타일 */
 .hamburger-btn {
