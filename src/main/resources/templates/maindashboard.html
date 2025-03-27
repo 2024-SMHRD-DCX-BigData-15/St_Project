@@ -141,42 +141,54 @@
                   </div>
                 </h4>
                 <div class="tank-info" onclick="goToDashboardDetail(${tank.tankIdx})">
-                  <div class="tank-data">
-                    <div class="data-row">
-                      <div class="data-item" id="ph-item-${tank.tankIdx}">
-                        <span class="data-label">산성도</span>
-                        <span class="data-value" id="ph-${tank.tankIdx}"></span>
-                        <span class="data-unit">pH</span>
-                      </div>
-                      <div class="data-item" id="do-item-${tank.tankIdx}">
-                        <span class="data-label">용존산소</span>
-                        <span class="data-value" id="do-${tank.tankIdx}"></span>
-                        <span class="data-unit">mg/L</span>
-                      </div>
-                      <div class="data-item" id="temp-item-${tank.tankIdx}">
-                        <span class="data-label">수온</span>
-                        <span class="data-value" id="temp-${tank.tankIdx}"></span>
-                        <span class="data-unit">°C</span>
-                      </div>
+                <div class="tank-data">
+                <div class="data-row">
+                  <div class="data-item" id="ph-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">산성도</span>
+                      <span class="data-unit">pH</span>
                     </div>
-                    <div class="data-row">
-                      <div class="data-item" id="salt-item-${tank.tankIdx}">
-                        <span class="data-label">염도</span>
-                        <span class="data-value" id="salt-${tank.tankIdx}"></span>
-                        <span class="data-unit">ppt</span>
-                      </div>
-                      <div class="data-item" id="ammonia-item-${tank.tankIdx}">
-                        <span class="data-label">암모니아</span>
-                        <span class="data-value" id="ammonia-${tank.tankIdx}"></span>
-                        <span class="data-unit">ppm</span>
-                      </div>
-                      <div class="data-item" id="nitrogen-item-${tank.tankIdx}">
-                        <span class="data-label">아질산</span>
-                        <span class="data-value" id="nitrogen-${tank.tankIdx}"></span>
-                        <span class="data-unit">ppm</span>
-                      </div>
-                    </div>
+                    <span class="data-value" id="ph-${tank.tankIdx}"></span>
                   </div>
+                  <div class="data-item" id="do-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">용존산소</span>
+                      <span class="data-unit">mg/L</span>
+                    </div>
+                    <span class="data-value" id="do-${tank.tankIdx}"></span>
+                  </div>
+                  <div class="data-item" id="temp-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">수온</span>
+                      <span class="data-unit">°C</span>
+                    </div>
+                    <span class="data-value" id="temp-${tank.tankIdx}"></span>       
+                  </div>
+                </div>
+                <div class="data-row">
+                  <div class="data-item" id="salt-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">염도</span>
+                      <span class="data-unit">ppt</span>
+                    </div>
+                    <span class="data-value" id="salt-${tank.tankIdx}"></span>        
+                  </div>
+                  <div class="data-item" id="ammonia-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">암모니아</span>
+                      <span class="data-unit">ppm</span>
+                    </div>
+                    <span class="data-value" id="ammonia-${tank.tankIdx}"></span>
+                  </div>
+                  <div class="data-item" id="nitrogen-item-${tank.tankIdx}">
+                    <div class="label-unit-wrapper">
+                      <span class="data-label">아질산</span>
+                      <span class="data-unit">ppm</span>
+                    </div>
+                    <span class="data-value" id="nitrogen-${tank.tankIdx}"></span>
+                  </div>
+                </div>
+              </div>
                 </div>
                 <h5>수조 알람 로그</h5>
                 <div class="alarm-log-container" id="alarm-log-${tank.tankIdx}">
