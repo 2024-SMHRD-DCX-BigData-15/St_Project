@@ -122,7 +122,7 @@ public class AlarmService {
 
         // 정상 범위 확인
         if (value.compareTo(min) < 0 || value.compareTo(max) > 0) {
-            // 정상 범위를 벗어나면 무조건 "위험"으로 설정
+            // 정상 범위를 벗어나면 무조건 "위험"으로 설정11
             String status = "🚨 위험";
             String alarmMsg = String.format("%s %s (%s 범위 벗어남)", dataName, value.toString(), status);
 

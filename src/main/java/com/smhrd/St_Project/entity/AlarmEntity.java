@@ -11,7 +11,7 @@ import lombok.Data;
 public class AlarmEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ 자동 증가 설정 추가
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ 자동 증가 설정 추가11
 	@Column(name = "alarm_num", nullable = false)
 	private Long alarmNum;
 

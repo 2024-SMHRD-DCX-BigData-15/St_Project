@@ -63,7 +63,7 @@ public class AlarmRestController {
     /**
      * 🔹 모든 수조의 알람 목록 조회 API (alarmHistory2.html에서 사용)
      * - 모든 수조의 알람 데이터를 반환합니다.
-     * - alarmHistory2.html에서 확인된 알람(alarmRead='Y')을 표시하기 위해 사용됩니다.
+     * - alarmHistory2.html에서 확인된 알람(alarmRead='Y')을 표시하기 위해 사용됩니다.11
      */
     @GetMapping("/all")
     public ResponseEntity<List<AlarmEntity>> getAllAlarms() {
