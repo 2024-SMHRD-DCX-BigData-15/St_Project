@@ -43,7 +43,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color:  rgb(15, 18, 59);
+    background-color: transparent;
     border-radius: 5px;
     padding: 15px;
     position: sticky;
@@ -75,7 +75,7 @@ body {
 }
 
 .user-name {
-    font-size: 13px;
+    font-size: 16px;
     color: #ffffff;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -104,7 +104,6 @@ body {
 
 /* 승인 대기 테이블 */
 .approval-container {
-    margin-top: 30px;
     /* max-height와 overflow-y 제거 */
 }
 
@@ -117,19 +116,15 @@ body {
 .approval-table th, .approval-table td {
     padding: 12px;
     text-align: center;
-    /*
-    border: 1px solid #444;
-    */
+    font-weight: 400;
 }
 
 .approval-table th {
     background-color: transparent;
-    font-weight: 400;
 }
 
 .approval-table td {
     background-color: rgba(37, 44, 65, 0.3);
-    font-weight: 400;
 }
 
 .approval-table button {
@@ -212,6 +207,10 @@ body {
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
+	body {
+        overflow-y: auto;
+    }
+    
     .wrapper {
         flex-direction: column;
     }
@@ -237,7 +236,7 @@ body {
 
     .approval-table {
         width: 100%;
-        font-size: 20px;
+        font-size: 14px;
     }
 
     .approval-table th, .approval-table td {
