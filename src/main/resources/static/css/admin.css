@@ -10,7 +10,7 @@
 
 /* 전체 페이지 스타일 */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Arial', Helvetica;
     background:  linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
     color: #ffffff;
     display: flex;
@@ -18,7 +18,7 @@ body {
     align-items: flex-start; /* 상단 정렬로 변경 */
     min-height: 100vh;
     overflow-x: hidden;
-    overflow-y: auto; /* 세로 스크롤 활성화 (기본적으로 동작) */
+    overflow-y: hidden;
 }
 
 /* 레이아웃 */
@@ -41,7 +41,7 @@ body {
 /* 헤더 콘텐츠 */
 .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background-color:  rgb(15, 18, 59);
     border-radius: 5px;
@@ -49,15 +49,18 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
     
 }
 
 /* 페이지 제목 */
 .page-title {
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 28px;
+    font-weight: 400;
     margin: 0;
-    margin-left: 330px;
+    text-align: center;
 }
 
 /* 사용자 정보 섹션 */
@@ -65,6 +68,10 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .user-name {
@@ -76,23 +83,23 @@ body {
 
 /* 로그아웃 버튼 */
 .logout-btn {
-    background-color: #7a4dff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    white-space: nowrap;
+  background-color: #4A5375;
+  color: white;
+  border: 1px solid #2A3147;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  white-space: nowrap;
 }
 
 .logout-btn:hover {
-    background-color: #6a3dff;
+  background-color: #6A7395;
 }
 
 /* 승인 대기 테이블 */
@@ -117,10 +124,12 @@ body {
 
 .approval-table th {
     background-color: transparent;
+    font-weight: 400;
 }
 
 .approval-table td {
     background-color: rgba(37, 44, 65, 0.3);
+    font-weight: 400;
 }
 
 .approval-table button {
