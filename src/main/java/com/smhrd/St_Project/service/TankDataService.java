@@ -22,6 +22,9 @@ public class TankDataService {
     @Autowired
     private TankRepository tankRepository;
 
+    @Autowired
+    private AlarmService alarmService; // AlarmService 주입
+
     private static final int TOTAL_TANKS = 4; // ✅ 총 수조 개수 (4개)
 
     /**
@@ -72,6 +75,9 @@ public class TankDataService {
                 tankDataRepository.save(tankData);
                 System.out.println("✅ 데이터 저장 완료! tankIdx=" + tankIdx + ", 저장 시간=" + tankData.getRecordDate());
 
+                // ✅ 알람 검증 및 생성
+                alarmService.checkAndCreateAlarm(tankData);
+
                 // ✅ 4개 저장할 때마다 로그 찍음
                 if (rowIndex % TOTAL_TANKS == 0) {
                     System.out.println("✅ 4개 데이터 저장 완료! (현재 rowIndex=" + rowIndex + ")");
@@ -114,5 +120,4 @@ public class TankDataService {
             return null;
         }
     }
-
 }

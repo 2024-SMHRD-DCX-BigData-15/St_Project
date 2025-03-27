@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -8,35 +8,37 @@
 </head>
 <body>
   <div class="container-center-horizontal">
-    <!-- 햄버거 버튼 -->
+    <!-- 로딩 표시 추가 -->
+    <div id="loading"></div>
+
+    <!-- 햄버거 버튼 (사이드바 앞에 배치) -->
     <button class="hamburger-btn" id="hamburgerBtn">☰</button>
 
     <!-- 사이드바 -->
-	<div class="sidebar" id="sidebar">
-	  <div class="sidebar-header">
-	    <h2>메뉴</h2>
-	  </div>
-	  <ul class="sidebar-menu">
-	    <!-- 홈 -->
-	    <li><a href="/maindashboard">홈</a></li>
-	    <!-- 수조 정보 등록 -->
-	    <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
-	    <!-- 알람 히스토리 -->
-	    <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
-	    <!-- 회원 정보 관리 -->
-	    <li><a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
-	      <ul class="sub-menu">
-	        <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
-	        <li><a href="/delete">회원 탈퇴</a></li>
-	      </ul>
-	    </li>
-	  </ul>
-	</div>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>메뉴</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <!-- 홈 -->
+        <li><a href="/maindashboard">홈</a></li>
+        <!-- 수조 정보 등록 -->
+        <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
+        <!-- 알람 히스토리 -->
+        <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
+        <!-- 회원 정보 관리 -->
+        <li><a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+          <ul class="sub-menu">
+            <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
+            <li><a href="/delete">회원 탈퇴</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
 
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
-
           <!-- 통합된 헤더 -->
           <header class="fixed-header">
             <div class="header-content">
@@ -74,8 +76,7 @@
             <h2 class="section-title">요약</h2>
             <div class="summary-stats">
               <p>현재 위험 상태: <span id="criticalCount">0</span>건</p>
-              <p>현재 경고 상태: <span id="warningCount">0</span>건</p>
-              <p>오늘 발생한 경고: <span id="todayWarningCount">0</span>건</p>
+              <!-- "경고" 관련 항목 제거 -->
             </div>
           </section>
 
@@ -116,42 +117,41 @@
   <audio id="alarmSound" src="/static/sounds/alarm.mp3" preload="auto"></audio>
 
   <script>
-  
-  function handleLogout() {
-	    console.log("🚀 로그아웃 요청");
+    function handleLogout() {
+      console.log("🚀 로그아웃 요청");
 
-	    const authToken = localStorage.getItem("authToken");
+      const authToken = localStorage.getItem("authToken");
 
-	    fetch("/api/member/logout", {
-	        method: "POST",
-	        headers: { "Content-Type": "application/json" },
-	        body: JSON.stringify({ token: authToken }),
-	    })
-	    .then(response => {
-	        if (response.ok) {
-	            console.log("✅ 서버 로그아웃 성공");
+      fetch("/api/member/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: authToken }),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log("✅ 서버 로그아웃 성공");
 
-	            localStorage.removeItem("authToken");
-	            localStorage.removeItem("autoLogin");
-	            localStorage.removeItem("savedUserId");
-	            localStorage.removeItem("savedPassword");
-	            sessionStorage.clear();
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("autoLogin");
+          localStorage.removeItem("savedUserId");
+          localStorage.removeItem("savedPassword");
+          sessionStorage.clear();
 
-	            document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-	            console.log("✅ 모든 저장소 데이터 삭제 완료");
+          console.log("✅ 모든 저장소 데이터 삭제 완료");
 
-	            setTimeout(() => {
-	                alert("✅ 로그아웃 완료!");
-	                window.location.href = "/login";
-	            }, 1000);
-	        } else {
-	            console.warn("🚨 로그아웃 실패: 응답 오류");
-	        }
-	    })
-	    .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
-	}	
-  
+          setTimeout(() => {
+            alert("✅ 로그아웃 완료!");
+            window.location.href = "/login";
+          }, 1000);
+        } else {
+          console.warn("🚨 로그아웃 실패: 응답 오류");
+        }
+      })
+      .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+    }
+
     // 알람 로그 데이터 저장
     let alarmLogs = [];
     let currentLogPage = 1;
@@ -160,11 +160,18 @@
     // 필터링 변수
     let dataTypeFilter = "";
 
+    // 쿼리 파라미터에서 tankIdx 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const tankIdx = urlParams.get('tankIdx');
+
     // DOM 요소 캐싱
     const alarmLogTable = document.getElementById("alarmLog");
     const loadingDiv = document.getElementById("loading");
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+    // 햄버거 버튼의 z-index와 display 속성을 동적으로 조정
+    hamburgerBtn.style.zIndex = "1200"; // .sidebar의 z-index(1100)보다 높게 설정
 
     // XSS 방지 함수
     const escapeHTML = (str) => {
@@ -175,15 +182,12 @@
 
     // 알람 로그 렌더링 (항상 5행 유지)
     function renderAlarmLog(logs = alarmLogs) {
-	  alarmLogTable.innerHTML = "";
-	  // "위험"
-	  const criticalLogs = logs.filter(log => log.status === "🚨 위험")
-	    .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
-	  // "경고"
-	  const warningLogs = logs.filter(log => log.status === "⚠️ 경고")
-	    .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
-	  const filteredLogs = [...criticalLogs, ...warningLogs];
-      
+      alarmLogTable.innerHTML = "";
+      // "위험" 로그만 필터링 ("경고" 상태 제거)
+      const criticalLogs = logs.filter(log => log.status === "🚨 위험")
+        .filter(log => !dataTypeFilter || log.dataName === dataTypeFilter);
+      const filteredLogs = criticalLogs;
+
       const start = (currentLogPage - 1) * logsPerPage;
       const end = start + logsPerPage;
       const paginatedLogs = filteredLogs.slice(start, end);
@@ -206,12 +210,12 @@
         } else {
           // 빈 행 추가
           row.innerHTML = `
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
           `;
         }
         alarmLogTable.appendChild(row);
@@ -225,13 +229,9 @@
     // 요약 통계 업데이트
     function updateSummaryStats() {
       const criticalCount = alarmLogs.filter(log => log.status === "🚨 위험").length;
-      const warningCount = alarmLogs.filter(log => log.status === "⚠️ 경고").length;
-      const today = new Date().toISOString().slice(0, 10);
-      const todayWarningCount = alarmLogs.filter(log => log.timestamp.includes(today) && log.status === "⚠️ 경고").length;
-
+      // "경고" 관련 통계 제거
       document.getElementById("criticalCount").textContent = criticalCount;
-      document.getElementById("warningCount").textContent = warningCount;
-      document.getElementById("todayWarningCount").textContent = todayWarningCount;
+      console.log(`📊 요약 통계 업데이트: 현재 위험 상태=${criticalCount}`); // 디버깅 로그
     }
 
     // 로그 섹션 업데이트
@@ -246,19 +246,22 @@
       if (currentLogPage > 1) {
         currentLogPage--;
         renderAlarmLog();
+        console.log(`📄 로그 페이지 이동: 이전 페이지=${currentLogPage}`); // 디버깅 로그
       }
     });
 
     document.getElementById("nextLog").addEventListener("click", () => {
-      if (currentLogPage * logsPerPage < alarmLogs.filter(log => log.status === "⚠️ 경고").length) {
+      const filteredLogs = alarmLogs.filter(log => log.status === "🚨 위험");
+      if (currentLogPage * logsPerPage < filteredLogs.length) {
         currentLogPage++;
         renderAlarmLog();
+        console.log(`📄 로그 페이지 이동: 다음 페이지=${currentLogPage}`); // 디버깅 로그
       }
     });
 
     // 알람 로그 추가 및 24시간 필터링
     function addAlarmLog(dataName, value, status) {
-      if (status !== "⚠️ 경고") return;
+      if (status !== "🚨 위험") return; // "경고" 상태 제거, "위험"만 처리
 
       const now = new Date();
       const timestamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
@@ -277,13 +280,18 @@
 
       playAlarmSound();
       updateLogSection();
+      console.log(`🔔 새로운 알람 로그 추가: ${dataName} ${value} (${status})`); // 디버깅 로그
     }
 
     // 알람 소리 재생
     function playAlarmSound() {
       const soundToggle = document.getElementById("soundToggle");
       const audio = document.getElementById("alarmSound");
-      if (soundToggle.checked) audio.play().catch(err => console.error("소리 재생 실패:", err));
+      if (soundToggle.checked && audio.src) {
+        audio.play().catch(err => {
+          console.error("❌ 알람 소리 재생 실패:", err);
+        });
+      }
     }
 
     // 로그 확인 처리
@@ -291,72 +299,62 @@
       const log = alarmLogs[index];
       if (log.action === "미확인") {
         log.action = "확인";
-        alarmLogs.splice(index, 1);
         try {
-          await fetch('/api/alarms/confirm', {
+          const response = await fetch('/api/alarms/confirm', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ logId: index }) // 백엔드에서 ID 제공 시 log.id로 변경
+            body: JSON.stringify({ alarmNum: log.alarmNum }) // alarmNum을 전달
           });
+          if (response.ok) {
+            console.log("✅ 알람 확인 성공:", log);
+            // 알람 로그에서 제거
+            alarmLogs.splice(index, 1);
+            updateLogSection();
+            // alarmHistory2.html에 알림 (localStorage 사용)
+            localStorage.setItem('alarmUpdated', Date.now().toString());
+          } else {
+            throw new Error('서버 응답 오류');
+          }
         } catch (error) {
           console.error('확인 처리 실패:', error);
           alert('로그 확인 처리에 실패했습니다.');
         }
-        updateLogSection();
       }
     }
 
     // API 데이터 가져오기
     async function fetchAlarmData() {
+      if (!tankIdx) {
+        console.error("❌ tankIdx가 제공되지 않았습니다.");
+        return;
+      }
+
       loadingDiv.style.display = "block";
       try {
-        const response = await fetch('/api/alarms');
+        const response = await fetch(`/api/alarms?tankIdx=${tankIdx}`);
         if (!response.ok) throw new Error('API 응답 오류');
         const data = await response.json();
-        data.forEach(({ dataName, value, status }) => addAlarmLog(dataName, value, status));
+        console.log("📡 alarmHistory.html - API 응답 데이터:", data); // 디버깅용 로그
+        alarmLogs = data
+          .filter(alarm => alarm.alarmRead === 'N') // 미확인 알람만 표시
+          .map(alarm => ({
+            alarmNum: alarm.alarmNum,
+            timestamp: new Date(alarm.alarmCreatedAt).toISOString().slice(0, 10) + " " + new Date(alarm.alarmCreatedAt).toTimeString().slice(0, 5),
+            dataName: alarm.alarmMsg.split(" ")[0], // 메시지에서 데이터 이름 추출 (예: "산성도 7.2 (🚨 위험 범위 벗어남)" -> "산성도")
+            value: alarm.alarmMsg.split(" ")[1], // 값 추출
+            status: "🚨 위험", // 서버에서 이미 "위험"으로 저장됨
+            action: alarm.alarmRead === 'N' ? "미확인" : "확인",
+            duration: "0분",
+            createdAt: new Date(alarm.alarmCreatedAt).getTime()
+          }));
+        console.log(`📋 매핑된 알람 로그:`, alarmLogs); // 디버깅 로그
+        updateLogSection();
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
-        addAlarmLog('시스템', '데이터 로드 실패', '⚠️ 경고');
+        addAlarmLog('시스템', '데이터 로드 실패', '🚨 위험');
       } finally {
         loadingDiv.style.display = "none";
       }
-    }
-
-    // 더미 데이터와 테스트 함수
-    const thresholds = {
-      ph: { min: 6.5, max: 8.0, unit: "" },
-      do: { min: 5, max: 10, unit: "mg/L" },
-      temp: { min: 20, max: 25, unit: "°C" },
-      salinity: { min: 30, max: 35, unit: "ppt" },
-      ammonia: { min: 0, max: 0.1, unit: "ppm" },
-      nitrite: { min: 0, max: 0.2, unit: "ppm" }
-    };
-
-    const dataPoints = {
-      labels: ["14:00", "14:10", "14:20", "14:30", "14:40"],
-      datasets: [
-        { label: "산성도 (pH)", data: [7.0, 7.1, 7.2, 7.3, 6.4] },
-        { label: "용존산소 (mg/L)", data: [6.5, 6.8, 7.0, 6.2, 5.8] },
-        { label: "수온 (°C)", data: [22, 23, 24, 26, 28] },
-        { label: "염도 (ppt)", data: [32, 33, 32, 34, 35] },
-        { label: "암모니아 (ppm)", data: [0.05, 0.06, 0.07, 0.08, 0.12] },
-        { label: "아질산 (ppm)", data: [0.1, 0.15, 0.18, 0.2, 0.25] }
-      ]
-    };
-
-    function checkDataAlarm() {
-      const latestData = dataPoints.datasets.map(ds => ds.data[ds.data.length - 1]);
-      const labels = dataPoints.datasets.map(ds => ds.label.split(" ")[0]);
-      const keys = ["ph", "do", "temp", "salinity", "ammonia", "nitrite"];
-
-      latestData.forEach((value, index) => {
-        const key = keys[index];
-        const { min, max, unit } = thresholds[key];
-        const status = (value < min || value > max) ? "⚠️ 경고" : "정상";
-        if (status === "⚠️ 경고") {
-          addAlarmLog(labels[index], `${value}${unit}`, status);
-        }
-      });
     }
 
     // 이벤트 리스너 설정
@@ -364,10 +362,14 @@
       document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
         dataTypeFilter = e.target.value;
         updateLogSection();
+        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`); // 디버깅 로그
       });
 
       hamburgerBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
+        // 사이드바 상태에 따라 햄버거 버튼의 display 속성을 강제로 설정
+        hamburgerBtn.style.display = "block"; // 항상 표시되도록 설정
+        console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`); // 디버깅 로그
       });
 
       const toggleMenus = document.querySelectorAll(".toggle-menu");
@@ -377,13 +379,13 @@
           if (subMenu && subMenu.classList.contains("sub-menu")) {
             e.preventDefault();
             subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+            console.log(`📂 서브메뉴 토글: ${menu.textContent} - ${subMenu.style.display}`); // 디버깅 로그
           }
         });
       });
 
-      updateLogSection();
-      setInterval(fetchAlarmData, 5000); // API 호출
-      setInterval(checkDataAlarm, 5000); // 더미 데이터 체크 (백엔드 연동 후 제거)
+      fetchAlarmData(); // 초기 데이터 로드
+      setInterval(fetchAlarmData, 5000); // 5초마다 데이터 갱신
     });
   </script>
 </body>
