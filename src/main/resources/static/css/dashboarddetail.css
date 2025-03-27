@@ -9,7 +9,7 @@
 body {
   font-family: "Abel", Helvetica;
   background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
-  color: #ffffff;
+  color: #e0e7ff; /* 텍스트 색상을 약간 더 부드러운 밝은 파란 회색으로 */
   line-height: 1.5;
   display: flex;
   justify-content: center;
@@ -194,66 +194,323 @@ body {
 
 /* 수조정보 */
 .tank-info {
-  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
-  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
-  padding: 20px; /* 기존 패딩 유지 */
+  background: linear-gradient(145deg, #2a3147, #1e2538); /* 부드러운 그라데이션 */
+  border: 1px solid #4a5375;
+  padding: 15px 10px 10px 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 약화 */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   flex: 0 0 25%;
   max-width: 25%;
   min-width: 200px;
   box-sizing: border-box;
   position: relative;
-  top: -20px; /* 위로 20px 이동 */
-  max-height: 300px; /* 세로 크기 줄이기 */
+  top: -10px;
+  height: 300px !important;
   overflow-y: hidden;
-  margin-top: 10px;
-  transition: box-shadow 0.3s ease; /* 호버 효과를 위한 전환 */
+  margin-top: 0;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .tank-info:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강화 */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35);
 }
 
+/* 수조 정보와 달력 콘텐츠 */
+.tank-details, #calendar {
+  width: 100%;
+  height: calc(100% - 15px);
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* 수조 정보 콘텐츠 스타일 */
+.tank-details {
+  background: linear-gradient(145deg, #2a3147, #1e2538);
+  border-radius: 6px;
+  border: 1px solid #4a5375;
+  color: #e0e7ff;
+  overflow-y: hidden;
+  padding-top: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.tank-details h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5c7cfa; /* 더 부드러운 파란색 */
+  margin-bottom: 10px;
+  position: relative;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.tank-details h3::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 30px;
+  height: 2px;
+  background: #5c7cfa;
+}
+
+.tank-details p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 4px 0;
+  color: #c3d7ff;
+  text-align: center;
+}
+
+/* 전환 버튼 스타일 */
+.toggle-btn {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, #5c7cfa, #3b5998); /* 버튼에 그라데이션 추가 */
+  color: #e0e7ff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-btn:hover {
+  background: linear-gradient(145deg, #7289da, #5c7cfa);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-btn:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+/* 달력 스타일 */
+.flatpickr-calendar {
+  width: 100% !important;
+  height: calc(100% + 40px) !important;
+  max-height: none !important;
+  background: #2A3147 !important; /* 달력 배경에 그라데이션 */
+  background: linear-gradient(145deg, #2a3147, #1e2538)!important;
+  border-radius: 6px !important;
+  border: 1px solid #4a5375 !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25) !important; /* 실시간 그래프와 동일한 그림자 */
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 18px;
+  margin-top: -30px !important;
+}
+
+.flatpickr-days {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: stretch;
+  height: auto !important;
+  justify-content: space-between; /* 날짜 셀 간 간격을 균등하게 */
+}
+
+/* 달력 헤더 (월/년 선택) */
+.flatpickr-month {
+  background: transparent !important;
+  color: #e0e7ff !important;
+  height: 25px !important;
+  margin-bottom:5px;
+}
+
+.flatpickr-monthDropdown-months,
+.flatpickr-current-month .flatpickr-monthDropdown-month,
+.flatpickr-current-month span.cur-month {
+  color: #e0e7ff !important;
+  background: #2a3b5b !important;
+  border: none !important;
+  font-size: 12px !important;
+}
+
+.flatpickr-current-month .numInputWrapper {
+  color: #e0e7ff !important;
+}
+
+.flatpickr-current-month input.cur-year {
+  color: #e0e7ff !important;
+  background: transparent !important;
+  font-size: 12px !important;
+}
+
+/* 화살표 버튼 */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+  color: #e0e7ff !important;
+  fill: #e0e7ff !important;
+  top: 3px !important;
+}
+
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+  background: #3b4e7a !important;
+}
+
+/* 요일 표시 */
+.flatpickr-weekdays {
+  background: transparent !important;
+  height: 20px !important;
+  margin-top: 5px;
+}
+
+.flatpickr-weekday {
+  color: #c3d7ff !important;
+  background: transparent !important;
+  font-size: 10px !important;
+  line-height: 20px !important;
+}
+
+/* 날짜 셀 */
+.flatpickr-days {
+  height: 100% !important;
+  max-height: 180px !important;
+}
+
+.flatpickr-day {
+  color: #e0e7ff !important;
+  background: #2a3b5b !important;
+  border: none !important;
+  border-radius: 4px !important;
+  margin: 1px !important;
+  font-size: 10px !important;
+  width: 22px !important;
+  height: 22px !important;
+  line-height: 22px !important;
+  max-width: none !important;
+  box-sizing: border-box; /* 크기 계산 안정화 */
+}
+
+/* 호버 효과 */
+.flatpickr-day:hover {
+  background: #3b4e7a !important;
+}
+
+/* 오늘 날짜 */
+.flatpickr-day.today {
+  border: 1px solid #5c7cfa !important;
+  background: #2a3b5b !important;
+}
+
+/* 선택된 날짜 */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #5c7cfa !important;
+  color: #e0e7ff !important;
+  border: none !important;
+}
+
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+  background: #7289da !important;
+}
+
+/* 비활성화된 날짜 (이전/다음 달 날짜) */
+.flatpickr-day.disabled,
+.flatpickr-day.disabled:hover {
+  color: #888 !important; /* 더 밝은 회색 텍스트 */
+  background: #2a3147 !important; /* 더 밝은 배경 */
+  opacity: 0.5 !important; /* 흐림 정도 조정 */
+  cursor: not-allowed !important; /* 클릭 불가능 표시 */
+}
+
+/* 현재 달이 아닌 날짜 흐리게 표시 */
+.hidden-day {
+  color: #888 !important; /* 더 밝은 회색 텍스트 */
+  background: #2a3147 !important; /* 더 밝은 배경 */
+  opacity: 0.5 !important; /* 흐림 정도 조정 */
+  pointer-events: none !important; /* 클릭 방지 */
+}
+
+/* 달력 입력 필드 숨기기 */
+#calendarInput {
+  display: none !important;
+}
+
+/* 선택된 날짜 범위의 배경색 (중간 날짜) */
+.flatpickr-day.inRange {
+  background-color: #3b4e7a !important;
+  border: none !important;
+  color: #e0e7ff !important;
+  box-shadow: none !important;
+}
+
+/* 선택된 날짜에 마우스 호버 시 스타일 */
+.flatpickr-day.inRange:hover {
+  background-color: #4a6199 !important;
+}
+
+/* 범위 내 날짜의 테두리와 배경을 명확히 설정 */
+.flatpickr-day.inRange:not(.startRange):not(.endRange) {
+  background-color: #3b4e7a !important;
+  border: none !important;
+  color: #e0e7ff !important;
+}
 /* 실시간 그래프 */
 .card-graph {
-  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
-  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
-  padding: 15px; /* 패딩 유지 */
+  background: linear-gradient(145deg, #2a3147, #1e2538);
+  border: 1px solid #4a5375;
+  padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 약화 */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   flex: 0 0 75%;
   max-width: 75%;
   min-width: 300px;
   box-sizing: border-box;
   position: relative;
   top: -20px;
-  height: 300px; /* 명시적 높이 설정 */
-  display: flex; /* 내부 요소를 유연하게 배치 */
-  flex-direction: column; /* 세로 방향으로 정렬 */
-  transition: box-shadow 0.3s ease; /* 호버 효과를 위한 전환 */
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
 }
 
 .card-graph:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강화 */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35);
 }
 
 .graph-container {
-  background-color: #2A3147; /* 추천 색상: 어두운 파란 회색 */
-  border: 1px solid #4A5375; /* 추천 색상: 연한 파란 회색 */
-  padding: 0; /* 패딩 제거 */
+  background: linear-gradient(145deg, #2a3147, #1e2538);
+  border: 1px solid #4a5375;
+  padding: 0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* 그림자 약화 */
-  height: 100%; /* 부모 높이에 맞춤 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  height: 100%;
   overflow-y: hidden;
-  margin-top: 0; /* 불필요한 마진 제거 */
-  flex: 1; /* 부모의 남은 공간을 모두 차지 */
+  margin-top: 0;
+  flex: 1;
 }
 
 .graph-container canvas#aihubGraph {
   width: 100% !important;
   height: 100% !important;
-  display: block; /* 캔버스 기본 여백 제거 */
+  display: block;
 }
 
 /* 반응형 디자인 */
@@ -300,7 +557,7 @@ body {
   left: 10px;
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: #ffffff;
+  color: #e0e7ff;
   font-size: 24px;
   padding: 5px 10px;
   cursor: pointer;
@@ -316,11 +573,11 @@ body {
 /* 사이드바 스타일 */
 .sidebar {
   width: 190px;
-  background: rgba(15, 18, 59, 0.95);
+  background: linear-gradient(180deg, #1a1f4a, #0f123b); /* 사이드바에 그라데이션 */
   height: 100vh;
   position: fixed;
   top: 0;
-  left: -250px; /* 기본적으로 숨김 */
+  left: -250px;
   padding: 20px;
   box-sizing: border-box;
   z-index: 1000;
@@ -333,7 +590,7 @@ body {
 }
 
 .sidebar-header {
-  color: #ffffff;
+  color: #c3d7ff;
   font-family: "Abel", Helvetica;
   font-size: 20px;
   font-weight: 400;
@@ -352,7 +609,7 @@ body {
 }
 
 .sidebar-menu a {
-  color: #ffffff;
+  color: #c3d7ff;
   text-decoration: none;
   font-family: "Abel", Helvetica;
   font-size: 16px;
@@ -363,7 +620,7 @@ body {
 }
 
 .sidebar-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* 서브 메뉴 스타일 */
@@ -381,12 +638,12 @@ body {
 .sub-menu a {
   font-size: 14px;
   padding: 8px;
-  color: #a0aec0;
+  color: #a5b4fc;
 }
 
 .sub-menu a:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  color: #e0e7ff;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 모바일 반응형 */
@@ -445,18 +702,18 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px; /* 캔버스와 데이터 값 사이의 간격 */
+  margin-bottom: 5px;
 }
 
 .data-value-container {
   display: flex;
-  justify-content: center; /* 가운데 정렬 */
+  justify-content: center;
   align-items: center;
-  margin-top: 10px; /* 캔버스와의 간격 조정 */
+  margin-top: 10px;
 }
 
 .data-value {
   font-size: 22px;
   font-weight: bold;
-  color: #00ff00; /* 초록색 유지 */
+  color: #48bb78; /* 더 세련된 초록색으로 변경 */
 }
