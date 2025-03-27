@@ -527,6 +527,11 @@ h5 {
   text-align: center;
 }
 
+.sidebar-header h2 {
+  font-size: 25px;
+  font-weight: 400;
+}
+
 .sidebar-menu {
   list-style: none;
   padding: 0;
