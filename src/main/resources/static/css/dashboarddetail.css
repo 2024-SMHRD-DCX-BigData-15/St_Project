@@ -8,8 +8,8 @@
 /* 전체 페이지 스타일 */
 body {
   font-family: "Abel", Helvetica;
-  background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
-  color: #e0e7ff; /* 텍스트 색상을 약간 더 부드러운 밝은 파란 회색으로 */
+  background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%);
+  color: #FFFFFF; /* 변경 */
   line-height: 1.5;
   display: flex;
   justify-content: center;
@@ -35,8 +35,8 @@ body {
   width: 100%;
   max-width: 1200px;
   box-sizing: border-box;
-  margin: 100px auto; /* 수평 가운데 정렬 및 상단 여백 유지 */
-  overflow-y: hidden; /* 세로 스크롤 숨기기 */
+  margin: 100px auto;
+  overflow-y: hidden;
 }
 
 /* 헤더 */
@@ -47,12 +47,12 @@ body {
   transform: translateX(-40%);
   width: 70%;
   max-width: 1200px;
-  background-color: rgb(15, 18, 59);
+  background-color: #0D1321;
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 900; /* 사이드바보다 낮은 z-index로 설정 */
+  z-index: 900;
   gap: 0px;
 }
 
@@ -65,7 +65,7 @@ body {
 
 .user-name {
   font-size: 13px;
-  color: #ffffff;
+  color: #FFFFFF; /* 변경 */
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -75,13 +75,13 @@ body {
   text-align: center;
   font-size: 28px;
   font-weight: 400;
-  color: #fff;
+  color: #FFFFFF; /* 변경 */
   text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0;
   padding: 10px 0;
   font-family: "Abel", Helvetica;
-  background-color: rgb(15, 18, 59);
+  background-color: #0D1321;
   border-radius: 5px;
   width: 100%;
   display: inline-block;
@@ -89,9 +89,9 @@ body {
 
 /* 로그아웃 버튼 */
 .logout-btn {
-  background-color: #4A5375; /* 연한 파란 회색 */
-  color: white;
-  border: 1px solid #2A3147; /* 어두운 파란 회색 테두리 */
+  background-color: #6366F1;
+  color: #FFFFFF; /* 변경 */
+  border: 1px solid #4F46E5;
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
@@ -105,12 +105,12 @@ body {
 }
 
 .logout-btn:hover {
-  background-color: #6A7395; /* 호버 시 더 밝은 파란 회색 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 추가 */
+  background-color: #818CF8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .logout-btn:active {
-  transform: scale(0.98); /* 클릭 시 살짝 눌리는 효과 */
+  transform: scale(0.98);
 }
 
 /* 대시보드 카드 */
@@ -136,33 +136,33 @@ body {
 /* 데이터 카드 */
 .card {
   padding: 20px;
-  background: linear-gradient(145deg, #1e2538, #0f123b); /* body 배경과 조화로운 깊은 파란 톤 */
-  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
+  background: linear-gradient(145deg, #1E2A44, #141933);
+  border: 1px solid #4B5EAA;
   border-radius: 10px;
-  color: white;
+  color: #FFFFFF; /* 변경 */
   margin: 10px 0;
   flex: 1 1 calc(16.66% - 20px);
   max-width: calc(16.66% - 20px);
   min-width: 173px;
   box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 약화 */
-  cursor: pointer; /* 손 모양 커서 */
-  transition: all 0.2s ease; /* 부드러운 전환 효과 */
-  position: relative; /* 애니메이션 시 레이아웃 안정성 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강화 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .card.clicked {
-  border: 2px solid #4A90E2; /* 선택된 상태에서 파란 테두리 */
-  background-color: rgba(74, 144, 226, 0.1); /* 살짝 밝은 배경 */
+  border: 2px solid #6366F1;
+  background-color: rgba(99, 102, 241, 0.1);
 }
 
 .card.animate-click {
-  transform: scale(0.98); /* 클릭 시 살짝 축소 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 클릭 시 강한 그림자 */
+  transform: scale(0.98);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card h3, .card h2 {
@@ -193,9 +193,9 @@ body {
 }
 
 /* 수조정보 */
-.tank-info {
-  background: linear-gradient(145deg, #1a1f4a, #0f123b); /* sidebar와 유사한 톤으로 조정 */
-  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
+.tank-info  {
+  background: linear-gradient(145deg, #1E2A44, #141933);
+  border: 1px solid #4B5EAA;
   padding: 15px 10px 10px 10px;
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
@@ -233,10 +233,10 @@ body {
 
 /* 수조 정보 콘텐츠 스타일 */
 .tank-details {
-  background: linear-gradient(145deg, #1a1f4a, #0f123b); /* tank-info와 동일하게 조정 */
+  background: linear-gradient(145deg, #1E2A44, #141933);
   border-radius: 6px;
-  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
-  color: #e0e7ff;
+  border: 1px solid #4B5EAA;
+  color: #FFFFFF; /* 변경 */
   overflow-y: hidden;
   padding-top: 20px;
   width: 100%;
@@ -251,7 +251,7 @@ body {
 .tank-details h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #5c7cfa; /* 더 부드러운 파란색 */
+  color: #FFFFFF; /* 변경 */
   margin-bottom: 10px;
   position: relative;
   padding-bottom: 5px;
@@ -266,14 +266,14 @@ body {
   bottom: 0;
   width: 30px;
   height: 2px;
-  background: #5c7cfa;
+  background: #FFFFFF; /* 변경 */
 }
 
 .tank-details p {
   font-size: 14px;
   line-height: 1.5;
   margin: 4px 0;
-  color: #c3d7ff;
+  color: #FFFFFF; /* 변경 */
   text-align: center;
 }
 
@@ -283,8 +283,8 @@ body {
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(145deg, #5c7cfa, #3b5998); /* 버튼에 그라데이션 추가 */
-  color: #e0e7ff;
+  background: linear-gradient(145deg, #6366F1, #4F46E5);
+  color: #FFFFFF; /* 변경 */
   border: none;
   padding: 6px 12px;
   border-radius: 15px;
@@ -295,7 +295,7 @@ body {
 }
 
 .toggle-btn:hover {
-  background: linear-gradient(145deg, #7289da, #5c7cfa);
+  background: linear-gradient(145deg, #818CF8, #6366F1);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -308,11 +308,10 @@ body {
   width: 100% !important;
   height: calc(100% + 40px) !important;
   max-height: none !important;
-  background: #2A3147 !important; /* 달력 배경에 그라데이션 */
-  background: linear-gradient(145deg, #1a1f4a, #0f123b) !important; /* tank-info와 동일하게 조정 */
+  background: linear-gradient(145deg, #1E2A44, #141933) !important;
   border-radius: 6px !important;
-  border: 1px solid #3b4e7a !important; /* 더 밝은 파란 테두리 */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25) !important; /* 실시간 그래프와 동일한 그림자 */
+  border: 1px solid #4B5EAA !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25) !important;
   padding: 0 !important;
   box-sizing: border-box;
   display: flex;
@@ -328,13 +327,13 @@ body {
   flex-wrap: wrap;
   align-content: stretch;
   height: auto !important;
-  justify-content: space-between; /* 날짜 셀 간 간격을 균등하게 */
+  justify-content: space-between;
 }
 
 /* 달력 헤더 (월/년 선택) */
 .flatpickr-month {
   background: transparent !important;
-  color: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
   height: 25px !important;
   margin-bottom: 5px;
 }
@@ -342,18 +341,18 @@ body {
 .flatpickr-monthDropdown-months,
 .flatpickr-current-month .flatpickr-monthDropdown-month,
 .flatpickr-current-month span.cur-month {
-  color: #e0e7ff !important;
-  background: #2a3b5b !important;
+  color: #FFFFFF !important; /* 변경 */
+  background: #2E3B55 !important;
   border: none !important;
   font-size: 12px !important;
 }
 
 .flatpickr-current-month .numInputWrapper {
-  color: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
 }
 
 .flatpickr-current-month input.cur-year {
-  color: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
   background: transparent !important;
   font-size: 12px !important;
 }
@@ -361,14 +360,14 @@ body {
 /* 화살표 버튼 */
 .flatpickr-prev-month,
 .flatpickr-next-month {
-  color: #e0e7ff !important;
-  fill: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
+  fill: #FFFFFF !important; /* 변경 */
   top: 3px !important;
 }
 
 .flatpickr-prev-month:hover,
 .flatpickr-next-month:hover {
-  background: #3b4e7a !important;
+  background: #4B5EAA !important;
 }
 
 /* 요일 표시 */
@@ -379,7 +378,7 @@ body {
 }
 
 .flatpickr-weekday {
-  color: #c3d7ff !important;
+  color: #FFFFFF !important; /* 변경 */
   background: transparent !important;
   font-size: 10px !important;
   line-height: 20px !important;
@@ -392,8 +391,8 @@ body {
 }
 
 .flatpickr-day {
-  color: #e0e7ff !important;
-  background: #2a3b5b !important;
+  color: #FFFFFF !important; /* 변경 */
+  background: #2E3B55 !important;
   border: none !important;
   border-radius: 4px !important;
   margin: 1px !important;
@@ -402,50 +401,50 @@ body {
   height: 22px !important;
   line-height: 22px !important;
   max-width: none !important;
-  box-sizing: border-box; /* 크기 계산 안정화 */
+  box-sizing: border-box;
 }
 
 /* 호버 효과 */
 .flatpickr-day:hover {
-  background: #3b4e7a !important;
+  background: #4B5EAA !important;
 }
 
 /* 오늘 날짜 */
 .flatpickr-day.today {
-  border: 1px solid #5c7cfa !important;
-  background: #2a3b5b !important;
+  border: 1px solid #6366F1 !important;
+  background: #2E3B55 !important;
 }
 
 /* 선택된 날짜 */
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange {
-  background: #5c7cfa !important;
-  color: #e0e7ff !important;
+  background: #6366F1 !important;
+  color: #FFFFFF !important; /* 변경 */
   border: none !important;
 }
 
 .flatpickr-day.selected:hover,
 .flatpickr-day.startRange:hover,
 .flatpickr-day.endRange:hover {
-  background: #7289da !important;
+  background: #818CF8 !important;
 }
 
 /* 비활성화된 날짜 (이전/다음 달 날짜) */
 .flatpickr-day.disabled,
 .flatpickr-day.disabled:hover {
-  color: #888 !important; /* 더 밝은 회색 텍스트 */
-  background: #2a3147 !important; /* 더 밝은 배경 */
-  opacity: 0.5 !important; /* 흐림 정도 조정 */
-  cursor: not-allowed !important; /* 클릭 불가능 표시 */
+  color: #FFFFFF !important; /* 변경 */
+  background: #1E2A44 !important;
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 /* 현재 달이 아닌 날짜 흐리게 표시 */
 .hidden-day {
-  color: #888 !important; /* 더 밝은 회색 텍스트 */
-  background: #2a3147 !important; /* 더 밝은 배경 */
-  opacity: 0.5 !important; /* 흐림 정도 조정 */
-  pointer-events: none !important; /* 클릭 방지 */
+  color: #FFFFFF !important; /* 변경 */
+  background: #1E2A44 !important;
+  opacity: 0.5 !important;
+  pointer-events: none !important;
 }
 
 /* 달력 입력 필드 숨기기 */
@@ -455,28 +454,28 @@ body {
 
 /* 선택된 날짜 범위의 배경색 (중간 날짜) */
 .flatpickr-day.inRange {
-  background-color: #3b4e7a !important;
+  background-color: #4B5EAA !important;
   border: none !important;
-  color: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
   box-shadow: none !important;
 }
 
 /* 선택된 날짜에 마우스 호버 시 스타일 */
 .flatpickr-day.inRange:hover {
-  background-color: #4a6199 !important;
+  background-color: #6366F1 !important;
 }
 
 /* 범위 내 날짜의 테두리와 배경을 명확히 설정 */
 .flatpickr-day.inRange:not(.startRange):not(.endRange) {
-  background-color: #3b4e7a !important;
+  background-color: #4B5EAA !important;
   border: none !important;
-  color: #e0e7ff !important;
+  color: #FFFFFF !important; /* 변경 */
 }
 
 /* 실시간 그래프 */
 .card-graph {
-  background: linear-gradient(145deg, #151a3f, #0a0e2a); /* 더 어두운 파란 톤으로 조정 */
-  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
+  background: linear-gradient(145deg, #1E2A44, #141933);
+  border: 1px solid #4B5EAA;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
@@ -497,8 +496,8 @@ body {
 }
 
 .graph-container {
-  background: linear-gradient(145deg, #151a3f, #0a0e2a); /* card-graph와 동일하게 조정 */
-  border: 1px solid #3b4e7a; /* 더 밝은 파란 테두리 */
+  background: linear-gradient(145deg, #1E2A44, #141933);
+  border: 1px solid #4B5EAA;
   padding: 0;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -556,9 +555,9 @@ body {
   position: fixed;
   top: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(99, 102, 241, 0.2);
   border: none;
-  color: #e0e7ff;
+  color: #FFFFFF; /* 변경 */
   font-size: 24px;
   padding: 5px 10px;
   cursor: pointer;
@@ -568,13 +567,13 @@ body {
 }
 
 .hamburger-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(99, 102, 241, 0.4);
 }
 
 /* 사이드바 스타일 */
 .sidebar {
   width: 190px;
-  background: linear-gradient(180deg, #1a1f4a, #0f123b); /* 사이드바에 그라데이션 */
+  background: linear-gradient(180deg, #141933, #1E2A44);
   height: 100vh;
   position: fixed;
   top: 0;
@@ -591,7 +590,7 @@ body {
 }
 
 .sidebar-header {
-  color: #c3d7ff;
+  color: #FFFFFF; /* 변경 */
   font-family: "Abel", Helvetica;
   font-size: 20px;
   font-weight: 400;
@@ -610,7 +609,7 @@ body {
 }
 
 .sidebar-menu a {
-  color: #c3d7ff;
+  color: #FFFFFF; /* 변경 */
   text-decoration: none;
   font-family: "Abel", Helvetica;
   font-size: 16px;
@@ -621,7 +620,7 @@ body {
 }
 
 .sidebar-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(99, 102, 241, 0.3);
 }
 
 /* 서브 메뉴 스타일 */
@@ -639,12 +638,12 @@ body {
 .sub-menu a {
   font-size: 14px;
   padding: 8px;
-  color: #a5b4fc;
+  color: #FFFFFF; /* 변경 */
 }
 
 .sub-menu a:hover {
-  color: #e0e7ff;
-  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF; /* 변경 */
+  background-color: rgba(99, 102, 241, 0.2);
 }
 
 /* 모바일 반응형 */
@@ -678,24 +677,24 @@ body {
 
 @keyframes blinkDataItem {
   0% {
-    border-color: #ff4500;
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
-    background-color: rgba(255, 69, 0, 0.15);
+    border-color: #F43F5E;
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.6);
+    background-color: rgba(244, 63, 94, 0.2);
   }
   50% {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(165, 180, 252, 0.2);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(31, 41, 68, 0.9);
   }
   100% {
-    border-color: #ff4500;
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
-    background-color: rgba(255, 69, 0, 0.15);
+    border-color: #F43F5E;
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.6);
+    background-color: rgba(244, 63, 94, 0.2);
   }
 }
 
 .blink-data-item {
-  border: 1px solid #ff4500;
+  border: 1px solid #F43F5E;
   animation: blinkDataItem 1.5s infinite;
 }
 
@@ -716,5 +715,5 @@ body {
 .data-value {
   font-size: 22px;
   font-weight: bold;
-  color: #48bb78; /* 더 세련된 초록색으로 변경 */
+  color: #34D399; /* 그래프 폰트 제외, 기존 색상 유지 */
 }

@@ -529,7 +529,6 @@
 
         const pointBorderColors = pointColors.map(color => color.border);
         const pointBackgroundColors = pointColors.map(color => color.background);
-        const borderColors = pointColors.map(color => color.border);
 
         const dateRangeText = selectedDateRange
           ? `${formatDateToLocal(selectedDateRange.start)} ~ ${formatDateToLocal(selectedDateRange.end)}`
@@ -544,14 +543,14 @@
               datasets: [{
                 label: `데이터 (${dateRangeText})`,
                 data: values,
-                borderColor: borderColors,
+                borderColor: '#66BB6A', // 기본 색상
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 fill: false,
                 tension: 0.4,
                 pointRadius: 5,
                 pointBorderColor: pointBorderColors,
                 pointBackgroundColor: pointBackgroundColors,
-                borderWidth: 2,
+                borderWidth: 3,
                 segment: {
                   borderColor: (ctx) => {
                     const p0 = ctx.p0;
@@ -559,6 +558,7 @@
                     if (!p0 || !p1) return '#66BB6A';
                     const p0Color = pointColors[p0.$context.dataIndex];
                     const p1Color = pointColors[p1.$context.dataIndex];
+                    // 두 포인트 중 하나라도 경고 상태면 빨간색
                     return (p0Color.status === 'warning' || p1Color.status === 'warning') ? '#E57373' : '#66BB6A';
                   }
                 }
@@ -1026,18 +1026,8 @@
         });
       });
 
-      // 초기 카드 선택
-      const firstCard = document.querySelector('.card');
-      if (firstCard) {
-        const canvas = firstCard.querySelector('canvas');
-        const chartId = canvas.id;
-        selectedChartId = chartId;
-        firstCard.classList.add('clicked');
-        const label = dataRanges[chartId].label;
-        showGraphFor(chartId, label);
-      } else {
-        resetToRealtimeGraph();
-      }
+      // 초기 상태: 빈 그래프 표시
+      resetToRealtimeGraph();
 
       // 커스텀 플러그인: 부드러운 흐름 효과
       const flowEffectPlugin = {
@@ -1051,18 +1041,12 @@
           if (points.length < 2) return;
 
           ctx.save();
-          const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
-          gradient.addColorStop(0, 'rgba(102, 187, 106, 0.2)');
-          gradient.addColorStop(0.5, 'rgba(102, 187, 106, 0.8)');
-          gradient.addColorStop(1, 'rgba(102, 187, 106, 0.2)');
-
           const animationProgress = chart.options.animationProgress || 0;
           const waveOffset = Math.sin(animationProgress * Math.PI) * 2; // 진폭 줄임
 
           ctx.beginPath();
-          ctx.lineWidth = 3; // 선 두께 고정
-          ctx.strokeStyle = gradient;
-          ctx.fillStyle = 'rgba(102, 187, 106, 0.1)';
+          ctx.lineWidth = 4; // 선 두께 증가
+          ctx.fillStyle = 'rgba(102, 187, 106, 0.05)'; // 채우기 투명도 낮춤
 
           const firstPoint = points[0];
           ctx.moveTo(firstPoint.x, firstPoint.y + waveOffset);
@@ -1117,12 +1101,35 @@
               datasets: [{
                 label: `${label} 실시간 데이터`,
                 data: smoothedValuesMap[chartId] || [],
-                borderColor: '#66BB6A',
-                backgroundColor: 'rgba(102, 187, 106, 0.2)',
+                borderColor: '#66BB6A', // 기본 색상
+                backgroundColor: 'rgba(102, 187, 106, 0.05)', // 채우기 투명도 낮춤
                 fill: true,
                 tension: 0.4, // 곡선 부드러움 조정
-                pointRadius: 0, // 포인트 숨김
-                borderWidth: 3
+                pointRadius: 3, // 포인트 표시
+                pointBorderColor: '#ffffff',
+                pointBackgroundColor: (ctx) => {
+                  const index = ctx.dataIndex;
+                  const value = ctx.dataset.data[index];
+                  const rangeIndex = chartIndexMap[chartId];
+                  const range = ranges[rangeIndex];
+                  const colors = getColor(value, range);
+                  return colors.status === 'warning' ? '#E57373' : '#66BB6A';
+                },
+                borderWidth: 4,
+                segment: {
+                  borderColor: (ctx) => {
+                    const p0 = ctx.p0;
+                    const p1 = ctx.p1;
+                    if (!p0 || !p1) return '#66BB6A';
+                    const p0Value = p0.parsed.y;
+                    const p1Value = p1.parsed.y;
+                    const rangeIndex = chartIndexMap[chartId];
+                    const range = ranges[rangeIndex];
+                    const p0Color = getColor(p0Value, range);
+                    const p1Color = getColor(p1Value, range);
+                    return (p0Color.status === 'warning' || p1Color.status === 'warning') ? '#E57373' : '#66BB6A';
+                  }
+                }
               }]
             },
             options: {
@@ -1242,16 +1249,13 @@
                 const colors = getColor(value, range);
 
                 if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
-                  const gradient = chart.ctx.createLinearGradient(chart.chartArea.left, 0, chart.chartArea.right, 0);
-                  gradient.addColorStop(0, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-                  gradient.addColorStop(0.5, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.8)' : 'rgba(102, 187, 106, 0.8)');
-                  gradient.addColorStop(1, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-
-                  chart.data.datasets[0].borderColor = gradient;
-                  chart.data.datasets[0].backgroundColor = gradient;
                   chart.data.labels = labels;
                   chart.data.datasets[0].data = smoothedData;
-                  chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03; // 애니메이션 속도 조정
+                  chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => {
+                    const colors = getColor(val, range);
+                    return colors.status === 'warning' ? '#E57373' : '#66BB6A';
+                  });
+                  chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
                   chart.update({
                     duration: 700,
                     easing: 'easeOutCubic'
@@ -1276,15 +1280,12 @@
 
                 const colors = getColor(defaultValue, range);
                 if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
-                  const gradient = chart.ctx.createLinearGradient(chart.chartArea.left, 0, chart.chartArea.right, 0);
-                  gradient.addColorStop(0, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-                  gradient.addColorStop(0.5, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.8)' : 'rgba(102, 187, 106, 0.8)');
-                  gradient.addColorStop(1, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-
-                  chart.data.datasets[0].borderColor = gradient;
-                  chart.data.datasets[0].backgroundColor = gradient;
                   chart.data.labels = labels;
                   chart.data.datasets[0].data = smoothedData;
+                  chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => {
+                    const colors = getColor(val, range);
+                    return colors.status === 'warning' ? '#E57373' : '#66BB6A';
+                  });
                   chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
                   chart.update({
                     duration: 700,
@@ -1315,15 +1316,12 @@
 
               const colors = getColor(defaultValue, range);
               if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
-                const gradient = chart.ctx.createLinearGradient(chart.chartArea.left, 0, chart.chartArea.right, 0);
-                gradient.addColorStop(0, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-                gradient.addColorStop(0.5, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.8)' : 'rgba(102, 187, 106, 0.8)');
-                gradient.addColorStop(1, colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)');
-
-                chart.data.datasets[0].borderColor = gradient;
-                chart.data.datasets[0].backgroundColor = gradient;
                 chart.data.labels = labels;
                 chart.data.datasets[0].data = smoothedData;
+                chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => {
+                  const colors = getColor(val, range);
+                  return colors.status === 'warning' ? '#E57373' : '#66BB6A';
+                });
                 chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
                 chart.update({
                   duration: 700,
