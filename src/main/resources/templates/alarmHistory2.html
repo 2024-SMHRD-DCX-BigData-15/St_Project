@@ -8,25 +8,16 @@
 </head>
 <body>
   <div class="container-center-horizontal">
-    <!-- 로딩 표시 추가11 -->
     <div id="loading"></div>
-
-    <!-- 햄버거 버튼 -->
     <button class="hamburger-btn" id="hamburgerBtn">☰</button>
-
-    <!-- 사이드바 -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h2>메뉴</h2>
       </div>
       <ul class="sidebar-menu">
-        <!-- 홈 -->
         <li><a href="/maindashboard">홈</a></li>
-        <!-- 수조 정보 등록 -->
         <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
-        <!-- 알람 히스토리 -->
         <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
-        <!-- 회원 정보 관리 -->
         <li><a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
           <ul class="sub-menu">
             <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
@@ -39,7 +30,6 @@
     <div class="alarm-dashboard-screen screen">
       <main class="main-dashboard">
         <section class="content">
-          <!-- 통합된 헤더 -->
           <header class="fixed-header">
             <div class="header-content">
               <div class="header-top">
@@ -71,7 +61,6 @@
             </div>
           </header>
 
-          <!-- 알람 히스토리 -->
           <section class="section" id="logSection">
             <h2 class="section-title" id="logSectionTitle">히스토리</h2>
             <div class="alarm-table">
@@ -103,15 +92,10 @@
     </div>
   </div>
 
-  <!-- 알람 소리 (일시적으로 주석 처리) -->
-  <!-- <audio id="alarmSound" src="/static/sounds/alarm.mp3" preload="auto"></audio> -->
-
   <script>
     function handleLogout() {
       console.log("🚀 로그아웃 요청");
-
       const authToken = localStorage.getItem("authToken");
-
       fetch("/api/member/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -120,17 +104,13 @@
       .then(response => {
         if (response.ok) {
           console.log("✅ 서버 로그아웃 성공");
-
           localStorage.removeItem("authToken");
           localStorage.removeItem("autoLogin");
           localStorage.removeItem("savedUserId");
           localStorage.removeItem("savedPassword");
           sessionStorage.clear();
-
           document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
           console.log("✅ 모든 저장소 데이터 삭제 완료");
-
           setTimeout(() => {
             alert("✅ 로그아웃 완료!");
             window.location.href = "/login";
@@ -142,28 +122,21 @@
       .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
     }
 
-    // 알람 히스토리 데이터 저장
     let alarmHistory = [];
     let currentHistoryPage = 1;
     const historyPerPage = 5;
-
-    // 필터링 변수
     let dataTypeFilter = "";
-
-    // DOM 요소 캐싱
     const alarmHistoryTable = document.getElementById("alarmLog");
     const loadingDiv = document.getElementById("loading");
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-    // XSS 방지
     const escapeHTML = (str) => {
       const div = document.createElement("div");
       div.textContent = str;
       return div.innerHTML;
     };
 
-    // 알람 히스토리 렌더링
     function renderAlarmHistory(history = alarmHistory) {
       requestAnimationFrame(() => {
         const filteredHistory = history.filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
@@ -176,7 +149,7 @@
           let row = rows[i];
           if (!row) {
             row = document.createElement("tr");
-            row.style.height = "48px"; // 행 높이 고정
+            row.style.height = "48px";
             alarmHistoryTable.appendChild(row);
           }
 
@@ -186,12 +159,14 @@
 
           if (i < paginatedHistory.length) {
             const hist = paginatedHistory[i];
+            const status = hist.message.includes("⚠️ 경고") ? "⚠️ 경고" : "🚨 위험";
+            row.classList.add(status === "⚠️ 경고" ? "warning" : "danger");
             row.innerHTML = `
               <td>${escapeHTML(hist.tankNumber)}</td>
               <td>${escapeHTML(hist.date)}</td>
               <td>${escapeHTML(hist.time)}</td>
               <td>${escapeHTML(hist.message)}</td>
-              <td class="action ${hist.status === '안 읽음' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(hist.status)}</td>
+              <td class="action confirmed">${escapeHTML(hist.status)}</td>
             `;
           } else {
             row.innerHTML = `
@@ -222,19 +197,17 @@
       });
     }
 
-    // 히스토리 섹션 업데이트
     function updateHistorySection() {
       currentHistoryPage = 1;
       renderAlarmHistory();
-      console.log(`📄 히스토리 섹션 업데이트: 페이지=${currentHistoryPage}, 필터=${dataTypeFilter}`); // 디버깅 로그
+      console.log(`📄 히스토리 섹션 업데이트: 페이지=${currentHistoryPage}, 필터=${dataTypeFilter}`);
     }
 
-    // 페이지 이동
     document.getElementById("prevLog").addEventListener("click", () => {
       if (currentHistoryPage > 1) {
         currentHistoryPage--;
         renderAlarmHistory();
-        console.log(`📄 히스토리 페이지 이동: 이전 페이지=${currentHistoryPage}`); // 디버깅 로그
+        console.log(`📄 히스토리 페이지 이동: 이전 페이지=${currentHistoryPage}`);
       }
     });
 
@@ -242,11 +215,10 @@
       if (currentHistoryPage * historyPerPage < alarmHistory.length) {
         currentHistoryPage++;
         renderAlarmHistory();
-        console.log(`📄 히스토리 페이지 이동: 다음 페이지=${currentHistoryPage}`); // 디버깅 로그
+        console.log(`📄 히스토리 페이지 이동: 다음 페이지=${currentHistoryPage}`);
       }
     });
 
-    // 알람 히스토리 추가
     function addToHistory(message, tankNumber, status, timestamp) {
       const now = timestamp ? new Date(timestamp) : new Date();
       const date = now.toISOString().slice(0, 10);
@@ -262,33 +234,26 @@
 
       alarmHistory.unshift(hist);
       updateHistorySection();
-      console.log(`🔔 새로운 히스토리 추가: ${message} (수조 ${tankNumber})`); // 디버깅 로그
+      console.log(`🔔 새로운 히스토리 추가: ${message} (수조 ${tankNumber})`);
     }
 
-    // 알람 소리 (일시적으로 비활성화)
     function playAlarmSound() {
-      // const soundToggle = document.getElementById("soundToggle");
-      // const audio = document.getElementById("alarmSound");
-      // if (soundToggle.checked && audio.src) {
-      //   audio.play().catch(err => console.error("❌ 알람 소리 재생 실패:", err));
-      // }
       console.log("🔇 알람 소리 재생 비활성화됨");
     }
 
-    // API 데이터 가져오기 (모든 수조의 알람)
     async function fetchAlarmData() {
       loadingDiv.style.display = "block";
       try {
-        const response = await fetch(`/api/alarms/all`); // 모든 수조의 알람을 가져오는 API 호출
+        const response = await fetch(`/api/alarms/all`);
         if (!response.ok) throw new Error('API 응답 오류');
         const data = await response.json();
-        console.log("📡 alarmHistory2.html - API 응답 데이터:", data); // 디버깅용 로그
+        console.log("📡 alarmHistory2.html - API 응답 데이터:", data);
         alarmHistory = data
-          .filter(alarm => alarm.alarmRead === 'Y') // 확인된 알람만 표시
+          .filter(alarm => alarm.alarmRead === 'Y')
           .map(alarm => {
-            console.log("🔍 매핑 중인 알람:", alarm); // 각 알람 데이터 확인
+            console.log("🔍 매핑 중인 알람:", alarm);
             return {
-              tankNumber: alarm.tank && alarm.tank.tankIdx ? `T${alarm.tank.tankIdx}` : 'Unknown', // tank 객체 확인
+              tankNumber: alarm.tank && alarm.tank.tankIdx ? `T${alarm.tank.tankIdx}` : 'Unknown',
               date: new Date(alarm.alarmCreatedAt).toISOString().slice(0, 10),
               time: new Date(alarm.alarmCreatedAt).toTimeString().slice(0, 5),
               message: alarm.alarmMsg || '알람 메시지 없음',
@@ -296,7 +261,7 @@
               createdAt: new Date(alarm.alarmCreatedAt).getTime()
             };
           });
-        console.log("📋 매핑된 알람 히스토리:", alarmHistory); // 매핑 결과 확인
+        console.log("📋 매핑된 알람 히스토리:", alarmHistory);
         updateHistorySection();
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
@@ -306,17 +271,16 @@
       }
     }
 
-    // 이벤트 리스너 설정
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
         dataTypeFilter = e.target.value;
         updateHistorySection();
-        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`); // 디버깅 로그
+        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
       });
 
       hamburgerBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
-        console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`); // 디버깅 로그
+        console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`);
       });
 
       const toggleMenus = document.querySelectorAll(".toggle-menu");
@@ -326,15 +290,14 @@
           if (subMenu && subMenu.classList.contains("sub-menu")) {
             e.preventDefault();
             subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-            console.log(`📂 서브메뉴 토글: ${menu.textContent} - ${subMenu.style.display}`); // 디버깅 로그
+            console.log(`📂 서브메뉴 토글: ${menu.textContent} - ${subMenu.style.display}`);
           }
         });
       });
 
-      fetchAlarmData(); // 초기 데이터 로드
-      setInterval(fetchAlarmData, 5000); // 5초마다 데이터 갱신
+      fetchAlarmData();
+      setInterval(fetchAlarmData, 5000);
 
-      // localStorage 변경 감지
       window.addEventListener('storage', (event) => {
         if (event.key === 'alarmUpdated') {
           console.log("🔔 알람 업데이트 감지, 데이터 갱신 중...");

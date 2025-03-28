@@ -27,11 +27,6 @@ public class AlarmRestController {
         this.alarmService = alarmService;
     }
 
-    @GetMapping("/test-predict")
-    public List<List<Double>> testPredict() {
-        return fastAPIService.getPredictionFromFlask();
-    }
-
     /**
      * 🔹 특정 tankIdx의 알람 목록 조회 API
      */
