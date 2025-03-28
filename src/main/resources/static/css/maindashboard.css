@@ -505,20 +505,20 @@ h5 {
   background: rgba(99, 102, 241, 0.4);
 }
 
-/* 사이드바 스타일 */
+/* 사이드바 */
 .sidebar {
-  width: 170px;
-  background: rgba(15, 18, 59, 0.95);
+  width: 180px;
+  background: linear-gradient(180deg, #141933, #1E2A44);
   height: 100vh;
   position: fixed;
   top: 0;
-  left: -250px; /* 기본적으로 숨김 */
+  left: -250px;
   padding: 20px;
   box-sizing: border-box;
   z-index: 1000;
-  overflow-x: hidden;
   overflow-y: auto;
   transition: left 0.3s ease;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar.active {
@@ -526,7 +526,7 @@ h5 {
 }
 
 .sidebar-header {
-  color: #ffffff;
+  color: #FFFFFF; /* 기존 #C7D2FE -> #FFFFFF */
   font-family: "Abel", Helvetica;
   font-size: 20px;
   font-weight: 400;
@@ -535,7 +535,7 @@ h5 {
 }
 
 .sidebar-header h2 {
-  font-size: 23px;
+  font-size: 25px;
   font-weight: 400;
 }
 
@@ -550,18 +550,42 @@ h5 {
 }
 
 .sidebar-menu a {
-  color: #ffffff;
+  color: #FFFFFF; /* 기존 #A5B4FC -> #FFFFFF */
   text-decoration: none;
   font-family: "Abel", Helvetica;
   font-size: 16px;
   display: block;
   padding: 10px;
   border-radius: 8px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(99, 102, 241, 0.3);
+  color: #FFFFFF; /* 기존 #E0E7FF -> #FFFFFF */
+}
+
+/* 서브 메뉴 */
+.sub-menu {
+  display: none;
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.sub-menu li {
+  margin-bottom: 10px;
+}
+
+.sub-menu a {
+  font-size: 14px;
+  padding: 8px;
+  color: #FFFFFF; /* 기존 #9CA3AF -> #FFFFFF */
+}
+
+.sub-menu a:hover {
+  color: #FFFFFF; /* 기존 #E0E7FF -> #FFFFFF */
+  background-color: rgba(99, 102, 241, 0.2);
 }
 
 /* 모바일 반응형 */
