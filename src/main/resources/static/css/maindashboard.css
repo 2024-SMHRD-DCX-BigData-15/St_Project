@@ -500,7 +500,7 @@ h5 {
 
 /* 사이드바 스타일 */
 .sidebar {
-  width: 190px;
+  width: 170px;
   background: rgba(15, 18, 59, 0.95);
   height: 100vh;
   position: fixed;
@@ -509,6 +509,7 @@ h5 {
   padding: 20px;
   box-sizing: border-box;
   z-index: 1000;
+  overflow-x: hidden;
   overflow-y: auto;
   transition: left 0.3s ease;
 }
@@ -527,7 +528,7 @@ h5 {
 }
 
 .sidebar-header h2 {
-  font-size: 25px;
+  font-size: 23px;
   font-weight: 400;
 }
 
@@ -555,6 +556,154 @@ h5 {
 .sidebar-menu a:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+/* 새우 요소 (가상 요소로 유지, <div>와 중복 방지 위해 div 스타일 제거) */
+.sidebar::before,
+.sidebar::after,
+.sidebar-header::before,
+.sidebar-header::after,
+.sidebar-menu::before {
+  content: '';
+  position: absolute;
+  width: 70px;
+  height: 60px;
+  background: url('/image/shrimp.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.6;
+  filter: brightness(1000%);
+}
+
+/* 각 새우의 위치와 애니메이션 */
+.sidebar::before {
+  top: 15%;
+  left: 0;
+  animation: swim1 8.4s infinite linear;
+}
+
+.sidebar::after {
+  top: 30%;
+  left: 0;
+  animation: swim2 10.5s infinite linear;
+  animation-delay: 1s;
+}
+
+.sidebar-header::before {
+  top: 50%;
+  left: 0;
+  animation: swim3 12.6s infinite linear;
+  animation-delay: 2s;
+}
+
+.sidebar-header::after {
+  top: 70%;
+  left: 0;
+  animation: swim4 9.45s infinite linear;
+  animation-delay: 0.5s;
+}
+
+.sidebar-menu::before {
+  top: 85%;
+  left: 0;
+  animation: swim5 11.55s infinite linear;
+  animation-delay: 1.5s;
+}
+
+/* 새우 헤엄치는 애니메이션 */
+@keyframes swim1 {
+  0% {
+    transform: translateX(-50px) translateY(0) scaleX(-1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(130px) translateY(40px) scaleX(-1);
+    opacity: 0.8;
+  }
+  51% {
+    transform: translateX(130px) translateY(40px) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50px) translateY(0) scaleX(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes swim2 {
+  0% {
+    transform: translateX(-50px) translateY(0) scaleX(-1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(130px) translateY(-35px) scaleX(-1);
+    opacity: 0.8;
+  }
+  51% {
+    transform: translateX(130px) translateY(-35px) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50px) translateY(0) scaleX(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes swim3 {
+  0% {
+    transform: translateX(-50px) translateY(0) scaleX(-1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(130px) translateY(50px) scaleX(-1);
+    opacity: 0.8;
+  }
+  51% {
+    transform: translateX(130px) translateY(50px) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50px) translateY(0) scaleX(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes swim4 {
+  0% {
+    transform: translateX(-50px) translateY(0) scaleX(-1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(130px) translateY(-45px) scaleX(-1);
+    opacity: 0.8;
+  }
+  51% {
+    transform: translateX(130px) translateY(-45px) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50px) translateY(0) scaleX(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes swim5 {
+  0% {
+    transform: translateX(-50px) translateY(0) scaleX(-1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(130px) translateY(35px) scaleX(-1);
+    opacity: 0.8;
+  }
+  51% {
+    transform: translateX(130px) translateY(35px) scaleX(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50px) translateY(0) scaleX(1);
+    opacity: 0.6;
+  }
+}
+
 
 /* 서브 메뉴 스타일 */
 .sub-menu {
