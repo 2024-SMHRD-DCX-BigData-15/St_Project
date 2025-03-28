@@ -183,7 +183,7 @@
         });
       });
 
-   // 추가 변수 (달력 및 평균 데이터)
+      // 추가 변수 (달력 및 평균 데이터)
       let isCalendarMode = false;
       let selectedDateRange = null; // 날짜 범위를 저장 (시작 날짜와 종료 날짜)
       let isAverageMode = false;
@@ -250,43 +250,73 @@
 
       // 날짜 범위에 대한 전체 데이터 가져오기
       async function fetchAllDataForRange(startDate, endDate) {
+        // 디버깅: 함수 호출 시 선택된 날짜 범위 로그
+        console.log(`🚀 fetchAllDataForRange 호출 - 시작 날짜: ${startDate.toISOString().split('T')[0]}, 종료 날짜: ${endDate.toISOString().split('T')[0]}`);
+
+        // 선택된 카드 확인
         if (!selectedChartId) {
-          console.warn("⚠️ 카드를 먼저 선택해 주세요.");
+          console.warn("⚠️ 카드를 먼저 선택해 주세요. selectedChartId가 null입니다.");
           displayNoCardSelectedMessage();
           return;
         }
+        console.log(`✅ 선택된 카드 ID: ${selectedChartId}`);
 
+        // URL 파라미터에서 tankIdx 가져오기 (기본값 1)
         const urlParams = new URLSearchParams(window.location.search);
         const tankIdx = urlParams.get("tankIdx") || "1";
+        console.log(`✅ tankIdx: ${tankIdx}`);
 
         try {
-          // 날짜 범위 내의 모든 날짜를 생성
+          // 날짜 범위 내의 모든 날짜 생성
           const dates = [];
           let currentDate = new Date(startDate);
           while (currentDate <= endDate) {
             dates.push(currentDate.toISOString().split('T')[0]); // YYYY-MM-DD 형식
             currentDate.setDate(currentDate.getDate() + 1);
           }
+          console.log(`✅ 생성된 날짜 목록: ${dates}`);
 
-          // 각 날짜에 대해 전체 데이터를 요청
+          // 각 날짜에 대해 데이터를 비동기적으로 요청
           const dataPromises = dates.map(async (date) => {
-            const response = await fetch(`/tank/data?tankIdx=${tankIdx}&date=${date}`); // 평균 대신 전체 데이터 요청
-            if (!response.ok) throw new Error(`HTTP 오류: ${response.status}`);
-            return { date, data: await response.json() };
+            console.log(`📡 ${date} 데이터 요청 시작: /tank/data?tankIdx=${tankIdx}&date=${date}`);
+            const response = await fetch(`/tank/data?tankIdx=${tankIdx}&date=${date}`);
+            if (!response.ok) {
+              console.error(`❌ ${date} 데이터 요청 실패 - HTTP 상태: ${response.status}`);
+              throw new Error(`HTTP 오류: ${response.status}`);
+            }
+            const jsonData = await response.json();
+            // 데이터 가공: recordDate에서 시간 부분만 추출
+            const formattedData = jsonData.map(item => ({
+              ...item,
+              timestamp: item.recordDate ? item.recordDate.split('T')[1]?.split('.')[0] : '', // "HH:MM:SS" 형식
+              ph: item.waterPh ?? 0,
+              do: item.waterDo ?? 0,
+              temp: item.waterTemp ?? 0,
+              salt: item.waterSalt ?? 0,
+              ammonia: item.waterAmmonia ?? 0,
+              nitrogen: item.waterNitrogen ?? 0
+            }));
+            console.log(`✅ ${date} 데이터 요청 성공:`, formattedData);
+            return { date, data: formattedData };
           });
 
+          // 모든 데이터 요청 완료 대기
           const allData = await Promise.all(dataPromises);
           console.log("✅ 날짜 범위 전체 데이터 로드 완료:", allData);
 
           // 데이터가 비어 있는 경우 처리
           if (allData.length === 0 || allData.every(item => !item.data || item.data.length === 0)) {
-            console.warn("⚠️ 데이터가 비어 있습니다.");
+            console.warn("⚠️ 데이터가 비어 있습니다. allData:", allData);
             displayNoDataMessage();
             return;
           }
 
-          displayAllData(allData, selectedChartId); // 전체 데이터 표시
-          isAverageMode = false; // 평균 모드가 아님
+          // 데이터 표시 함수 호출
+          console.log(`📊 데이터 표시 시작 - chartId: ${selectedChartId}`);
+          displayAllData(allData, selectedChartId);
+          isAverageMode = false; // 평균 모드가 아님을 설정
+          console.log("✅ fetchAllDataForRange 완료");
+
         } catch (error) {
           console.error("❌ 전체 데이터 로드 실패:", error);
           displayNoDataMessage();
@@ -363,10 +393,19 @@
         isAverageMode = true;
       }
 
-      // 전체 데이터 표시 (꺾은선 그래프로 변경)
+   // 전체 데이터 표시 (꺾은선 그래프로 변경)
       function displayAllData(dataArray, chartId) {
         const ctx = document.getElementById("aihubGraph").getContext("2d");
-        if (realtimeChart) realtimeChart.destroy();
+        if (realtimeChart) {
+          console.log("✅ 기존 realtimeChart 제거");
+          realtimeChart.destroy();
+        }
+
+        // fetchLatestTankDataForGraph의 setInterval 중단
+        if (window.graphInterval) {
+          console.log("✅ fetchLatestTankDataForGraph의 setInterval 중단");
+          clearInterval(window.graphInterval);
+        }
 
         const valueKeyMap = {
           'chart-1': 'ph',
@@ -404,11 +443,26 @@
 
         console.log(`꺾은선 그래프 데이터 (${label}):`, { labels, values }); // 디버깅 로그 추가
 
-        // 색상 결정 (값들 중 하나라도 경고 범위면 경고 색상 적용)
-        const colors = values.map(value => getColor(value, range));
-        const hasWarning = colors.some(color => color.status === 'warning');
-        const borderColor = hasWarning ? '#E57373' : '#66BB6A';
-        const backgroundColor = hasWarning ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
+        // 데이터가 없는 경우 처리
+        if (labels.length === 0 || values.length === 0) {
+          console.warn(`⚠️ 표시할 데이터가 없습니다 - chartId: ${chartId}`);
+          displayNoDataMessage();
+          return;
+        }
+
+        // 각 데이터 포인트별 색상 배열 생성
+        const pointColors = values.map(value => {
+          const color = getColor(value, range);
+          console.log(`📊 데이터 포인트 - 값: ${value}, 상태: ${color.status}`); // 각 포인트의 상태 로그
+          return color;
+        });
+
+        // 포인트별 색상 설정
+        const pointBorderColors = pointColors.map(color => color.border); // 포인트 테두리 색상
+        const pointBackgroundColors = pointColors.map(color => color.background); // 포인트 배경 색상
+
+        // 선 색상은 포인트별로 연결되도록 설정 (Chart.js에서 segment를 사용해 선 색상을 동적으로 변경)
+        const borderColors = pointColors.map(color => color.border); // 선 색상도 포인트별로 설정
 
         // 날짜 범위 텍스트
         const dateRangeText = selectedDateRange
@@ -416,42 +470,63 @@
           : "선택된 날짜";
 
         // 꺾은선 그래프로 표시
-        realtimeChart = new Chart(ctx, {
-          type: "line", // 꺾은선 그래프 유지
-          data: {
-            labels: labels, // 날짜와 시간 레이블
-            datasets: [{
-              label: `데이터 (${dateRangeText})`,
-              data: values, // 전체 데이터
-              borderColor: borderColor,
-              backgroundColor: backgroundColor,
-              fill: true,
-              tension: 0.3,
-              pointRadius: 5,
-              pointBackgroundColor: borderColor,
-              borderWidth: 2
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            scales: {
-              x: {
-                title: { display: true, text: `데이터 (${dateRangeText})`, color: "#ffffff", font: { size: 14 } },
-                ticks: { color: "#ffffff", font: { size: 12 } }
-              },
-              y: {
-                ticks: { color: "#ffffff", font: { size: 12 } },
-                beginAtZero: true
-              }
+        try {
+          realtimeChart = new Chart(ctx, {
+            type: "line", // 꺾은선 그래프 유지
+            data: {
+              labels: labels, // 날짜와 시간 레이블
+              datasets: [{
+                label: `데이터 (${dateRangeText})`,
+                data: values, // 전체 데이터
+                borderColor: borderColors, // 선 색상을 배열로 설정
+                backgroundColor: 'rgba(0, 0, 0, 0)', // 선 아래 채우기 비활성화 (필요 시 조정 가능)
+                fill: false, // 선 아래 채우기 비활성화
+                tension: 0.3,
+                pointRadius: 5,
+                pointBorderColor: pointBorderColors, // 포인트 테두리 색상
+                pointBackgroundColor: pointBackgroundColors, // 포인트 배경 색상
+                borderWidth: 2,
+                segment: {
+                  borderColor: (ctx) => {
+                    // 선분 색상을 포인트 간 상태에 따라 동적으로 설정
+                    const p0 = ctx.p0;
+                    const p1 = ctx.p1;
+                    if (!p0 || !p1) return '#66BB6A'; // 기본 색상
+                    const p0Color = pointColors[p0.$context.dataIndex];
+                    const p1Color = pointColors[p1.$context.dataIndex];
+                    // 두 포인트 중 하나라도 경고면 경고 색상 사용
+                    return (p0Color.status === 'warning' || p1Color.status === 'warning') ? '#E57373' : '#66BB6A';
+                  }
+                }
+              }]
             },
-            plugins: {
-              legend: { display: false },
-              title: { display: true, text: `${label} 데이터 (${dateRangeText})`, color: "#ffffff", font: { size: 16 }, padding: { top: 10, bottom: 20 } }
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              animation: false,
+              scales: {
+                x: {
+                  title: { display: true, text: `데이터 (${dateRangeText})`, color: "#ffffff", font: { size: 14 } },
+                  ticks: { color: "#ffffff", font: { size: 12 } }
+                },
+                y: {
+                  ticks: { color: "#ffffff", font: { size: 12 } },
+                  beginAtZero: true
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                title: { display: true, text: `${label} 데이터 (${dateRangeText})`, color: "#ffffff", font: { size: 16 }, padding: { top: 10, bottom: 20 } }
+              }
             }
-          }
-        });
+          });
+          console.log(`✅ realtimeChart 생성 완료 - chartId: ${chartId}`);
+        } catch (error) {
+          console.error(`❌ realtimeChart 생성 실패 - chartId: ${chartId}`, error);
+          displayNoDataMessage();
+          return;
+        }
+
         isAverageMode = false; // 평균 모드가 아님
       }
 
@@ -831,126 +906,167 @@
       resetToRealtimeGraph();
 
       function showGraphFor(chartId, label) {
-        const ctx = document.getElementById('aihubGraph').getContext('2d');
-        const valueKeyMap = {
-          'chart-1': 'waterPh', 'chart-2': 'waterDo', 'chart-3': 'waterTemp',
-          'chart-4': 'waterSalt', 'chart-5': 'waterAmmonia', 'chart-6': 'waterNitrogen'
-        };
-        const dataKey = valueKeyMap[chartId];
+    	  const ctx = document.getElementById('aihubGraph').getContext('2d');
+    	  const valueKeyMap = {
+    	    'chart-1': 'waterPh', 'chart-2': 'waterDo', 'chart-3': 'waterTemp',
+    	    'chart-4': 'waterSalt', 'chart-5': 'waterAmmonia', 'chart-6': 'waterNitrogen'
+    	  };
+    	  const dataKey = valueKeyMap[chartId];
 
-        if (realtimeChart) realtimeChart.destroy();
+    	  // 기존 차트가 있으면 제거
+    	  if (realtimeChart) {
+    	    console.log("✅ 기존 realtimeChart 제거");
+    	    realtimeChart.destroy();
+    	  }
 
-        realtimeChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labelsMap[chartId],
-            datasets: [{
-              label: `${label} 실시간 데이터`,
-              data: valuesMap[chartId],
-              borderColor: '#66BB6A',
-              backgroundColor: 'rgba(102, 187, 106, 0.2)',
-              fill: true,
-              tension: 0.3
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: { title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, ticks: { color: '#ffffff', font: { size: 12 } } },
-              y: { ticks: { color: "#ffffff", font: { size: 12 } } }
-            },
-            plugins: {
-              legend: { display: false },
-              title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } }
-            }
-          }
-        });
+    	  // 차트 생성
+    	  try {
+    	    realtimeChart = new Chart(ctx, {
+    	      type: 'line',
+    	      data: {
+    	        labels: labelsMap[chartId],
+    	        datasets: [{
+    	          label: `${label} 실시간 데이터`,
+    	          data: valuesMap[chartId],
+    	          borderColor: '#66BB6A',
+    	          backgroundColor: 'rgba(102, 187, 106, 0.2)',
+    	          fill: true,
+    	          tension: 0.3
+    	        }]
+    	      },
+    	      options: {
+    	        responsive: true,
+    	        maintainAspectRatio: false,
+    	        scales: {
+    	          x: { title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, ticks: { color: '#ffffff', font: { size: 12 } } },
+    	          y: { ticks: { color: "#ffffff", font: { size: 12 } } }
+    	        },
+    	        plugins: {
+    	          legend: { display: false },
+    	          title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } }
+    	        }
+    	      }
+    	    });
+    	    console.log(`✅ realtimeChart 생성 완료 - chartId: ${chartId}`);
+    	  } catch (error) {
+    	    console.error(`❌ realtimeChart 생성 실패 - chartId: ${chartId}`, error);
+    	    return;
+    	  }
 
-        fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
-        if (window.graphInterval) clearInterval(window.graphInterval);
-        window.graphInterval = setInterval(() => {
-          fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
-        }, 700);
-      }
+    	  // 차트가 생성되었는지 확인 후 데이터 가져오기
+    	  if (realtimeChart) {
+    	    fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
+    	    if (window.graphInterval) clearInterval(window.graphInterval);
+    	    window.graphInterval = setInterval(() => {
+    	      fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], realtimeChart);
+    	    }, 700);
+    	  } else {
+    	    console.error("❌ realtimeChart가 생성되지 않았습니다. 데이터 가져오기 중단.");
+    	  }
+    	}
       
       function fetchLatestTankDataForGraph(chartId, dataKey, labels, values, chart) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tankIdx = urlParams.get("tankIdx");
+    	  const urlParams = new URLSearchParams(window.location.search);
+    	  const tankIdx = urlParams.get("tankIdx");
 
-        if (tankIdx) {
-          fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
-            .then(response => response.json())
-            .then(data => {
-              const value = parseFloat(data[dataKey]);
-              const now = new Date();
-              const timeLabel = now.toLocaleTimeString();
+    	  // chart 객체가 유효한지 확인
+    	  if (!chart || !chart.data || !chart.data.datasets || !chart.data.datasets[0]) {
+    	    console.error(`❌ chart 객체가 유효하지 않습니다 - chartId: ${chartId}`, chart);
+    	    return;
+    	  }
 
-              if (!isNaN(value)) {
-                labels.push(timeLabel);
-                values.push(value);
+    	  if (tankIdx) {
+    	    fetch(`/tank/data/latest?tankIdx=${tankIdx}`)
+    	      .then(response => response.json())
+    	      .then(data => {
+    	        console.log(`✅ 최신 데이터 로드 성공 - chartId: ${chartId}, data:`, data);
+    	        const value = parseFloat(data[dataKey]);
+    	        const now = new Date();
+    	        const timeLabel = now.toLocaleTimeString();
 
-                if (labels.length > 10) {
-                  labels.shift();
-                  values.shift();
-                }
+    	        if (!isNaN(value)) {
+    	          labels.push(timeLabel);
+    	          values.push(value);
 
-                const rangeIndex = chartIndexMap[chartId];
-                const range = ranges[rangeIndex];
-                const colors = getColor(value, range);
+    	          if (labels.length > 10) {
+    	            labels.shift();
+    	            values.shift();
+    	          }
 
-                chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
-                chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = values;
-                chart.update();
-              } else {
-                console.warn(`Invalid value for ${dataKey}: ${data[dataKey]}`);
-                const rangeIndex = chartIndexMap[chartId];
-                const range = ranges[rangeIndex];
-                const defaultValue = (range.normalMin + range.normalMax) / 2;
-                labels.push(timeLabel);
-                values.push(defaultValue);
+    	          const rangeIndex = chartIndexMap[chartId];
+    	          const range = ranges[rangeIndex];
+    	          const colors = getColor(value, range);
 
-                if (labels.length > 10) {
-                  labels.shift();
-                  values.shift();
-                }
+    	          // chart 객체가 여전히 유효한지 확인
+    	          if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
+    	            chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
+    	            chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
+    	            chart.data.labels = labels;
+    	            chart.data.datasets[0].data = values;
+    	            chart.update();
+    	            console.log(`✅ 차트 업데이트 완료 - chartId: ${chartId}, value: ${value}`);
+    	          } else {
+    	            console.error(`❌ 차트 업데이트 실패: chart 객체가 유효하지 않음 - chartId: ${chartId}`);
+    	          }
+    	        } else {
+    	          console.warn(`⚠️ 유효하지 않은 값 - ${dataKey}: ${data[dataKey]}`);
+    	          const rangeIndex = chartIndexMap[chartId];
+    	          const range = ranges[rangeIndex];
+    	          const defaultValue = (range.normalMin + range.normalMax) / 2;
+    	          labels.push(timeLabel);
+    	          values.push(defaultValue);
 
-                const colors = getColor(defaultValue, range);
-                chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
-                chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = values;
-                chart.update();
-              }
-            })
-            .catch(err => {
-              console.error("❌ 그래프 데이터 로드 실패:", err);
-              const now = new Date();
-              const timeLabel = now.toLocaleTimeString();
-              const rangeIndex = chartIndexMap[chartId];
-              const range = ranges[rangeIndex];
-              const defaultValue = (range.normalMin + range.normalMax) / 2;
+    	          if (labels.length > 10) {
+    	            labels.shift();
+    	            values.shift();
+    	          }
 
-              labels.push(timeLabel);
-              values.push(defaultValue);
+    	          const colors = getColor(defaultValue, range);
+    	          if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
+    	            chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
+    	            chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
+    	            chart.data.labels = labels;
+    	            chart.data.datasets[0].data = values;
+    	            chart.update();
+    	            console.log(`✅ 차트 업데이트 완료 (기본값 사용) - chartId: ${chartId}, defaultValue: ${defaultValue}`);
+    	          } else {
+    	            console.error(`❌ 차트 업데이트 실패 (기본값): chart 객체가 유효하지 않음 - chartId: ${chartId}`);
+    	          }
+    	        }
+    	      })
+    	      .catch(err => {
+    	        console.error(`❌ 그래프 데이터 로드 실패 - chartId: ${chartId}:`, err);
+    	        const now = new Date();
+    	        const timeLabel = now.toLocaleTimeString();
+    	        const rangeIndex = chartIndexMap[chartId];
+    	        const range = ranges[rangeIndex];
+    	        const defaultValue = (range.normalMin + range.normalMax) / 2;
 
-              if (labels.length > 10) {
-                labels.shift();
-                values.shift();
-              }
+    	        labels.push(timeLabel);
+    	        values.push(defaultValue);
 
-              const colors = getColor(defaultValue, range);
-              chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
-              chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
-              chart.data.labels = labels;
-              chart.data.datasets[0].data = values;
-              chart.update();
-            });
-        }
-      }
-    });
+    	        if (labels.length > 10) {
+    	          labels.shift();
+    	          values.shift();
+    	        }
+
+    	        const colors = getColor(defaultValue, range);
+    	        if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
+    	          chart.data.datasets[0].borderColor = colors.status === 'warning' ? '#E57373' : '#66BB6A';
+    	          chart.data.datasets[0].backgroundColor = colors.status === 'warning' ? 'rgba(229, 115, 115, 0.2)' : 'rgba(102, 187, 106, 0.2)';
+    	          chart.data.labels = labels;
+    	          chart.data.datasets[0].data = values;
+    	          chart.update();
+    	          console.log(`✅ 차트 업데이트 완료 (에러 시 기본값 사용) - chartId: ${chartId}, defaultValue: ${defaultValue}`);
+    	        } else {
+    	          console.error(`❌ 차트 업데이트 실패 (에러 시): chart 객체가 유효하지 않음 - chartId: ${chartId}`);
+    	        }
+    	      });
+    	  } else {
+    	    console.warn(`⚠️ tankIdx가 없습니다. 데이터 요청 중단 - chartId: ${chartId}`);
+    	  }
+    	}
+    })
   </script>
 </body>
 </html>

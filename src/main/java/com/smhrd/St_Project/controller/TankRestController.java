@@ -1,17 +1,22 @@
 package com.smhrd.St_Project.controller;
 
 import com.smhrd.St_Project.entity.TankEntity;
+import com.smhrd.St_Project.repository.TankDataRepository;
 import com.smhrd.St_Project.entity.MemberEntity;
 import com.smhrd.St_Project.entity.TankDataEntity;
 import com.smhrd.St_Project.service.TankDataService;
 import com.smhrd.St_Project.service.TankService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +37,8 @@ public class TankRestController {
     private TankService tankService;
     @Autowired
     private TankDataService tankDataService;
+    @Autowired
+    private TankDataRepository tankDataRepository;
 
     /**
      * 🔹 세션을 활용한 특정 사용자의 수조 목록 조회 API (GET /tank/list)
@@ -137,5 +144,17 @@ public class TankRestController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/data")
+    public ResponseEntity<List<TankDataEntity>> getTankData(
+            @RequestParam("tankIdx") Long tankIdx,
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        // record_date가 주어진 날짜와 일치하는 데이터 조회
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        List<TankDataEntity> data = tankDataRepository.findByTank_TankIdxAndRecordDateBetween(
+            tankIdx, Timestamp.valueOf(startOfDay), Timestamp.valueOf(endOfDay)
+        );
+        return ResponseEntity.ok(data);
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.smhrd.St_Project.repository;
 
 import com.smhrd.St_Project.entity.TankDataEntity;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +19,6 @@ public interface TankDataRepository extends JpaRepository<TankDataEntity, Long> 
     // 최근 18개 데이터 조회 메서드 추가
     @Query("SELECT t FROM TankDataEntity t WHERE t.tank.tankIdx = :tankIdx ORDER BY t.recordNum DESC LIMIT 18")
     List<TankDataEntity> findTop18ByTankIdxOrderByRecordNumDesc(@Param("tankIdx") Long tankIdx);
+    
+    List<TankDataEntity> findByTank_TankIdxAndRecordDateBetween(Long tankIdx, Timestamp start, Timestamp end);
 }
