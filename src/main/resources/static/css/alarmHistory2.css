@@ -172,13 +172,14 @@ body {
   height: 288px; /* thead(48px) + tbody(5행 x 48px) = 288px */
 }
 
+
 .alarm-dashboard-screen th,
 .alarm-dashboard-screen td {
   padding: 0 10px;
   color: #ffffff;
   font-family: "Abel", Helvetica;
   font-size: clamp(12px, 2vw, 16px);
-  text-align: left;
+  text-align: center;
   height: 48px;
   min-height: 48px;
   max-height: 48px;
@@ -187,6 +188,32 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 각 열의 너비 조정 */
+.alarm-dashboard-screen th:nth-child(1),
+.alarm-dashboard-screen td:nth-child(1) { /* 수조 번호 */
+  width: 10%; /* 좁게 설정 */
+}
+
+.alarm-dashboard-screen th:nth-child(2),
+.alarm-dashboard-screen td:nth-child(2) { /* 날짜 */
+  width: 15%; /* 좁게 설정 */
+}
+
+.alarm-dashboard-screen th:nth-child(3),
+.alarm-dashboard-screen td:nth-child(3) { /* 시간 */
+  width: 10%; /* 좁게 설정 */
+}
+
+.alarm-dashboard-screen th:nth-child(4),
+.alarm-dashboard-screen td:nth-child(4) { /* 내용 */
+  width: 45%; /* 넓게 설정 */
+}
+
+.alarm-dashboard-screen th:nth-child(5),
+.alarm-dashboard-screen td:nth-child(5) { /* 상태 */
+  width: 20%; /* 좁게 설정 */
 }
 
 .alarm-dashboard-screen tr {
@@ -482,5 +509,26 @@ body {
   }
   .alarm-dashboard-screen .page-btn {
     padding: 3px 8px;
+  }
+  /* 모바일에서도 동일한 비율 유지 */
+  .alarm-dashboard-screen th:nth-child(1),
+  .alarm-dashboard-screen td:nth-child(1) {
+    width: 10%;
+  }
+  .alarm-dashboard-screen th:nth-child(2),
+  .alarm-dashboard-screen td:nth-child(2) {
+    width: 15%;
+  }
+  .alarm-dashboard-screen th:nth-child(3),
+  .alarm-dashboard-screen td:nth-child(3) {
+    width: 10%;
+  }
+  .alarm-dashboard-screen th:nth-child(4),
+  .alarm-dashboard-screen td:nth-child(4) {
+    width: 45%;
+  }
+  .alarm-dashboard-screen th:nth-child(5),
+  .alarm-dashboard-screen td:nth-child(5) {
+    width: 20%;
   }
 }

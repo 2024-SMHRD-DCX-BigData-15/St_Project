@@ -766,7 +766,7 @@ h4 {
   margin-inline-end: 0px;
   font-weight: bold;
   unicode-bidi: isolate;
-  gap: 320px; /* 제목과 버튼 그룹 간 간격 11*/
+  gap: 320px; /* 제목과 버튼 그룹 간 간격 */
   color: #fff;
 }
 
