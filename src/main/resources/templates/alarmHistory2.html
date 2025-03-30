@@ -10,21 +10,24 @@
   <div class="container-center-horizontal">
     <div id="loading"></div>
     <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+    
+    <!-- 사이드바 -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h2>메뉴</h2>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="/maindashboard">홈</a></li>
+        <li><a href="/maindashboard" class="toggle-menu">홈</a></li>
         <li><a href="/tank" class="toggle-menu">수조 정보 등록</a></li>
         <li><a href="/alarmHistory2" class="toggle-menu">알람 히스토리</a></li>
-        <li><a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
+        <li>
+          <a href="javascript:void(0)" class="toggle-menu">회원 정보 관리</a>
           <ul class="sub-menu">
             <li><a th:href="@{/edit/{id}(id=${session.loginUser.userId})}">회원 정보 수정</a></li>
             <li><a href="/delete">회원 탈퇴</a></li>
           </ul>
         </li>
-      </ul>
+      </ul>    
     </div>
 
     <div class="alarm-dashboard-screen screen">

@@ -42,6 +42,8 @@ body {
   padding: 20px;
   padding-top: 120px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1000;
 }
 
 .fixed-header {
@@ -50,10 +52,10 @@ body {
   left: 0;
   width: 100%;
   background: transparent;
-  z-index: 1000;
+  z-index: 2000;
   padding: 40px 0;
   height: 100px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header-content {
@@ -106,34 +108,6 @@ body {
   text-align: left;
 }
 
-/* fixed-header */
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: transparent;
-  z-index: 2000; /* content보다 높게 설정 */
-  padding: 40px 0;
-  height: 100px;
-  overflow: visible; /* 드롭다운이 잘리지 않게 */
-}
-
-/* content */
-.alarm-dashboard-screen .content {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1000px;
-  padding: 20px;
-  padding-top: 120px;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 1000; /* fixed-header보다 낮게 */
-}
-
-/* filter-section 아래에 추가된 커스텀 드롭다운 스타일 */
 .filter-section {
   display: flex;
   align-items: center;
@@ -143,7 +117,7 @@ body {
   padding: 0 20px;
   box-sizing: border-box;
   position: relative;
-  z-index: 2100; /* content보다 높게 */
+  z-index: 2100;
 }
 
 .custom-dropdown {
@@ -157,11 +131,11 @@ body {
   backdrop-filter: blur(42px) brightness(100%);
   background: rgba(31, 41, 68, 0.9);
   border: 1px solid #4B5EAA;
-  border-radius: 15px;
-  padding: 8px;
+  border-radius: 10px;
+  padding: 6px 10px;
   font-size: 14px;
   color: #ffffff;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -174,7 +148,7 @@ body {
 }
 
 .dropdown-selected::after {
-  content: "▼"; /* 드롭다운 화살표 */
+  content: "▼";
   font-size: 10px;
   margin-left: 10px;
 }
@@ -187,12 +161,12 @@ body {
   width: 100%;
   background: rgba(31, 41, 68, 0.9);
   border: 1px solid #4B5EAA;
-  border-radius: 15px;
+  border-radius: 10px;
   margin-top: 5px;
   padding: 0;
   list-style: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-  z-index: 2100; /* content보다 높게 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2100;
 }
 
 .dropdown-options.active {
@@ -200,44 +174,27 @@ body {
 }
 
 .dropdown-options li {
-  padding: 8px;
+  padding: 6px 10px;
   color: #ffffff;
   font-size: 14px;
-  cursor: pointer;
+  cursor
+
+: pointer;
   transition: background-color 0.3s ease;
 }
 
 .dropdown-options li:hover {
-  background-color: rgba(99, 102, 241, 0.7); /* 호버 시 보라색 */
+  background-color: rgba(99, 102, 241, 0.7);
 }
 
 .dropdown-options li:first-child {
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
 }
 
 .dropdown-options li:last-child {
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
-}
-
-/* 히스토리 섹션의 z-index 낮추기 */
-.section {
-  width: 100%;
-  position: relative;
-  z-index: 900; /* 드롭다운 아래로 */
-}
-
-.alarm-table {
-  width: 100%;
-  overflow-x: auto;
-  position: relative;
-  z-index: 900; /* 드롭다운 아래로 */
-}
-
-/* 기존 .filter-dropdown 제거 */
-.filter-dropdown {
-  display: none;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
 }
 
 .sound-toggle {
@@ -274,6 +231,20 @@ body {
   transform: translate(-50%, -50%);
 }
 
+/* 히스토리 섹션 */
+.section {
+  width: 100%;
+  position: relative;
+  z-index: 900;
+}
+
+.alarm-table {
+  width: 100%;
+  overflow-x: auto;
+  position: relative;
+  z-index: 900;
+}
+
 .alarm-dashboard-screen .section {
   width: 100%;
 }
@@ -303,7 +274,7 @@ body {
   border-radius: 10px;
   table-layout: fixed;
   overflow: hidden;
-  height: 288px; /* thead(48px) + tbody(5행 x 48px) = 288px */
+  height: 288px;
 }
 
 .alarm-dashboard-screen th:first-child,
@@ -342,27 +313,27 @@ body {
 }
 
 .alarm-dashboard-screen th:nth-child(1),
-.alarm-dashboard-screen td:nth-child(1) { /* 수조 번호 */
+.alarm-dashboard-screen td:nth-child(1) {
   width: 10%;
 }
 
 .alarm-dashboard-screen th:nth-child(2),
-.alarm-dashboard-screen td:nth-child(2) { /* 날짜 */
+.alarm-dashboard-screen td:nth-child(2) {
   width: 15%;
 }
 
 .alarm-dashboard-screen th:nth-child(3),
-.alarm-dashboard-screen td:nth-child(3) { /* 시간 */
+.alarm-dashboard-screen td:nth-child(3) {
   width: 10%;
 }
 
 .alarm-dashboard-screen th:nth-child(4),
-.alarm-dashboard-screen td:nth-child(4) { /* 내용 */
+.alarm-dashboard-screen td:nth-child(4) {
   width: 45%;
 }
 
 .alarm-dashboard-screen th:nth-child(5),
-.alarm-dashboard-screen td:nth-child(5) { /* 상태 */
+.alarm-dashboard-screen td:nth-child(5) {
   width: 20%;
 }
 
@@ -422,21 +393,6 @@ body {
   color: #ffffff;
 }
 
-/* 요약 통계 (필요 시 추가) */
-.summary-stats {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  padding: 10px;
-  color: #ffffff;
-  font-family: "Abel", Helvetica;
-  font-size: clamp(12px, 2vw, 16px);
-}
-
-.summary-stats p {
-  margin: 3px 0;
-}
-
-/* 하단 링크 */
 .alarm-dashboard-screen .text-14 {
   color: #a0aec0;
   font-family: "Abel", Helvetica;
@@ -470,7 +426,7 @@ body {
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
-  z-index: 1300;
+  z-index: 3100;
   transition: background-color 0.3s;
 }
 
@@ -480,17 +436,18 @@ body {
 
 /* 사이드바 */
 .sidebar {
-  width: 250px;
-  background: rgba(15, 18, 59, 0.95);
+  width: 180px;
+  background: linear-gradient(180deg, #141933, #1E2A44);
   height: 100vh;
   position: fixed;
   top: 0;
   left: -250px;
   padding: 20px;
   box-sizing: border-box;
-  z-index: 1200;
+  z-index: 3000;
   overflow-y: auto;
   transition: left 0.3s ease;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar.active {
@@ -498,12 +455,17 @@ body {
 }
 
 .sidebar-header {
-  color: #ffffff;
+  color: #FFFFFF;
   font-family: "Abel", Helvetica;
   font-size: 20px;
   font-weight: 400;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.sidebar-header h2 {
+  font-size: 25px;
+  font-weight: 400;
 }
 
 .sidebar-menu {
@@ -517,19 +479,19 @@ body {
 }
 
 .sidebar-menu a {
-  color: #ffffff;
+  color: #FFFFFF;
   text-decoration: none;
   font-family: "Abel", Helvetica;
   font-size: 16px;
   display: block;
   padding: 10px;
   border-radius: 8px;
-  transition: background-color 0.3s;
-  pointer-events: auto;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(99, 102, 241, 0.3);
+  color: #FFFFFF;
 }
 
 /* 서브 메뉴 */
@@ -547,12 +509,17 @@ body {
 .sub-menu a {
   font-size: 14px;
   padding: 8px;
-  color: #a0aec0;
+  color: #FFFFFF;
 }
 
 .sub-menu a:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+.container-center-horizontal {
+  position: relative;
+  z-index: 1;
 }
 
 /* user-info 스타일 */
@@ -591,7 +558,6 @@ body {
   background-color: #818CF8;
 }
 
-/* 모바일 반응형 */
 @media (max-width: 600px) {
   .sidebar {
     width: 200px;
@@ -600,66 +566,94 @@ body {
   .sidebar.active {
     left: 0;
   }
+  .fixed-header {
+    height: 90px;
+    padding: 30px 0;
+  }
   .alarm-dashboard-screen .content {
     padding: 10px;
-    padding-top: 140px;
-  }
-  .fixed-header {
-    height: 120px;
+    padding-top: 110px;
   }
   .header-top {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: 8px;
+  }
+  .filter-section {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .custom-dropdown {
+    width: 120px;
+  }
+  .dropdown-selected {
+    height: 32px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .dropdown-options li {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .sound-toggle {
+    font-size: 11px;
+  }
+  .sound-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+  .sound-toggle input[type="checkbox"]:checked::after {
+    font-size: 12px;
+  }
+  .user-info {
+    margin-top: 0;
   }
   .alarm-dashboard-screen .section {
     margin-top: 8px;
   }
   .alarm-dashboard-screen th,
   .alarm-dashboard-screen td {
-    padding: 0 8px;
-    font-size: clamp(10px, 2vw, 14px);
-    height: 40px;
-    min-height: 40px;
-    max-height: 40px;
-    line-height: 40px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    padding: 0 6px;
+    font-size: clamp(10px, 1.8vw, 12px);
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    line-height: 36px;
   }
   .alarm-dashboard-screen tr {
-    height: 40px;
-    min-height: 40px;
-    max-height: 40px;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
   }
   .alarm-dashboard-screen table {
-    height: 240px; /* thead(40px) + tbody(5행 x 40px) = 240px */
+    height: 216px;
   }
-  .filter-section {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 10px;
-    gap: 10px;
+  .alarm-dashboard-screen th:nth-child(1),
+  .alarm-dashboard-screen td:nth-child(1) {
+    width: 12%;
   }
-  .filter-dropdown {
-    width: 100%;
-    height: 40px;
+  .alarm-dashboard-screen th:nth-child(2),
+  .alarm-dashboard-screen td:nth-child(2) {
+    width: 18%;
   }
-  .hamburger-btn {
-    font-size: 20px;
+  .alarm-dashboard-screen th:nth-child(3),
+  .alarm-dashboard-screen td:nth-child(3) {
+    width: 12%;
   }
-  .header-content {
-    flex-direction: column;
-    align-items: center;
+  .alarm-dashboard-screen th:nth-child(4),
+  .alarm-dashboard-screen td:nth-child(4) {
+    width: 38%;
   }
-  .user-info {
-    margin-top: 5px;
+  .alarm-dashboard-screen th:nth-child(5),
+  .alarm-dashboard-screen td:nth-child(5) {
+    width: 20%;
   }
   .alarm-dashboard-screen .section-title {
     margin-bottom: 4px;
     font-size: 20px;
-  }
-  .summary-stats {
-    padding: 8px;
   }
   .alarm-dashboard-screen .pagination {
     margin-top: 4px;
@@ -667,31 +661,12 @@ body {
   .alarm-dashboard-screen .page-btn {
     padding: 3px 8px;
   }
-  .alarm-dashboard-screen th:nth-child(1),
-  .alarm-dashboard-screen td:nth-child(1) {
-    width: 10%;
+  .hamburger-btn {
+    top: 10px;
+    left: 10px;
   }
-  .alarm-dashboard-screen th:nth-child(2),
-  .alarm-dashboard-screen td:nth-child(2) {
-    width: 15%;
+  .header-content {
+    flex-direction: column;
+    align-items: center;
   }
-  .alarm-dashboard-screen th:nth-child(3),
-  .alarm-dashboard-screen td:nth-child(3) {
-    width: 10%;
-  }
-  .alarm-dashboard-screen th:nth-child(4),
-  .alarm-dashboard-screen td:nth-child(4) {
-    width: 45%;
-  }
-  .alarm-dashboard-screen th:nth-child(5),
-  .alarm-dashboard-screen td:nth-child(5) {
-    width: 20%;
-  }
-  .custom-dropdown {
-    width: 100%;
-  }
-  .dropdown-selected {
-    height: 40px;
-  }
-  
 }
