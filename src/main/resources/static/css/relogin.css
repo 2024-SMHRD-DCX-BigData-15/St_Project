@@ -12,7 +12,7 @@
 .recover-screen .main-dashboard {
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+    background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%);
     display: flex;
     height: 100%;
     width: 100%;
@@ -44,13 +44,12 @@
 .recover-screen .text-21 {
     color: #ffffff;
     font-family: "Abel", Helvetica;
-    font-size: 30px;
+    font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
     letter-spacing: 0;
-    line-height: 39px;
-    min-height: 39px;
+    line-height: 1.2;
     white-space: nowrap;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 /* 입력 그룹 스타일 */
@@ -79,19 +78,23 @@
 .recover-screen .input-field-text {
     -webkit-backdrop-filter: blur(42px) brightness(100%);
     backdrop-filter: blur(42px) brightness(100%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
-    border: 2px solid;
-    border-color: transparent;
-    border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
+    background: rgba(31, 41, 68, 0.9);
+    border: 1px solid #4B5EAA;
     border-radius: 20px;
     height: 54px;
     padding: 0 20px;
     width: 100%;
     color: #ffffff;
     font-size: 16px;
-    background: transparent;
     outline: none;
     box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recover-screen .input-field-text:focus {
+    border-color: #6366F1;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
 .recover-screen .input-field-text::placeholder {
@@ -109,14 +112,14 @@
 .recover-screen .recover-btn {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
-    background-color: #0075ff;
+    background-color: #6366F1;
     color: #ffffff;
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
     border: none;
     border-radius: 12px;
-    padding: 12px 20px;
+    padding: 8px 20px;
     height: 45px;
     width: 350px;
     max-width: 100%;
@@ -126,7 +129,7 @@
 }
 
 .recover-screen .recover-btn:hover {
-    background-color: #005bb5;
+    background-color: #818CF8;
 }
 
 .recover-screen .recover-btn:disabled {
@@ -139,14 +142,13 @@
 .recover-screen .input-field-text:-webkit-autofill:hover,
 .recover-screen .input-field-text:-webkit-autofill:focus,
 .recover-screen .input-field-text:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    box-shadow: 0 0 0 1000px transparent inset !important;
-    background-color: transparent !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
+    box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
     -webkit-text-fill-color: #ffffff !important;
-    transition: background-color 5000s ease-in-out 0s; 
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 input:-internal-autofill-selected {
-    background-color: transparent !important;
+    background-color: rgba(31, 41, 68, 0.9) !important;
     color: #ffffff !important;
 }
