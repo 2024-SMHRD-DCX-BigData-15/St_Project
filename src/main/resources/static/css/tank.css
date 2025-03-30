@@ -29,6 +29,7 @@
     width: 354px;
     max-width: 90%;
     gap: 20px;
+    margin-bottom: 80px;
 }
 
 /* 제목 스타일 */
@@ -312,7 +313,7 @@
 /* user-info 스타일 추가 */
 .user-info {
     position: absolute;
-    top: 55px;
+    top: 30px;
     right: 200px;
     color: #FFFFFF; /* 기억된 CSS의 user-info 색상 적용 */
     font-family: "Abel", Helvetica;
@@ -320,7 +321,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     z-index: 1200;
     height: auto;
     line-height: 1;
