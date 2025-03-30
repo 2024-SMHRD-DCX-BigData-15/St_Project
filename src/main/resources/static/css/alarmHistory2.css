@@ -542,16 +542,21 @@ body {
   margin: 0;
 }
 
+/* 로그아웃 버튼 */
 .logout-btn {
   background-color: #6366F1;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
+  color: #FFFFFF; /* 변경 */
+  border: 1px solid #4F46E5;
+  padding: 8px 16px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
-  line-height: 1;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  white-space: nowrap;
 }
 
 .logout-btn:hover {
