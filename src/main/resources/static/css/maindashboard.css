@@ -380,6 +380,36 @@ body {
   }
 }
 
+.data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.data-header {
+  display: flex;
+  gap: 5px; /* 라벨과 유닛 간격 조절 */
+  font-weight: bold;
+  justify-content: center; /* 헤더 가운데 정렬 */
+  text-align: center;
+  width: 100%;
+}
+
+.data-unit {
+  color: gray;
+}
+
+
+
+.data-value {
+  font-size: 1.7em; /* 데이터 값 크기 증가 */
+  font-weight: bold;
+  margin-top: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+
 /* 부모 요소 */
 .parent-container {
   display: flex;

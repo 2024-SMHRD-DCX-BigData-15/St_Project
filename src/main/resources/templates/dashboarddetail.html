@@ -1075,112 +1075,110 @@
       Chart.register(flowEffectPlugin);
 
       function showGraphFor(chartId, label) {
-        const ctx = document.getElementById('aihubGraph').getContext('2d');
-        const valueKeyMap = {
-          'chart-1': 'waterPh', 'chart-2': 'waterDo', 'chart-3': 'waterTemp',
-          'chart-4': 'waterSalt', 'chart-5': 'waterAmmonia', 'chart-6': 'waterNitrogen'
-        };
-        const dataKey = valueKeyMap[chartId];
+    	  const ctx = document.getElementById('aihubGraph').getContext('2d');
+    	  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // 캔버스 초기화
 
-        if (realtimeChart) {
-          console.log("✅ 기존 realtimeChart 제거");
-          realtimeChart.destroy();
-        }
+    	  const valueKeyMap = {
+    	    'chart-1': 'waterPh', 'chart-2': 'waterDo', 'chart-3': 'waterTemp',
+    	    'chart-4': 'waterSalt', 'chart-5': 'waterAmmonia', 'chart-6': 'waterNitrogen'
+    	  };
+    	  const dataKey = valueKeyMap[chartId];
 
-        if (window.graphInterval) {
-          console.log("✅ fetchLatestTankDataForGraph의 setInterval 중단");
-          cancelAnimationFrame(window.graphInterval);
-          window.graphInterval = null;
-        }
+    	  if (realtimeChart) {
+    	    console.log("✅ 기존 realtimeChart 제거");
+    	    realtimeChart.destroy();
+    	  }
 
-        try {
-          realtimeChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: labelsMap[chartId] || [],
-              datasets: [{
-                label: `${label} 실시간 데이터`,
-                data: smoothedValuesMap[chartId] || [],
-                borderColor: '#66BB6A', // 기본 색상
-                backgroundColor: 'rgba(102, 187, 106, 0.05)', // 채우기 투명도 낮춤
-                fill: true,
-                tension: 0.4, // 곡선 부드러움 조정
-                pointRadius: 3, // 포인트 표시
-                pointBorderColor: '#ffffff',
-                pointBackgroundColor: (ctx) => {
-                  const index = ctx.dataIndex;
-                  const value = ctx.dataset.data[index];
-                  const rangeIndex = chartIndexMap[chartId];
-                  const range = ranges[rangeIndex];
-                  const colors = getColor(value, range);
-                  return colors.status === 'warning' ? '#E57373' : '#66BB6A';
-                },
-                borderWidth: 4,
-                segment: {
-                  borderColor: (ctx) => {
-                    const p0 = ctx.p0;
-                    const p1 = ctx.p1;
-                    if (!p0 || !p1) return '#66BB6A';
-                    const p0Value = p0.parsed.y;
-                    const p1Value = p1.parsed.y;
-                    const rangeIndex = chartIndexMap[chartId];
-                    const range = ranges[rangeIndex];
-                    const p0Color = getColor(p0Value, range);
-                    const p1Color = getColor(p1Value, range);
-                    return (p0Color.status === 'warning' || p1Color.status === 'warning') ? '#E57373' : '#66BB6A';
-                  }
-                }
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              animation: {
-                duration: 700, // 애니메이션 지속 시간 증가
-                easing: 'easeOutCubic',
-                onProgress: (animation) => {
-                  animation.chart.options.animationProgress = animation.currentStep / animation.numSteps;
-                }
-              },
-              scales: {
-                x: { 
-                  title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, 
-                  ticks: { color: '#ffffff', font: { size: 12 } },
-                  grid: { display: false }
-                },
-                y: { 
-                  ticks: { color: "#ffffff", font: { size: 12 } },
-                  grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                }
-              },
-              plugins: {
-                legend: { display: false },
-                title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } },
-                flowEffect: true
-              }
-            }
-          });
-          console.log(`✅ realtimeChart 생성 완료 - chartId: ${chartId}`);
-        } catch (error) {
-          console.error(`❌ realtimeChart 생성 실패 - chartId: ${chartId}`, error);
-          return;
-        }
+    	  if (window.graphInterval) {
+    	    console.log("✅ fetchLatestTankDataForGraph의 setInterval 중단");
+    	    cancelAnimationFrame(window.graphInterval);
+    	    window.graphInterval = null;
+    	  }
 
-        if (realtimeChart) {
-          if (!labelsMap[chartId]) labelsMap[chartId] = [];
-          if (!valuesMap[chartId]) valuesMap[chartId] = [];
-          if (!smoothedValuesMap[chartId]) smoothedValuesMap[chartId] = [];
-          if (!animationProgressMap[chartId]) animationProgressMap[chartId] = 0;
+    	  try {
+    	    realtimeChart = new Chart(ctx, {
+    	      type: 'line',
+    	      data: {
+    	        labels: labelsMap[chartId] || [],
+    	        datasets: [{
+    	          label: `${label} 실시간 데이터`,
+    	          data: smoothedValuesMap[chartId] || [],
+    	          borderColor: '#66BB6A',
+    	          backgroundColor: 'rgba(102, 187, 106, 0.05)',
+    	          fill: true,
+    	          tension: 0.5, // 곡선 더 부드럽게
+    	          pointRadius: 3,
+    	          pointBorderColor: '#ffffff',
+    	          pointBackgroundColor: (ctx) => {
+    	            const index = ctx.dataIndex;
+    	            const value = ctx.dataset.data[index];
+    	            const rangeIndex = chartIndexMap[chartId];
+    	            const range = ranges[rangeIndex];
+    	            const colors = getColor(value, range);
+    	            return colors.status === 'warning' ? '#E57373' : '#66BB6A';
+    	          },
+    	          borderWidth: 4,
+    	          segment: {
+    	            borderColor: (ctx) => {
+    	              const p0 = ctx.p0;
+    	              const p1 = ctx.p1;
+    	              if (!p0 || !p1) return '#66BB6A';
+    	              const p0Value = p0.parsed.y;
+    	              const p1Value = p1.parsed.y;
+    	              const rangeIndex = chartIndexMap[chartId];
+    	              const range = ranges[rangeIndex];
+    	              const p0Color = getColor(p0Value, range);
+    	              const p1Color = getColor(p1Value, range);
+    	              return (p0Color.status === 'warning' || p1Color.status === 'warning') ? '#E57373' : '#66BB6A';
+    	            }
+    	          }
+    	        }]
+    	      },
+    	      options: {
+    	        responsive: true,
+    	        maintainAspectRatio: false,
+    	        animation: {
+    	          duration: 700,
+    	          easing: 'easeOutCubic'
+    	        },
+    	        scales: {
+    	          x: { 
+    	            title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, 
+    	            ticks: { color: '#ffffff', font: { size: 12 } },
+    	            grid: { display: false }
+    	          },
+    	          y: { 
+    	            ticks: { color: "#ffffff", font: { size: 12 } },
+    	            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+    	          }
+    	        },
+    	        plugins: {
+    	          legend: { display: false },
+    	          title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } }
+    	        }
+    	      }
+    	    });
+    	    console.log(`✅ realtimeChart 생성 완료 - chartId: ${chartId}`);
+    	  } catch (error) {
+    	    console.error(`❌ realtimeChart 생성 실패 - chartId: ${chartId}`, error);
+    	    return;
+    	  }
 
-          const updateLoop = () => {
-            fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], smoothedValuesMap[chartId], realtimeChart);
-            window.graphInterval = requestAnimationFrame(updateLoop);
-          };
-          window.graphInterval = requestAnimationFrame(updateLoop);
-        } else {
-          console.error("❌ realtimeChart가 생성되지 않았습니다. 데이터 가져오기 중단.");
-        }
-      }
+    	  if (realtimeChart) {
+    	    if (!labelsMap[chartId]) labelsMap[chartId] = [];
+    	    if (!valuesMap[chartId]) valuesMap[chartId] = [];
+    	    if (!smoothedValuesMap[chartId]) smoothedValuesMap[chartId] = [];
+
+    	    const updateLoop = () => {
+    	      fetchLatestTankDataForGraph(chartId, dataKey, labelsMap[chartId], valuesMap[chartId], smoothedValuesMap[chartId], realtimeChart);
+    	      realtimeChart.update(); // 차트 강제 갱신
+    	      window.graphInterval = requestAnimationFrame(updateLoop);
+    	    };
+    	    window.graphInterval = requestAnimationFrame(updateLoop);
+    	  } else {
+    	    console.error("❌ realtimeChart가 생성되지 않았습니다. 데이터 가져오기 중단.");
+    	  }
+    	}
 
       // 데이터 스무딩 함수 (지수 이동 평균, EMA)
       function smoothData(chartId, newValue) {
