@@ -12,7 +12,7 @@
 .edit-screen .main-dashboard {
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+    background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%);
     display: flex;
     height: 100%;
     width: 100%;
@@ -29,6 +29,7 @@
     width: 354px;
     max-width: 90%;
     gap: 20px;
+    margin-bottom: 80px;
 }
 
 /* 제목 스타일 */
@@ -43,14 +44,15 @@
 }
 
 .edit-screen .text-21 {
-    color: #ffffff;
+    color: #FFFFFF;
     font-family: "Abel", Helvetica;
     font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
-    letter-spacing: 0;
+    letter-spacing: 2px;
     line-height: 1.2;
     white-space: nowrap;
     margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 /* 폼 스타일 */
@@ -73,7 +75,7 @@
 }
 
 .edit-screen .text-1 {
-    color: #ffffff;
+    color: #FFFFFF;
     font-family: "Abel", Helvetica;
     font-size: 14px;
     font-weight: 400;
@@ -85,26 +87,27 @@
 }
 
 .edit-screen .input-field-text {
-    -webkit-backdrop-filter: blur(42px) brightness(100%);
-    backdrop-filter: blur(42px) brightness(100%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
-    border: 2px solid;
-    border-color: transparent;
-    border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
-    border-radius: 20px;
+    background: linear-gradient(145deg, #1E2A44, #141933);
+    border: 1px solid #4B5EAA;
+    border-radius: 10px;
     height: 54px;
     padding: 0 20px;
     width: 100%;
-    color: #ffffff;
+    color: #FFFFFF;
     font-size: 16px;
-    background: transparent;
     outline: none;
     box-sizing: border-box;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .edit-screen .input-field-text[readonly] {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 42, 68, 0.8);
     cursor: not-allowed;
+}
+
+.edit-screen .input-field-text:hover:not([readonly]) {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: #6366F1;
 }
 
 .edit-screen .input-field-text::placeholder {
@@ -122,9 +125,7 @@
 }
 
 .edit-screen .button-base_login {
-    -webkit-backdrop-filter: blur(120px) brightness(100%);
-    backdrop-filter: blur(120px) brightness(100%);
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     height: 45px;
     justify-content: center;
@@ -132,30 +133,41 @@
     width: 48%;
     cursor: pointer;
     box-sizing: border-box;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
 }
 
 .edit-screen .save-btn {
-    background-color: #0075ff;
+    background: linear-gradient(145deg, #6366F1, #4F46E5);
+    color: #FFFFFF;
+    border: 1px solid #4F46E5;
 }
 
 .edit-screen .cancel-btn {
-    background-color: #ccc;
+    background: linear-gradient(145deg, #4B5EAA, #2E3B55);
+    color: #FFFFFF;
+    border: 1px solid #4B5EAA;
 }
 
 .edit-screen .save-btn:hover {
-    background-color: #005bb5;
+    background: linear-gradient(145deg, #818CF8, #6366F1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .edit-screen .cancel-btn:hover {
-    background-color: #999;
+    background: linear-gradient(145deg, #6366F1, #4B5EAA);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.edit-screen .save-btn:active,
+.edit-screen .cancel-btn:active {
+    transform: scale(0.98);
 }
 
 .edit-screen .text {
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
-    color: #ffffff;
+    color: #FFFFFF;
     letter-spacing: 0;
     line-height: normal;
 }
@@ -172,29 +184,29 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(99, 102, 241, 0.2);
     border: none;
-    color: #ffffff;
+    color: #FFFFFF;
     font-size: 24px;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
     z-index: 1100;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.4);
 }
 
 /* 사이드바 스타일 */
 .sidebar {
     width: 190px;
-    background:  rgba(15, 18, 59, 0.95);
+    background: linear-gradient(180deg, #141933, #1E2A44);
     height: 100vh;
     position: fixed;
     top: 0;
-    left: -250px; /* 기본적으로 숨김 */
+    left: -250px;
     padding: 20px;
     box-sizing: border-box;
     z-index: 1000;
@@ -207,7 +219,7 @@
 }
 
 .sidebar-header {
-    color: #ffffff;
+    color: #FFFFFF;
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
@@ -226,18 +238,18 @@
 }
 
 .sidebar-menu a {
-    color: #ffffff;
+    color: #FFFFFF;
     text-decoration: none;
     font-family: "Abel", Helvetica;
     font-size: 16px;
     display: block;
     padding: 10px;
     border-radius: 8px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(99, 102, 241, 0.3);
 }
 
 .sub-menu {
@@ -254,26 +266,25 @@
 .sub-menu a {
     font-size: 14px;
     padding: 8px;
-    color: #a0aec0;
+    color: #FFFFFF;
 }
 
 .sub-menu a:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+    background-color: rgba(99, 102, 241, 0.2);
 }
 
 .edit-screen .input-field-text:-webkit-autofill,
 .edit-screen .input-field-text:-webkit-autofill:hover,
 .edit-screen .input-field-text:-webkit-autofill:focus,
 .edit-screen .input-field-text:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    box-shadow: 0 0 0 1000px transparent inset !important;
-    background-color: transparent !important;
-    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px #1E2A44 inset !important;
+    box-shadow: 0 0 0 1000px #1E2A44 inset !important;
+    -webkit-text-fill-color: #FFFFFF !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 input:-internal-autofill-selected {
-    background-color: transparent !important;
-    color: #ffffff !important;
+    background-color: #1E2A44 !important;
+    color: #FFFFFF !important;
 }
