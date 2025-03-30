@@ -12,7 +12,7 @@
 .sign-in-screen .main-dashboard {
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+    background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%);
     display: flex;
     min-height: 100vh;
     width: 100%;
@@ -83,10 +83,8 @@
 .sign-in-screen .input-field-text {
     -webkit-backdrop-filter: blur(42px) brightness(100%);
     backdrop-filter: blur(42px) brightness(100%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
-    border: 2px solid;
-    border-color: transparent;
-    border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
+    background: rgba(31, 41, 68, 0.9);
+    border: 1px solid #4B5EAA;
     border-radius: 16px;
     height: 40px;
     padding: 0 12px;
@@ -94,9 +92,15 @@
     flex-grow: 1;
     color: #ffffff;
     font-size: clamp(12px, 2vw, 16px);
-    background: transparent;
     outline: none;
     box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sign-in-screen .input-field-text:focus {
+    border-color: #6366F1;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
 .sign-in-screen .input-field-text::placeholder {
@@ -107,15 +111,14 @@
 .sign-in-screen .input-field-text:-webkit-autofill:hover,
 .sign-in-screen .input-field-text:-webkit-autofill:focus,
 .sign-in-screen .input-field-text:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    box-shadow: 0 0 0 1000px transparent inset !important;
-    background-color: transparent !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
+    box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
     -webkit-text-fill-color: #ffffff !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 .sign-in-screen .check-btn {
-    background-color: #0075ff;
+    background-color: #6366F1;
     color: white;
     border: none;
     border-radius: 6px;
@@ -123,11 +126,11 @@
     font-size: clamp(10px, 1.5vw, 12px);
     cursor: pointer;
     transition: background-color 0.3s ease;
-    flex-shrink: 0; /* 버튼 크기 고정 */
+    flex-shrink: 0;
 }
 
 .sign-in-screen .check-btn:hover {
-    background-color: #005bb5;
+    background-color: #818CF8;
 }
 
 .sign-in-screen #idMessage,
@@ -148,7 +151,7 @@
 .sign-in-screen .button-base_login {
     -webkit-backdrop-filter: blur(120px) brightness(100%);
     backdrop-filter: blur(120px) brightness(100%);
-    background-color: #0075ff;
+    background-color: #6366F1;
     border-radius: 10px;
     display: flex;
     height: 36px;
@@ -164,7 +167,7 @@
 }
 
 .sign-in-screen .button-body {
-    background-color: #0075ff;
+    background-color: #6366F1;
     color: white;
     padding: 8px 12px;
     border: none;
@@ -180,7 +183,7 @@
 }
 
 .sign-in-screen .button-body:hover {
-    background-color: #005bb5;
+    background-color: #818CF8;
 }
 
 .sign-in-screen .text {
@@ -209,7 +212,7 @@
 }
 
 .sign-in-screen .signup-link {
-    color: #0075ff;
+    color: #6366F1;
     text-decoration: none;
     padding-left: 3%
 }
