@@ -45,15 +45,18 @@
                 </div>
               </div>
               <div class="filter-section">
-                <select class="filter-dropdown" id="dataTypeFilter">
-                  <option value="">전체 데이터</option>
-                  <option value="산성도">산성도</option>
-                  <option value="용존산소">용존산소</option>
-                  <option value="수온">수온</option>
-                  <option value="염도">염도</option>
-                  <option value="암모니아">암모니아</option>
-                  <option value="아질산">아질산</option>
-                </select>
+                <div class="custom-dropdown">
+                  <div class="dropdown-selected">전체 데이터</div>
+                  <ul class="dropdown-options">
+                    <li data-value="">전체 데이터</li>
+                    <li data-value="산성도">산성도</li>
+                    <li data-value="용존산소">용존산소</li>
+                    <li data-value="수온">수온</li>
+                    <li data-value="염도">염도</li>
+                    <li data-value="암모니아">암모니아</li>
+                    <li data-value="아질산">아질산</li>
+                  </ul>
+                </div>
                 <label class="sound-toggle">
                   <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
                 </label>
@@ -65,7 +68,7 @@
             <h2 class="section-title">요약</h2>
             <div class="summary-stats">
               <p>현재 위험 상태: <span id="criticalCount">0</span>건</p>
-              <p>현재 경고 상태: <span id="warningCount">0</span>건</p> <!-- 경고 상태 추가 -->
+              <p>현재 경고 상태: <span id="warningCount">0</span>건</p>
             </div>
           </section>
 
@@ -144,7 +147,7 @@
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-    hamburgerBtn.style.zIndex = "1200";
+    //hamburgerBtn.style.zIndex = "1200";
 
     const escapeHTML = (str) => {
       const div = document.createElement("div");
@@ -163,7 +166,6 @@
         const row = document.createElement("tr");
         if (i < paginatedLogs.length) {
           const log = paginatedLogs[i];
-          // 상태에 따라 클래스 추가
           row.classList.add(log.status.includes("🚨 위험") ? "danger" : "warning");
           row.innerHTML = `
             <td>${escapeHTML(log.timestamp)}</td>
@@ -318,15 +320,34 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
-        dataTypeFilter = e.target.value;
-        updateLogSection();
-        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
+      const dropdown = document.querySelector(".custom-dropdown");
+      const selected = dropdown.querySelector(".dropdown-selected");
+      const options = dropdown.querySelector(".dropdown-options");
+
+      selected.addEventListener("click", () => {
+        options.classList.toggle("active");
+        console.log(`🔍 드롭다운 토글: ${options.classList.contains("active") ? "열림" : "닫힘"}`);
+      });
+
+      options.querySelectorAll("li").forEach(option => {
+        option.addEventListener("click", () => {
+          dataTypeFilter = option.getAttribute("data-value");
+          selected.textContent = option.textContent;
+          options.classList.remove("active");
+          updateLogSection();
+          console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target)) {
+          options.classList.remove("active");
+        }
       });
 
       hamburgerBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
-        hamburgerBtn.style.display = "block";
+        //hamburgerBtn.style.display = "block";
         console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`);
       });
 
