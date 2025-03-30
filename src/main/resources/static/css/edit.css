@@ -1,4 +1,10 @@
 /* 정보 수정 페이지 기본 설정 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .edit-screen {
     align-items: center;
     justify-content: center;
@@ -44,16 +50,16 @@
 }
 
 .edit-screen .text-21 {
-    color: #FFFFFF;
+     color: #FFFFFF;
     font-family: "Abel", Helvetica;
     font-size: clamp(18px, 4vw, 28px);
     font-weight: 400;
-    letter-spacing: 2px;
+    letter-spacing: 0;
     line-height: 1.2;
     white-space: nowrap;
     margin-bottom: 8px;
-    text-transform: uppercase;
 }
+
 
 /* 폼 스타일 */
 .edit-screen .edit-form {
@@ -87,7 +93,9 @@
 }
 
 .edit-screen .input-field-text {
-    background: linear-gradient(145deg, #1E2A44, #141933);
+    -webkit-backdrop-filter: blur(42px) brightness(100%);
+    backdrop-filter: blur(42px) brightness(100%);
+    background: rgba(31, 41, 68, 0.9);
     border: 1px solid #4B5EAA;
     border-radius: 10px;
     height: 54px;
@@ -97,21 +105,37 @@
     font-size: 16px;
     outline: none;
     box-sizing: border-box;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-screen .input-field-text:focus {
+    border-color: #6366F1;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
 .edit-screen .input-field-text[readonly] {
-    background: rgba(30, 42, 68, 0.8);
+    background: rgba(31, 41, 68, 0.8);
     cursor: not-allowed;
+    pointer-events: none;
 }
 
 .edit-screen .input-field-text:hover:not([readonly]) {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-color: #6366F1;
 }
 
 .edit-screen .input-field-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
+}
+
+.edit-screen .input-field-text:-webkit-autofill,
+.edit-screen .input-field-text:-webkit-autofill:hover,
+.edit-screen .input-field-text:-webkit-autofill:focus,
+.edit-screen .input-field-text:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
+    box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* 버튼 스타일 */
@@ -165,7 +189,7 @@
 
 .edit-screen .text {
     font-family: "Abel", Helvetica;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
     color: #FFFFFF;
     letter-spacing: 0;
@@ -179,7 +203,7 @@
     overflow: hidden;
 }
 
-/* 햄버거 버튼 스타일 */
+/* 햄버거 */
 .hamburger-btn {
     position: fixed;
     top: 10px;
@@ -191,7 +215,7 @@
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
-    z-index: 1100;
+    z-index: 3100;
     transition: background-color 0.3s ease;
 }
 
@@ -199,92 +223,97 @@
     background: rgba(99, 102, 241, 0.4);
 }
 
-/* 사이드바 스타일 */
+/* 사이드바 */
 .sidebar {
-    width: 190px;
-    background: linear-gradient(180deg, #141933, #1E2A44);
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 1000;
-    overflow-y: auto;
-    transition: left 0.3s ease;
+  width: 180px;
+  background: linear-gradient(180deg, #141933, #1E2A44);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 3000;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar.active {
-    left: 0;
+  left: 0;
 }
 
 .sidebar-header {
-    color: #FFFFFF;
-    font-family: "Abel", Helvetica;
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    text-align: center;
+  color: #FFFFFF;
+  font-family: "Abel", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar-header h2 {
+  font-size: 25px;
+  font-weight: 400;
 }
 
 .sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-menu li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .sidebar-menu a {
-    color: #FFFFFF;
-    text-decoration: none;
-    font-family: "Abel", Helvetica;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-family: "Abel", Helvetica;
+  font-size: 16px;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(99, 102, 241, 0.3);
+  background-color: rgba(99, 102, 241, 0.3);
+  color: #FFFFFF;
 }
 
+/* 서브 메뉴 */
 .sub-menu {
-    display: none;
-    list-style: none;
-    padding-left: 20px;
-    margin-top: 5px;
+  display: none;
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 5px;
 }
 
 .sub-menu li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sub-menu a {
-    font-size: 14px;
-    padding: 8px;
-    color: #FFFFFF;
+  font-size: 14px;
+  padding: 8px;
+  color: #FFFFFF;
 }
 
 .sub-menu a:hover {
-    color: #FFFFFF;
-    background-color: rgba(99, 102, 241, 0.2);
+  color: #FFFFFF;
+  background-color: rgba(99, 102, 241, 0.2);
 }
 
-.edit-screen .input-field-text:-webkit-autofill,
-.edit-screen .input-field-text:-webkit-autofill:hover,
-.edit-screen .input-field-text:-webkit-autofill:focus,
-.edit-screen .input-field-text:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #1E2A44 inset !important;
-    box-shadow: 0 0 0 1000px #1E2A44 inset !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    transition: background-color 5000s ease-in-out 0s;
+.container-center-horizontal {
+  position: relative;
+  z-index: 1;
 }
+
 
 input:-internal-autofill-selected {
-    background-color: #1E2A44 !important;
+    background-color: rgba(31, 41, 68, 0.9) !important;
     color: #FFFFFF !important;
 }
+

@@ -1,4 +1,10 @@
 /* 수조 수정 페이지 기본 설정 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .tank-screen {
     align-items: center;
     justify-content: center;
@@ -54,6 +60,8 @@
     white-space: nowrap;
     margin-bottom: 6px;
     text-transform: uppercase;
+    background: #0D1321;
+    padding: 10px 0;
 }
 
 /* 폼 스타일 */
@@ -79,15 +87,21 @@
     font-family: "Abel", Helvetica;
     font-size: 14px;
     font-weight: 400;
-    letter-spacing: 0;
-    line-height: 19.6px;
+    letter-spacing: 0.5;
+    line-height: 20px;
     margin-left: 4.5px;
     min-height: 20px;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    transition: font-size 0.3s ease;
 }
 
 .tank-screen .input-field-text {
-    background: linear-gradient(145deg, #1E2A44, #141933);
+    -webkit-backdrop-filter: blur(42px) brightness(100%);
+    backdrop-filter: blur(42px) brightness(100%);
+    background: rgba(31, 41, 68, 0.9);
     border: 1px solid #4B5EAA;
     border-radius: 10px;
     height: 54px;
@@ -97,12 +111,13 @@
     font-size: 16px;
     outline: none;
     box-sizing: border-box;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.tank-screen .input-field-text:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.tank-screen .input-field-text:focus {
     border-color: #6366F1;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
 .tank-screen .input-field-text::placeholder {
@@ -120,8 +135,8 @@
 .tank-screen .input-field-text:-webkit-autofill:hover,
 .tank-screen .input-field-text:-webkit-autofill:focus,
 .tank-screen .input-field-text:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #1E2A44 inset !important;
-    box-shadow: 0 0 0 1000px #1E2A44 inset !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
+    box-shadow: 0 0 0 1000px rgba(31, 41, 68, 0.9) inset !important;
     -webkit-text-fill-color: #FFFFFF !important;
     transition: background-color 5000s ease-in-out 0s;
 }
@@ -136,6 +151,8 @@
 }
 
 .tank-screen .button-base_login {
+    -webkit-backdrop-filter: blur(120px) brightness(100%);
+    backdrop-filter: blur(120px) brightness(100%);
     border-radius: 10px;
     display: flex;
     height: 45px;
@@ -144,7 +161,7 @@
     width: 48%;
     cursor: pointer;
     box-sizing: border-box;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
 }
 
 .tank-screen .save-btn {
@@ -176,7 +193,7 @@
 
 .tank-screen .text {
     font-family: "Abel", Helvetica;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
     color: #FFFFFF;
     letter-spacing: 0;
@@ -190,7 +207,7 @@
     overflow: hidden;
 }
 
-/* 햄버거 버튼 스타일 */
+/* 햄버거 */
 .hamburger-btn {
     position: fixed;
     top: 10px;
@@ -202,7 +219,7 @@
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
-    z-index: 1100;
+    z-index: 3100;
     transition: background-color 0.3s ease;
 }
 
@@ -212,7 +229,7 @@
 
 /* 사이드바 스타일 */
 .sidebar {
-    width: 190px;
+    width: 180px;
     background: linear-gradient(180deg, #141933, #1E2A44);
     height: 100vh;
     position: fixed;
@@ -220,9 +237,10 @@
     left: -250px;
     padding: 20px;
     box-sizing: border-box;
-    z-index: 1000;
+    z-index: 3000;
     overflow-y: auto;
     transition: left 0.3s ease;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar.active {
@@ -236,6 +254,11 @@
     font-weight: 400;
     margin-bottom: 20px;
     text-align: center;
+}
+
+.sidebar-header h2 {
+    font-size: 25px;
+    font-weight: 400;
 }
 
 .sidebar-menu {
@@ -261,6 +284,7 @@
 
 .sidebar-menu a:hover {
     background-color: rgba(99, 102, 241, 0.3);
+    color: #FFFFFF;
 }
 
 .sub-menu {
