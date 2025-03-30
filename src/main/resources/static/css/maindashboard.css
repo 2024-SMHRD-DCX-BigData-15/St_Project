@@ -145,12 +145,13 @@ body {
   flex-grow: 0;
 }
 
+/* 로그아웃 버튼 */
 .logout-btn {
   background-color: #6366F1;
-  color: #FFFFFF; /* 기존 white 유지 */
+  color: #FFFFFF; /* 변경 */
   border: 1px solid #4F46E5;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 8px 16px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
@@ -158,9 +159,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 30px;
-  line-height: normal;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
 .logout-btn:hover {

@@ -12,7 +12,7 @@
 .tank-screen .main-dashboard {
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+    background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%); /* 기억된 CSS의 body 배경 그라디언트 적용 */
     display: flex;
     height: 100%;
     width: 100%;
@@ -43,15 +43,19 @@
 }
 
 .tank-screen .text-21 {
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 page-title 색상 적용 */
     font-family: "Abel", Helvetica;
     font-size: 28px;
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 500; /* 기억된 CSS의 page-title에서 font-weight 적용 */
+    letter-spacing: 2px; /* 기억된 CSS의 page-title에서 letter-spacing 적용 */
     line-height: 39px;
     min-height: 39px;
     white-space: nowrap;
     margin-bottom: 6px;
+    text-transform: uppercase; /* 기억된 CSS의 page-title에서 text-transform 적용 */
+    background: #0D1321; /* 기억된 CSS의 page-title 배경 적용 */
+    border-radius: 0; /* 기억된 CSS의 page-title border-radius 적용 */
+    padding: 10px 0; /* 기억된 CSS의 page-title padding 적용 */
 }
 
 /* 폼 스타일 */
@@ -74,39 +78,44 @@
 }
 
 .tank-screen .text-1 {
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 data-label 색상 적용 */
     font-family: "Abel", Helvetica;
     font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 600; /* 기억된 CSS의 data-label에서 font-weight 적용 */
+    letter-spacing: 0.5px; /* 기억된 CSS의 data-label에서 letter-spacing 적용 */
     line-height: 19.6px;
     margin-left: 4.5px;
     min-height: 20px;
     white-space: nowrap;
     display: flex;
     align-items: center;
+    text-transform: uppercase; /* 기억된 CSS의 data-label에서 text-transform 적용 */
+    transition: font-size 0.3s ease; /* 기억된 CSS의 data-label에서 transition 적용 */
 }
 
 .tank-screen .input-field-text {
-    -webkit-backdrop-filter: blur(42px) brightness(100%);
-    backdrop-filter: blur(42px) brightness(100%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0.01%, rgba(255, 255, 255, 0.04) 100%);
-    border: 2px solid;
-    border-color: transparent;
-    border-image: radial-gradient(rgb(21, 21, 21), rgba(21, 21, 21, 0)) 1;
-    border-radius: 20px;
+    background: linear-gradient(145deg, #1E2A44, #141933); /* 기억된 CSS의 tank-info 배경 그라디언트 적용 */
+    border: 1px solid #4B5EAA; /* 기억된 CSS의 tank-info 테두리 적용 */
+    border-radius: 10px; /* 기억된 CSS의 data-item에서 border-radius 적용 */
     height: 54px;
     padding: 0 20px;
     width: 100%;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 색상 적용 */
     font-size: 16px;
-    background: transparent;
     outline: none;
     box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25); /* 기억된 CSS의 data-item에서 box-shadow 적용 */
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; /* 기억된 CSS의 data-item에서 transition 적용 */
+}
+
+.tank-screen .input-field-text:hover {
+    background: rgba(55, 65, 81, 0.9); /* 기억된 CSS의 data-item 호버 배경 적용 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35); /* 기억된 CSS의 data-item 호버 box-shadow 적용 */
+    transform: translateY(-1px); /* 기억된 CSS의 data-item 호버 transform 적용 */
 }
 
 .tank-screen .input-field-text::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.2); /* 기억된 CSS의 data-unit 투명도 조정 */
 }
 
 .tank-screen .input-field-text[type="date"]::-webkit-calendar-picker-indicator {
@@ -123,20 +132,20 @@
     -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
     box-shadow: 0 0 0 1000px transparent inset !important;
     background-color: transparent !important;
-    -webkit-text-fill-color: #ffffff !important;
+    -webkit-text-fill-color: #FFFFFF !important; /* 기억된 CSS의 색상 적용 */
     transition: background-color 5000s ease-in-out 0s;
 }
 
 .tank-screen .arrow {
     margin-left: 5px;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 색상 적용 */
     font-size: 12px;
     display: inline;
 }
 
 .tank-screen .calendar-icon {
     margin-left: 5px;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 색상 적용 */
     font-size: 16px;
     cursor: pointer;
 }
@@ -152,9 +161,8 @@
 }
 
 .tank-screen .button-base_login {
-    -webkit-backdrop-filter: blur(120px) brightness(100%);
-    backdrop-filter: blur(120px) brightness(100%);
-    border-radius: 12px;
+    border: 1px solid #4F46E5; /* 기억된 CSS의 logout-btn 테두리 적용 */
+    border-radius: 8px; /* 기억된 CSS의 logout-btn border-radius 적용 */
     display: flex;
     height: 45px;
     justify-content: center;
@@ -162,30 +170,37 @@
     width: 48%;
     cursor: pointer;
     box-sizing: border-box;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease; /* 기억된 CSS의 logout-btn transition 적용 */
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3); /* 기억된 CSS의 logout-btn box-shadow 적용 */
 }
 
 .tank-screen .add-btn {
-    background-color: #0075ff;
+    background-color: #6366F1; /* 기억된 CSS의 logout-btn 배경색 적용 */
 }
 
 .tank-screen .cancel-btn {
-    background-color: #ccc;
+    background-color: #4A5375; /* 기억된 CSS의 logout-btn 배경색을 기반으로 조정 */
 }
 
 .tank-screen .add-btn:hover {
-    background-color: #005bb5;
+    background-color: #818CF8; /* 기억된 CSS의 logout-btn 호버 배경색 적용 */
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5); /* 기억된 CSS의 logout-btn 호버 box-shadow 적용 */
 }
 
 .tank-screen .cancel-btn:hover {
-    background-color: #999;
+    background-color: #6A7395; /* 기억된 CSS의 logout-btn 호버 배경색을 기반으로 조정 */
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5); /* 기억된 CSS의 logout-btn 호버 box-shadow 적용 */
+}
+
+.tank-screen .button-base_login:active {
+    transform: scale(0.98); /* 기억된 CSS의 logout-btn active transform 적용 */
 }
 
 .tank-screen .text {
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 색상 적용 */
     letter-spacing: 0;
     line-height: normal;
 }
@@ -202,25 +217,25 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(99, 102, 241, 0.2); /* 기억된 CSS의 hamburger-btn 배경 적용 */
     border: none;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 hamburger-btn 색상 적용 */
     font-size: 24px;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
     z-index: 1100;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s; /* 기억된 CSS의 hamburger-btn transition 적용 */
 }
 
 .hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.4); /* 기억된 CSS의 hamburger-btn 호버 배경 적용 */
 }
 
 /* 사이드바 스타일 */
 .sidebar {
     width: 190px;
-    background:  rgba(15, 18, 59, 0.95);
+    background: linear-gradient(180deg, #141933, #1E2A44); /* 기억된 CSS의 sidebar 배경 그라디언트 적용 */
     height: 100vh;
     position: fixed;
     top: 0;
@@ -229,7 +244,8 @@
     box-sizing: border-box;
     z-index: 1000;
     overflow-y: auto;
-    transition: left 0.3s ease;
+    transition: left 0.3s ease; /* 기억된 CSS의 sidebar transition 적용 */
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3); /* 기억된 CSS의 sidebar box-shadow 적용 */
 }
 
 .sidebar.active {
@@ -237,7 +253,7 @@
 }
 
 .sidebar-header {
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 sidebar-header 색상 적용 */
     font-family: "Abel", Helvetica;
     font-size: 20px;
     font-weight: 400;
@@ -256,18 +272,19 @@
 }
 
 .sidebar-menu a {
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 sidebar-menu a 색상 적용 */
     text-decoration: none;
     font-family: "Abel", Helvetica;
     font-size: 16px;
     display: block;
     padding: 10px;
     border-radius: 8px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s; /* 기억된 CSS의 sidebar-menu a transition 적용 */
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(99, 102, 241, 0.3); /* 기억된 CSS의 sidebar-menu a 호버 배경 적용 */
+    color: #FFFFFF; /* 기억된 CSS의 sidebar-menu a 호버 색상 적용 */
 }
 
 .sub-menu {
@@ -284,21 +301,20 @@
 .sub-menu a {
     font-size: 14px;
     padding: 8px;
-    color: #a0aec0;
+    color: #FFFFFF; /* 기억된 CSS의 sub-menu a 색상 적용 */
 }
 
 .sub-menu a:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF; /* 기억된 CSS의 sub-menu a 호버 색상 적용 */
+    background-color: rgba(99, 102, 241, 0.2); /* 기억된 CSS의 sub-menu a 호버 배경 적용 */
 }
-
 
 /* user-info 스타일 추가 */
 .user-info {
     position: absolute;
     top: 55px;
     right: 200px;
-    color: #ffffff;
+    color: #FFFFFF; /* 기억된 CSS의 user-info 색상 적용 */
     font-family: "Abel", Helvetica;
     font-size: 14px;
     display: flex;
@@ -318,18 +334,28 @@
     align-items: center;
 }
 
+/* 로그아웃 버튼 */
 .logout-btn {
-    background-color: #4A5375;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-    line-height: 1;
+  background-color: #6366F1;
+  color: #FFFFFF; /* 변경 */
+  border: 1px solid #4F46E5;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  white-space: nowrap;
 }
 
 .logout-btn:hover {
-    background-color: #6A7395;
+    background-color: #818CF8; /* 기억된 CSS의 logout-btn 호버 배경색 적용 */
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5); /* 기억된 CSS의 logout-btn 호버 box-shadow 적용 */
+}
+
+.logout-btn:active {
+    transform: scale(0.98); /* 기억된 CSS의 logout-btn active transform 적용 */
 }
