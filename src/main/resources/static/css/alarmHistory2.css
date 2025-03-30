@@ -26,7 +26,7 @@ body {
 .alarm-dashboard-screen .main-dashboard {
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgb(15, 18, 59) 0%, rgb(8.74, 12.52, 45.82) 58.69%, rgb(2.3, 5.28, 21.39) 100%);
+  background: linear-gradient(180deg, #0D1321 0%, #1A2639 58.69%, #2E3B55 100%);
   display: flex;
   min-height: 100vh;
   width: 100%;
@@ -94,7 +94,6 @@ body {
   white-space: nowrap;
 }
 
-
 .alarm-dashboard-screen .text-21 {
   color: #ffffff;
   font-family: "Abel", Helvetica;
@@ -107,6 +106,34 @@ body {
   text-align: left;
 }
 
+/* fixed-header */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  z-index: 2000; /* content보다 높게 설정 */
+  padding: 40px 0;
+  height: 100px;
+  overflow: visible; /* 드롭다운이 잘리지 않게 */
+}
+
+/* content */
+.alarm-dashboard-screen .content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  padding-top: 120px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1000; /* fixed-header보다 낮게 */
+}
+
+/* filter-section 아래에 추가된 커스텀 드롭다운 스타일 */
 .filter-section {
   display: flex;
   align-items: center;
@@ -115,21 +142,102 @@ body {
   width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2100; /* content보다 높게 */
 }
 
-.filter-dropdown {
-  background-color: #0f1535;
-  border: 0.5px solid #e2e8f04c;
+.custom-dropdown {
+  position: relative;
+  width: 180px;
+  z-index: 2100;
+}
+
+.dropdown-selected {
+  -webkit-backdrop-filter: blur(42px) brightness(100%);
+  backdrop-filter: blur(42px) brightness(100%);
+  background: rgba(31, 41, 68, 0.9);
+  border: 1px solid #4B5EAA;
   border-radius: 15px;
   padding: 8px;
   font-size: 14px;
   color: #ffffff;
-  width: 180px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.filter-dropdown option {
-  background-color: #0f1535;
+.dropdown-selected:hover {
+  border-color: #6366F1;
+}
+
+.dropdown-selected::after {
+  content: "▼"; /* 드롭다운 화살표 */
+  font-size: 10px;
+  margin-left: 10px;
+}
+
+.dropdown-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: rgba(31, 41, 68, 0.9);
+  border: 1px solid #4B5EAA;
+  border-radius: 15px;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  z-index: 2100; /* content보다 높게 */
+}
+
+.dropdown-options.active {
+  display: block;
+}
+
+.dropdown-options li {
+  padding: 8px;
   color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-options li:hover {
+  background-color: rgba(99, 102, 241, 0.7); /* 호버 시 보라색 */
+}
+
+.dropdown-options li:first-child {
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.dropdown-options li:last-child {
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* 히스토리 섹션의 z-index 낮추기 */
+.section {
+  width: 100%;
+  position: relative;
+  z-index: 900; /* 드롭다운 아래로 */
+}
+
+.alarm-table {
+  width: 100%;
+  overflow-x: auto;
+  position: relative;
+  z-index: 900; /* 드롭다운 아래로 */
+}
+
+/* 기존 .filter-dropdown 제거 */
+.filter-dropdown {
+  display: none;
 }
 
 .sound-toggle {
@@ -138,6 +246,32 @@ body {
   align-items: center;
   gap: 5px;
   font-size: 14px;
+}
+
+.sound-toggle input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: #4B5EAA;
+  border: 1px solid #4B5EAA;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.sound-toggle input[type="checkbox"]:checked {
+  background-color: #6366F1;
+}
+
+.sound-toggle input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: #ffffff;
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .alarm-dashboard-screen .section {
@@ -165,13 +299,30 @@ body {
 .alarm-dashboard-screen table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(99, 102, 241, 0.1);
   border-radius: 10px;
   table-layout: fixed;
   overflow: hidden;
   height: 288px; /* thead(48px) + tbody(5행 x 48px) = 288px */
 }
 
+.alarm-dashboard-screen th:first-child,
+.alarm-dashboard-screen td:first-child {
+  border-top-left-radius: 10px;
+}
+
+.alarm-dashboard-screen th:last-child,
+.alarm-dashboard-screen td:last-child {
+  border-top-right-radius: 10px;
+}
+
+.alarm-dashboard-screen tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.alarm-dashboard-screen tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
 
 .alarm-dashboard-screen th,
 .alarm-dashboard-screen td {
@@ -190,30 +341,29 @@ body {
   white-space: nowrap;
 }
 
-/* 각 열의 너비 조정 */
 .alarm-dashboard-screen th:nth-child(1),
 .alarm-dashboard-screen td:nth-child(1) { /* 수조 번호 */
-  width: 10%; /* 좁게 설정 */
+  width: 10%;
 }
 
 .alarm-dashboard-screen th:nth-child(2),
 .alarm-dashboard-screen td:nth-child(2) { /* 날짜 */
-  width: 15%; /* 좁게 설정 */
+  width: 15%;
 }
 
 .alarm-dashboard-screen th:nth-child(3),
 .alarm-dashboard-screen td:nth-child(3) { /* 시간 */
-  width: 10%; /* 좁게 설정 */
+  width: 10%;
 }
 
 .alarm-dashboard-screen th:nth-child(4),
 .alarm-dashboard-screen td:nth-child(4) { /* 내용 */
-  width: 45%; /* 넓게 설정 */
+  width: 45%;
 }
 
 .alarm-dashboard-screen th:nth-child(5),
 .alarm-dashboard-screen td:nth-child(5) { /* 상태 */
-  width: 20%; /* 좁게 설정 */
+  width: 20%;
 }
 
 .alarm-dashboard-screen tr {
@@ -248,7 +398,7 @@ body {
 }
 
 .alarm-dashboard-screen .page-btn {
-  background-color: #0075ff;
+  background-color: #6366F1;
   color: #ffffff;
   border: none;
   padding: 4px 10px;
@@ -265,7 +415,11 @@ body {
 }
 
 .alarm-dashboard-screen .page-btn:hover:not(:disabled) {
-  background-color: #005bb5;
+  background-color: #818CF8;
+}
+
+.alarm-dashboard-screen .pagination #logPage {
+  color: #ffffff;
 }
 
 /* 요약 통계 (필요 시 추가) */
@@ -296,7 +450,7 @@ body {
 }
 
 .alarm-dashboard-screen .back-link {
-  color: #0075ff;
+  color: #6366F1;
   text-decoration: none;
 }
 
@@ -316,7 +470,7 @@ body {
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
-  z-index: 1200; /* 사이드바보다 높은 z-index로 설정 */
+  z-index: 1300;
   transition: background-color 0.3s;
 }
 
@@ -334,7 +488,7 @@ body {
   left: -250px;
   padding: 20px;
   box-sizing: border-box;
-  z-index: 1100;
+  z-index: 1200;
   overflow-y: auto;
   transition: left 0.3s ease;
 }
@@ -422,7 +576,7 @@ body {
 }
 
 .logout-btn {
-  background-color: #4A5375;
+  background-color: #6366F1;
   color: white;
   padding: 6px 12px;
   border: none;
@@ -434,7 +588,7 @@ body {
 }
 
 .logout-btn:hover {
-  background-color: #6A7395;
+  background-color: #818CF8;
 }
 
 /* 모바일 반응형 */
@@ -484,9 +638,11 @@ body {
     flex-direction: column;
     align-items: flex-start;
     padding: 0 10px;
+    gap: 10px;
   }
   .filter-dropdown {
     width: 100%;
+    height: 40px;
   }
   .hamburger-btn {
     font-size: 20px;
@@ -500,7 +656,8 @@ body {
   }
   .alarm-dashboard-screen .section-title {
     margin-bottom: 4px;
-  }x
+    font-size: 20px;
+  }
   .summary-stats {
     padding: 8px;
   }
@@ -510,7 +667,6 @@ body {
   .alarm-dashboard-screen .page-btn {
     padding: 3px 8px;
   }
-  /* 모바일에서도 동일한 비율 유지 */
   .alarm-dashboard-screen th:nth-child(1),
   .alarm-dashboard-screen td:nth-child(1) {
     width: 10%;
@@ -531,4 +687,11 @@ body {
   .alarm-dashboard-screen td:nth-child(5) {
     width: 20%;
   }
+  .custom-dropdown {
+    width: 100%;
+  }
+  .dropdown-selected {
+    height: 40px;
+  }
+  
 }

@@ -45,15 +45,18 @@
                 </div>
               </div>
               <div class="filter-section">
-                <select class="filter-dropdown" id="dataTypeFilter">
-                  <option value="">전체 데이터</option>
-                  <option value="산성도">산성도</option>
-                  <option value="용존산소">용존산소</option>
-                  <option value="수온">수온</option>
-                  <option value="염도">염도</option>
-                  <option value="암모니아">암모니아</option>
-                  <option value="아질산">아질산</option>
-                </select>
+                <div class="custom-dropdown">
+                  <div class="dropdown-selected">전체 데이터</div>
+                  <ul class="dropdown-options">
+                    <li data-value="">전체 데이터</li>
+                    <li data-value="산성도">산성도</li>
+                    <li data-value="용존산소">용존산소</li>
+                    <li data-value="수온">수온</li>
+                    <li data-value="염도">염도</li>
+                    <li data-value="암모니아">암모니아</li>
+                    <li data-value="아질산">아질산</li>
+                  </ul>
+                </div>
                 <label class="sound-toggle">
                   <input type="checkbox" id="soundToggle" checked> 알람 소리 ON
                 </label>
@@ -272,10 +275,31 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("dataTypeFilter").addEventListener("change", (e) => {
-        dataTypeFilter = e.target.value;
-        updateHistorySection();
-        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
+      // 커스텀 드롭다운 설정
+      const dropdown = document.querySelector(".custom-dropdown");
+      const selected = dropdown.querySelector(".dropdown-selected");
+      const options = dropdown.querySelector(".dropdown-options");
+
+      selected.addEventListener("click", () => {
+        options.classList.toggle("active");
+        console.log(`🔍 드롭다운 토글: ${options.classList.contains("active") ? "열림" : "닫힘"}`);
+      });
+
+      options.querySelectorAll("li").forEach(option => {
+        option.addEventListener("click", () => {
+          dataTypeFilter = option.getAttribute("data-value");
+          selected.textContent = option.textContent; // 선택된 텍스트 업데이트
+          options.classList.remove("active"); // 드롭다운 닫기
+          updateHistorySection();
+          console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
+        });
+      });
+
+      // 외부 클릭 시 드롭다운 닫기
+      document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target)) {
+          options.classList.remove("active");
+        }
       });
 
       hamburgerBtn.addEventListener("click", () => {
