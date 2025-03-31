@@ -99,239 +99,256 @@
   </div>
 
   <script>
-    function handleLogout() {
-      console.log("🚀 로그아웃 요청");
-      const authToken = localStorage.getItem("authToken");
-      fetch("/api/member/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: authToken }),
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log("✅ 서버 로그아웃 성공");
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("autoLogin");
-          localStorage.removeItem("savedUserId");
-          localStorage.removeItem("savedPassword");
-          sessionStorage.clear();
-          document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          console.log("✅ 모든 저장소 데이터 삭제 완료");
-          setTimeout(() => {
-            alert("✅ 로그아웃 완료!");
-            window.location.href = "/login";
-          }, 1000);
-        } else {
-          console.warn("🚨 로그아웃 실패: 응답 오류");
+  function handleLogout() {
+    console.log("🚀 로그아웃 요청");
+    const authToken = localStorage.getItem("authToken");
+    fetch("/api/member/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: authToken }),
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("✅ 서버 로그아웃 성공");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("autoLogin");
+        localStorage.removeItem("savedUserId");
+        localStorage.removeItem("savedPassword");
+        sessionStorage.clear();
+        document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        console.log("✅ 모든 저장소 데이터 삭제 완료");
+        setTimeout(() => {
+          alert("✅ 로그아웃 완료!");
+          window.location.href = "/login";
+        }, 1000);
+      } else {
+        console.warn("🚨 로그아웃 실패: 응답 오류");
+      }
+    })
+    .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+  }
+
+  let alarmHistory = [];
+  let currentHistoryPage = 1;
+  const historyPerPage = 5;
+  let dataTypeFilter = "";
+  const alarmHistoryTable = document.getElementById("alarmLog");
+  const loadingDiv = document.getElementById("loading");
+  const sidebar = document.getElementById("sidebar");
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+  const escapeHTML = (str) => {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
+  function renderAlarmHistory(history = alarmHistory) {
+    requestAnimationFrame(() => {
+      const filteredHistory = history.filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
+      const totalItems = filteredHistory.length;
+      const totalPages = Math.ceil(totalItems / historyPerPage);
+      const start = (currentHistoryPage - 1) * historyPerPage;
+      const end = start + historyPerPage;
+      const paginatedHistory = filteredHistory.slice(start, end);
+
+      const rows = alarmHistoryTable.getElementsByTagName("tr");
+      for (let i = 0; i < historyPerPage; i++) {
+        let row = rows[i];
+        if (!row) {
+          row = document.createElement("tr");
+          row.style.height = "48px";
+          alarmHistoryTable.appendChild(row);
         }
-      })
-      .catch(error => console.error("🚨 로그아웃 요청 중 오류 발생:", error));
+
+        row.className = "";
+        row.style.borderBottomLeftRadius = "0";
+        row.style.borderBottomRightRadius = "0";
+
+        if (i < paginatedHistory.length) {
+          const hist = paginatedHistory[i];
+          const status = hist.message.includes("⚠️ 경고") ? "⚠️ 경고" : "🚨 위험";
+          row.classList.add(status === "⚠️ 경고" ? "warning" : "danger");
+          row.innerHTML = `
+            <td>${escapeHTML(hist.tankNumber)}</td>
+            <td>${escapeHTML(hist.date)}</td>
+            <td>${escapeHTML(hist.time)}</td>
+            <td>${escapeHTML(hist.message)}</td>
+            <td class="action confirmed">${escapeHTML(hist.status)}</td>
+          `;
+        } else {
+          row.innerHTML = `
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          `;
+        }
+
+        if (i === historyPerPage - 1) {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length > 0) {
+            cells[0].style.borderBottomLeftRadius = "10px";
+            cells[cells.length - 1].style.borderBottomRightRadius = "10px";
+          }
+        }
+      }
+
+      while (rows.length > historyPerPage) {
+        alarmHistoryTable.removeChild(rows[historyPerPage]);
+      }
+
+      document.getElementById("logPage").textContent = currentHistoryPage;
+      document.getElementById("prevLog").disabled = currentHistoryPage === 1;
+      document.getElementById("nextLog").disabled = currentHistoryPage >= totalPages;
+    });
+  }
+
+  function updateHistorySection() {
+    currentHistoryPage = 1;
+    renderAlarmHistory();
+    console.log(`📄 히스토리 섹션 업데이트: 페이지=${currentHistoryPage}, 필터=${dataTypeFilter}`);
+  }
+
+  document.getElementById("prevLog").addEventListener("click", () => {
+    if (currentHistoryPage > 1) {
+      currentHistoryPage--;
+      renderAlarmHistory();
+      console.log(`📄 히스토리 페이지 이동: 이전 페이지=${currentHistoryPage}`);
     }
+  });
 
-    let alarmHistory = [];
-    let currentHistoryPage = 1;
-    const historyPerPage = 5;
-    let dataTypeFilter = "";
-    const alarmHistoryTable = document.getElementById("alarmLog");
-    const loadingDiv = document.getElementById("loading");
-    const sidebar = document.getElementById("sidebar");
-    const hamburgerBtn = document.getElementById("hamburgerBtn");
+  document.getElementById("nextLog").addEventListener("click", () => {
+    const filteredHistory = alarmHistory.filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
+    const totalItems = filteredHistory.length;
+    const totalPages = Math.ceil(totalItems / historyPerPage);
+    if (currentHistoryPage < totalPages) {
+      currentHistoryPage++;
+      renderAlarmHistory();
+      console.log(`📄 히스토리 페이지 이동: 다음 페이지=${currentHistoryPage}`);
+    }
+  });
 
-    const escapeHTML = (str) => {
-      const div = document.createElement("div");
-      div.textContent = str;
-      return div.innerHTML;
+  function addToHistory(message, tankNumber, status, timestamp) {
+    const now = timestamp ? new Date(timestamp) : new Date();
+    const date = now.toISOString().slice(0, 10);
+    const time = now.toTimeString().slice(0, 5);
+    const hist = {
+      date,
+      time,
+      tankNumber,
+      message,
+      status,
+      createdAt: now.getTime()
     };
 
-    function renderAlarmHistory(history = alarmHistory) {
-      requestAnimationFrame(() => {
-        const filteredHistory = history.filter(hist => !dataTypeFilter || hist.message.includes(dataTypeFilter));
-        const start = (currentHistoryPage - 1) * historyPerPage;
-        const end = start + historyPerPage;
-        const paginatedHistory = filteredHistory.slice(start, end);
+    alarmHistory.push(hist);
+    alarmHistory.sort((a, b) => b.createdAt - a.createdAt);
+    updateHistorySection();
+    console.log(`🔔 새로운 히스토리 추가: ${message} (수조 ${tankNumber})`);
+  }
 
-        const rows = alarmHistoryTable.getElementsByTagName("tr");
-        for (let i = 0; i < historyPerPage; i++) {
-          let row = rows[i];
-          if (!row) {
-            row = document.createElement("tr");
-            row.style.height = "48px";
-            alarmHistoryTable.appendChild(row);
-          }
+  function playAlarmSound() {
+    console.log("🔇 알람 소리 재생 비활성화됨");
+  }
 
-          row.className = "";
-          row.style.borderBottomLeftRadius = "0";
-          row.style.borderBottomRightRadius = "0";
+  let isFetching = false;
+  let fetchTimeout = null;
 
-          if (i < paginatedHistory.length) {
-            const hist = paginatedHistory[i];
-            const status = hist.message.includes("⚠️ 경고") ? "⚠️ 경고" : "🚨 위험";
-            row.classList.add(status === "⚠️ 경고" ? "warning" : "danger");
-            row.innerHTML = `
-              <td>${escapeHTML(hist.tankNumber)}</td>
-              <td>${escapeHTML(hist.date)}</td>
-              <td>${escapeHTML(hist.time)}</td>
-              <td>${escapeHTML(hist.message)}</td>
-              <td class="action confirmed">${escapeHTML(hist.status)}</td>
-            `;
-          } else {
-            row.innerHTML = `
-              <td> </td>
-              <td> </td>
-              <td> </td>
-              <td> </td>
-              <td> </td>
-            `;
-          }
-
-          if (i === historyPerPage - 1) {
-            const cells = row.getElementsByTagName("td");
-            if (cells.length > 0) {
-              cells[0].style.borderBottomLeftRadius = "10px";
-              cells[cells.length - 1].style.borderBottomRightRadius = "10px";
-            }
-          }
-        }
-
-        while (rows.length > historyPerPage) {
-          alarmHistoryTable.removeChild(rows[historyPerPage]);
-        }
-
-        document.getElementById("logPage").textContent = currentHistoryPage;
-        document.getElementById("prevLog").disabled = currentHistoryPage === 1;
-        document.getElementById("nextLog").disabled = end >= filteredHistory.length;
-      });
+  async function fetchAlarmData() {
+    if (isFetching) {
+      console.log("⏳ 데이터 가져오기 중, 중복 요청 방지");
+      return;
     }
 
-    function updateHistorySection() {
-      currentHistoryPage = 1;
-      renderAlarmHistory();
-      console.log(`📄 히스토리 섹션 업데이트: 페이지=${currentHistoryPage}, 필터=${dataTypeFilter}`);
-    }
-
-    document.getElementById("prevLog").addEventListener("click", () => {
-      if (currentHistoryPage > 1) {
-        currentHistoryPage--;
-        renderAlarmHistory();
-        console.log(`📄 히스토리 페이지 이동: 이전 페이지=${currentHistoryPage}`);
-      }
-    });
-
-    document.getElementById("nextLog").addEventListener("click", () => {
-      if (currentHistoryPage * historyPerPage < alarmHistory.length) {
-        currentHistoryPage++;
-        renderAlarmHistory();
-        console.log(`📄 히스토리 페이지 이동: 다음 페이지=${currentHistoryPage}`);
-      }
-    });
-
-    function addToHistory(message, tankNumber, status, timestamp) {
-      const now = timestamp ? new Date(timestamp) : new Date();
-      const date = now.toISOString().slice(0, 10);
-      const time = now.toTimeString().slice(0, 5);
-      const hist = {
-        date,
-        time,
-        tankNumber,
-        message,
-        status,
-        createdAt: now.getTime()
-      };
-
-      alarmHistory.unshift(hist);
+    isFetching = true;
+    loadingDiv.style.display = "block";
+    try {
+      const response = await fetch(`/api/alarms/all`);
+      if (!response.ok) throw new Error('API 응답 오류');
+      const data = await response.json();
+      console.log("📡 alarmHistory2.html - API 응답 데이터:", data);
+      alarmHistory = data
+        .filter(alarm => alarm.alarmRead === 'Y')
+        .map(alarm => {
+          console.log("🔍 매핑 중인 알람:", alarm);
+          return {
+            tankNumber: alarm.tank && alarm.tank.tankIdx ? `T${alarm.tank.tankIdx}` : 'Unknown',
+            date: new Date(alarm.alarmCreatedAt).toISOString().slice(0, 10),
+            time: new Date(alarm.alarmCreatedAt).toTimeString().slice(0, 5),
+            message: alarm.alarmMsg || '알람 메시지 없음',
+            status: "읽음",
+            createdAt: new Date(alarm.alarmCreatedAt).getTime()
+          };
+        })
+        .sort((a, b) => b.createdAt - a.createdAt);
+      console.log("📋 매핑 및 정렬된 알람 히스토리:", alarmHistory);
       updateHistorySection();
-      console.log(`🔔 새로운 히스토리 추가: ${message} (수조 ${tankNumber})`);
+    } catch (error) {
+      console.error('데이터 가져오기 실패:', error);
+      addToHistory('시스템: 데이터 로드 실패', 'Unknown', '읽음');
+    } finally {
+      loadingDiv.style.display = "none";
+      isFetching = false;
     }
+  }
 
-    function playAlarmSound() {
-      console.log("🔇 알람 소리 재생 비활성화됨");
-    }
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdown = document.querySelector(".custom-dropdown");
+    const selected = dropdown.querySelector(".dropdown-selected");
+    const options = dropdown.querySelector(".dropdown-options");
 
-    async function fetchAlarmData() {
-      loadingDiv.style.display = "block";
-      try {
-        const response = await fetch(`/api/alarms/all`);
-        if (!response.ok) throw new Error('API 응답 오류');
-        const data = await response.json();
-        console.log("📡 alarmHistory2.html - API 응답 데이터:", data);
-        alarmHistory = data
-          .filter(alarm => alarm.alarmRead === 'Y')
-          .map(alarm => {
-            console.log("🔍 매핑 중인 알람:", alarm);
-            return {
-              tankNumber: alarm.tank && alarm.tank.tankIdx ? `T${alarm.tank.tankIdx}` : 'Unknown',
-              date: new Date(alarm.alarmCreatedAt).toISOString().slice(0, 10),
-              time: new Date(alarm.alarmCreatedAt).toTimeString().slice(0, 5),
-              message: alarm.alarmMsg || '알람 메시지 없음',
-              status: "읽음",
-              createdAt: new Date(alarm.alarmCreatedAt).getTime()
-            };
-          });
-        console.log("📋 매핑된 알람 히스토리:", alarmHistory);
+    selected.addEventListener("click", () => {
+      options.classList.toggle("active");
+      console.log(`🔍 드롭다운 토글: ${options.classList.contains("active") ? "열림" : "닫힘"}`);
+    });
+
+    options.querySelectorAll("li").forEach(option => {
+      option.addEventListener("click", () => {
+        dataTypeFilter = option.getAttribute("data-value");
+        selected.textContent = option.textContent;
+        options.classList.remove("active");
         updateHistorySection();
-      } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
-        addToHistory('시스템: 데이터 로드 실패', 'Unknown', '읽음');
-      } finally {
-        loadingDiv.style.display = "none";
+        console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target)) {
+        options.classList.remove("active");
       }
-    }
+    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // 커스텀 드롭다운 설정
-      const dropdown = document.querySelector(".custom-dropdown");
-      const selected = dropdown.querySelector(".dropdown-selected");
-      const options = dropdown.querySelector(".dropdown-options");
+    hamburgerBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`);
+    });
 
-      selected.addEventListener("click", () => {
-        options.classList.toggle("active");
-        console.log(`🔍 드롭다운 토글: ${options.classList.contains("active") ? "열림" : "닫힘"}`);
-      });
-
-      options.querySelectorAll("li").forEach(option => {
-        option.addEventListener("click", () => {
-          dataTypeFilter = option.getAttribute("data-value");
-          selected.textContent = option.textContent; // 선택된 텍스트 업데이트
-          options.classList.remove("active"); // 드롭다운 닫기
-          updateHistorySection();
-          console.log(`🔍 데이터 타입 필터 변경: ${dataTypeFilter}`);
-        });
-      });
-
-      // 외부 클릭 시 드롭다운 닫기
-      document.addEventListener("click", (e) => {
-        if (!dropdown.contains(e.target)) {
-          options.classList.remove("active");
-        }
-      });
-
-      hamburgerBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-        console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`);
-      });
-
-      const toggleMenus = document.querySelectorAll(".toggle-menu");
-      toggleMenus.forEach(menu => {
-        menu.addEventListener("click", (e) => {
-          const subMenu = menu.nextElementSibling;
-          if (subMenu && subMenu.classList.contains("sub-menu")) {
-            e.preventDefault();
-            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-            console.log(`📂 서브메뉴 토글: ${menu.textContent} - ${subMenu.style.display}`);
-          }
-        });
-      });
-
-      fetchAlarmData();
-      setInterval(fetchAlarmData, 5000);
-
-      window.addEventListener('storage', (event) => {
-        if (event.key === 'alarmUpdated') {
-          console.log("🔔 알람 업데이트 감지, 데이터 갱신 중...");
-          fetchAlarmData();
+    const toggleMenus = document.querySelectorAll(".toggle-menu");
+    toggleMenus.forEach(menu => {
+      menu.addEventListener("click", (e) => {
+        const subMenu = menu.nextElementSibling;
+        if (subMenu && subMenu.classList.contains("sub-menu")) {
+          e.preventDefault();
+          subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
+          console.log(`📂 서브메뉴 토글: ${menu.textContent} - ${subMenu.style.display}`);
         }
       });
     });
-  </script>
+
+    fetchAlarmData();
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'alarmUpdated') {
+        console.log("🔔 알람 업데이트 감지, 데이터 갱신 중...");
+        clearTimeout(fetchTimeout);
+        fetchTimeout = setTimeout(() => {
+          fetchAlarmData();
+        }, 500);
+      }
+    });
+  });
+</script>
 </body>
 </html>
