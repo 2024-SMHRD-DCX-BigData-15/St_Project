@@ -453,20 +453,20 @@ body {
   text-decoration: underline;
 }
 
-/* 햄버거  */
+/* 햄버거 버튼 스타일 */
 .hamburger-btn {
   position: fixed;
-  top: 40px;
+  top: 10px;
   left: 10px;
   background: rgba(99, 102, 241, 0.2);
   border: none;
-  color: #FFFFFF;
+  color: #FFFFFF; /* 변경 */
   font-size: 24px;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
-  z-index: 3100;
-  transition: background-color 0.3s ease;
+  z-index: 1100;
+  transition: background-color 0.3s;
 }
 
 .hamburger-btn:hover {
