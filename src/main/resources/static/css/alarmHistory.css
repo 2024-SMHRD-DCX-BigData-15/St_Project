@@ -137,7 +137,7 @@ body {
   backdrop-filter: blur(42px) brightness(100%);
   background: rgba(31, 41, 68, 0.9);
   border: 1px solid #4B5EAA;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 8px;
   font-size: 14px;
   color: #ffffff;
@@ -541,7 +541,7 @@ body {
   font-size: 16px;
   display: block;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: background-color 0.3s, color 0.3s;
 }
 
