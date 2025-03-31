@@ -521,7 +521,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 500, easing: 'easeOutCubic' },
+            animation: { duration: 1000*10, easing: 'easeOutCubic' },
             scales: { x: { title: { display: true, color: "#ffffff", font: { size: 14 } }, ticks: { color: "#ffffff", font: { size: 12 } } }, y: { ticks: { color: "#ffffff", font: { size: 12 } }, beginAtZero: true } },
             plugins: { legend: { display: false }, title: { display: true, text: `${label} 데이터 (${dateRangeText})`, color: "#ffffff", font: { size: 16 }, padding: { top: 10, bottom: 20 } } }
           }
@@ -543,7 +543,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 500, easing: 'easeOutCubic' },
+            animation: { duration: 1000*10, easing: 'easeOutCubic' },
             scales: { x: { title: { display: true, text: "실시간 데이터", color: "#ffffff" }, ticks: { color: "#ffffff" } }, y: { ticks: { color: "#ffffff" } } },
             plugins: { legend: { display: false }, title: { display: true, text: "실시간 데이터", color: "#ffffff", font: { size: 16 } } }
           }
@@ -679,7 +679,7 @@
         const ctx = canvas.getContext("2d");
         const canvasWidth = canvas.width, canvasHeight = canvas.height;
         const startAngle = angles[chartId].current, targetAngle = angles[chartId].target;
-        const duration = 600;
+        const duration = 1000*10;
         let startTime = null;
         function step(timestamp) {
           if (!startTime) startTime = timestamp;
@@ -829,7 +829,7 @@
       }
 
       updateTankData(tankIdx);
-      setInterval(() => updateTankData(tankIdx), 700);
+      setInterval(() => updateTankData(tankIdx), 1000*10);
 
       const cardElements = document.querySelectorAll('.card');
       cardElements.forEach(card => {
@@ -938,7 +938,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 700, easing: 'easeOutCubic' },
+            animation: { duration: 1000*10, easing: 'easeOutCubic' },
             scales: { x: { title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, ticks: { color: '#ffffff', font: { size: 12 } }, grid: { display: false } }, y: { ticks: { color: "#ffffff", font: { size: 12 } }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } },
             plugins: { legend: { display: false }, title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } }, flowEffect: false }
           }
@@ -976,7 +976,7 @@
       }
 
       let lastUpdateTime = 0;
-      const updateInterval = 700;
+      const updateInterval = 1000*10;
 
       function fetchLatestTankDataForGraph(chartId, dataKey, labels, values, smoothedValues, chart) {
         const now = performance.now();
@@ -1005,7 +1005,7 @@
                 chart.data.datasets[0].data = smoothedData;
                 chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => getColor(val, range).status === 'warning' ? '#E57373' : '#66BB6A');
                 chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
-                chart.update({ duration: 700, easing: 'easeOutCubic' });
+                chart.update({ duration: 1000*10, easing: 'easeOutCubic' });
               } else {
                 const rangeIndex = chartIndexMap[chartId];
                 const range = ranges[rangeIndex];
@@ -1017,7 +1017,7 @@
                 chart.data.datasets[0].data = smoothedData;
                 chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => getColor(val, range).status === 'warning' ? '#E57373' : '#66BB6A');
                 chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
-                chart.update({ duration: 700, easing: 'easeOutCubic' });
+                chart.update({ duration: 1000*10, easing: 'easeOutCubic' });
               }
             })
             .catch(err => {
@@ -1034,7 +1034,7 @@
               chart.data.datasets[0].data = smoothedData;
               chart.data.datasets[0].pointBackgroundColor = smoothedData.map(val => getColor(val, range).status === 'warning' ? '#E57373' : '#66BB6A');
               chart.options.animationProgress = (chart.options.animationProgress || 0) + 0.03;
-              chart.update({ duration: 700, easing: 'easeOutCubic' });
+              chart.update({ duration: 1000*10, easing: 'easeOutCubic' });
             });
         }
       }
