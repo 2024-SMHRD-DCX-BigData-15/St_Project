@@ -366,7 +366,7 @@ body {
 }
 
 .alarm-dashboard-screen tr.warning td {
-  animation: blink 1s infinite;
+  animation: blink-warning 1s infinite;
 }
 
 /* 🔥 추가: 위험 알람도 깜빡이게! */
@@ -378,6 +378,12 @@ body {
   0% { background-color: rgba(255, 77, 77, 0.8); }
   50% { background-color: transparent; }
   100% { background-color: rgba(255, 77, 77, 0.8); }
+}
+
+@keyframes blink-warning {
+  0% { background-color: rgba(204, 153, 0, 0.8); }
+  50% { background-color: transparent; }
+  100% { background-color: rgba(204, 153, 0, 0.8); }
 }
 
 .alarm-dashboard-screen .action.unconfirmed {
