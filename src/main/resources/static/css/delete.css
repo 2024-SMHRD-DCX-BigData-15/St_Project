@@ -1,10 +1,4 @@
 /* 회원 탈퇴 페이지 기본 설정 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .delete-screen {
     align-items: center;
     justify-content: center;
@@ -205,18 +199,18 @@
 
 /* 햄버거 */
 .hamburger-btn {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: rgba(99, 102, 241, 0.2);
-    border: none;
-    color: #FFFFFF;
-    font-size: 24px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    z-index: 3100;
-    transition: background-color 0.3s ease;
+  position: fixed;
+  top: 40px;
+  left: 10px;
+  background: rgba(99, 102, 241, 0.2);
+  border: none;
+  color: #FFFFFF;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 3100;
+  transition: background-color 0.3s ease;
 }
 
 .hamburger-btn:hover {
@@ -315,4 +309,10 @@
 input:-internal-autofill-selected {
     background-color: rgba(31, 41, 68, 0.9) !important;
     color: #FFFFFF !important;
+}
+
+@media (max-width: 600px) {
+  .hamburger-btn {
+    font-size: 20px;
+  }
 }

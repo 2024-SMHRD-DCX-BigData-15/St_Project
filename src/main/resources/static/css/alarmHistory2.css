@@ -1,10 +1,4 @@
 /* 기본 설정 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
   height: 100vh;
@@ -420,20 +414,20 @@ body {
   text-decoration: underline;
 }
 
-/* 햄버거 버튼 스타일 */
+/* 햄버거 */
 .hamburger-btn {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: rgba(99, 102, 241, 0.2);
-    border: none;
-    color: #FFFFFF;
-    font-size: 24px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    z-index: 3100;
-    transition: background-color 0.3s ease;
+  position: fixed;
+  top: 40px;
+  left: 10px;
+  background: rgba(99, 102, 241, 0.2);
+  border: none;
+  color: #FFFFFF;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 3100;
+  transition: background-color 0.3s ease;
 }
 
 .hamburger-btn:hover {
@@ -673,8 +667,7 @@ body {
     padding: 3px 8px;
   }
   .hamburger-btn {
-    top: 10px;
-    left: 10px;
+    font-size: 20px;
   }
   .header-content {
     flex-direction: column;
