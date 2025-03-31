@@ -1,4 +1,10 @@
 /* 회원 탈퇴 페이지 기본 설정 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .delete-screen {
     align-items: center;
     justify-content: center;
@@ -209,7 +215,7 @@
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
-  z-index: 1100;
+  z-index: 3100;
   transition: background-color 0.3s;
 }
 
