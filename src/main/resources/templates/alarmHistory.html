@@ -147,8 +147,6 @@
     const sidebar = document.getElementById("sidebar");
     const hamburgerBtn = document.getElementById("hamburgerBtn");
 
-    //hamburgerBtn.style.zIndex = "1200";
-
     const escapeHTML = (str) => {
       const div = document.createElement("div");
       div.textContent = str;
@@ -175,7 +173,6 @@
             <td class="action ${log.action === '미확인' ? 'unconfirmed' : 'confirmed'}">${escapeHTML(log.action)}</td>
             <td>${escapeHTML(log.duration)}</td>
           `;
-          // 디버깅: 렌더링 시 duration 값 확인
           console.log(`🎨 로그 렌더링 - timestamp: ${log.timestamp}, duration: ${log.duration}`);
           row.querySelector(".action").addEventListener("click", () => confirmLog(alarmLogs.indexOf(log)));
         } else {
@@ -208,6 +205,7 @@
       currentLogPage = 1;
       renderAlarmLog();
       updateSummaryStats();
+      console.log(`📄 로그 섹션 업데이트: 현재 페이지=${currentLogPage}`);
     }
 
     document.getElementById("prevLog").addEventListener("click", () => {
@@ -296,21 +294,14 @@
         const data = await response.json();
         console.log("📡 alarmHistory.html - API 응답 데이터:", data);
 
-        // 수정: 기존 alarmLogs와 새로운 데이터를 병합하여 duration 유지
         const newLogs = data
           .filter(alarm => alarm.alarmRead === 'N')
           .map(alarm => {
             const msgParts = alarm.alarmMsg.split(" ");
             const status = alarm.alarmMsg.includes("⚠️ 경고") ? "⚠️ 경고" : "🚨 위험";
             const createdAt = new Date(alarm.alarmCreatedAt).getTime();
-            // 디버깅: createdAt 값 확인
-            console.log(`🕒 fetchAlarmData - alarmCreatedAt: ${alarm.alarmCreatedAt}, createdAt (ms): ${createdAt}`);
-
-            // 기존 로그에서 동일한 alarmNum을 가진 로그 찾기
             const existingLog = alarmLogs.find(log => log.alarmNum === alarm.alarmNum);
             const duration = existingLog ? existingLog.duration : calculateDuration(createdAt);
-            // 디버깅: duration 값 확인
-            console.log(`🕒 fetchAlarmData - alarmNum: ${alarm.alarmNum}, duration: ${duration}`);
 
             return {
               alarmNum: alarm.alarmNum,
@@ -324,8 +315,10 @@
             };
           });
 
-        // 새로운 로그로 alarmLogs 갱신 (중복 제거)
+        newLogs.sort((a, b) => b.createdAt - a.createdAt);
+
         alarmLogs = newLogs;
+
         console.log(`📋 매핑된 알람 로그:`, alarmLogs);
         updateLogSection();
       } catch (error) {
@@ -336,46 +329,29 @@
       }
     }
 
-    // 추가: 지속 시간 계산 함수
     function calculateDuration(createdAt) {
-      // 디버깅: createdAt 값 확인
       console.log(`🕒 calculateDuration 호출 - createdAt: ${createdAt}`);
-
       const now = new Date().getTime();
-      // 디버깅: 현재 시간 확인
       console.log(`🕒 현재 시간 (ms): ${now}`);
-
       const diffMs = now - createdAt;
-      // 디버깅: 시간 차이 계산
       console.log(`🕒 시간 차이 (ms): ${diffMs}`);
-
       const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      // 디버깅: 분 단위로 변환
       console.log(`🕒 시간 차이 (분): ${diffMinutes}`);
-
       return `${diffMinutes}분`;
     }
 
-    // 추가: 지속 시간 업데이트 함수
     function updateDurations() {
-      // 디버깅: alarmLogs 배열 확인
       console.log(`🔄 updateDurations 호출 - alarmLogs:`, alarmLogs);
-
       alarmLogs.forEach(log => {
         if (log.createdAt) {
           log.duration = calculateDuration(log.createdAt);
-          // 디버깅: 각 로그의 지속 시간 업데이트 확인
           console.log(`🕒 로그 지속 시간 업데이트 - timestamp: ${log.timestamp}, duration: ${log.duration}`);
         } else {
-          // 디버깅: createdAt이 없는 경우
           console.warn(`⚠️ createdAt 값이 없는 로그:`, log);
           log.duration = "0분";
         }
       });
-
-      // 테이블 다시 렌더링
       renderAlarmLog();
-      // 디버깅: 테이블 렌더링 완료
       console.log(`✅ 테이블 렌더링 완료 - 지속 시간 업데이트 후`);
     }
 
@@ -407,7 +383,6 @@
 
       hamburgerBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
-        //hamburgerBtn.style.display = "block";
         console.log(`🍔 사이드바 토글: ${sidebar.classList.contains("active") ? "열림" : "닫힘"}`);
       });
 
@@ -425,11 +400,8 @@
 
       fetchAlarmData();
       setInterval(fetchAlarmData, 5000);
-
-      // 추가: 지속 시간 업데이트 주기 설정 (1분마다 업데이트)
-      updateDurations(); // 초기 실행
-      setInterval(updateDurations, 60000); // 1분(60000ms)마다 업데이트
-      // 디버깅: 지속 시간 업데이트 주기 설정 완료
+      updateDurations();
+      setInterval(updateDurations, 60000);
       console.log(`⏲️ 지속 시간 업데이트 주기 설정 완료 - 1분마다 실행`);
     });
   </script>
