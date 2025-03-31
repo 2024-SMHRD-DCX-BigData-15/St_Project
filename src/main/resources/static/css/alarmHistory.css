@@ -363,6 +363,11 @@ body {
   animation: blink 1s infinite;
 }
 
+/* 🔥 추가: 위험 알람도 깜빡이게! */
+.alarm-dashboard-screen tr.danger td {
+  animation: blink 1s infinite;
+}
+
 @keyframes blink {
   0% { background-color: rgba(255, 77, 77, 0.8); }
   50% { background-color: transparent; }
