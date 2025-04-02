@@ -27,8 +27,8 @@ public class MemberEntity {
     @Column(name = "user_phone", length = 20)
     private String userPhone;
 
-    @Column(name = "user_status", length = 1, nullable = false)
-    private char userStatus;
+    @Column(name = "user_status", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private char userStatus = 'Y'; // 자바 클래스 내에서도 초기값 지정
 
     @Column(name = "user_role", length = 1, nullable = false)
     private char userRole;

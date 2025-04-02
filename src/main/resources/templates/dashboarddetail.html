@@ -679,7 +679,7 @@
         const ctx = canvas.getContext("2d");
         const canvasWidth = canvas.width, canvasHeight = canvas.height;
         const startAngle = angles[chartId].current, targetAngle = angles[chartId].target;
-        const duration = 1000*10;
+        const duration = 1000*3;
         let startTime = null;
         function step(timestamp) {
           if (!startTime) startTime = timestamp;
@@ -938,7 +938,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 1000*10, easing: 'easeOutCubic' },
+            animation: { duration: 1000, easing: 'easeOutCubic' },
             scales: { x: { title: { display: true, text: '실시간 데이터', color: '#ffffff', font: { size: 14 } }, ticks: { color: '#ffffff', font: { size: 12 } }, grid: { display: false } }, y: { ticks: { color: "#ffffff", font: { size: 12 } }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } },
             plugins: { legend: { display: false }, title: { display: true, text: label, color: '#ffffff', font: { size: 16 }, padding: { top: 10, bottom: 20 } }, flowEffect: false }
           }

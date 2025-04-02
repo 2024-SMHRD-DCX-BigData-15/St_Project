@@ -41,7 +41,7 @@ public class MemberController {
         memberEntity.setUserName(userName);
         memberEntity.setUserAdd(userAdd);
         memberEntity.setUserPhone(userPhone);
-        memberEntity.setUserStatus('N');
+        memberEntity.setUserStatus('Y');
         memberEntity.setUserRole('1');
         memberEntity.setJoinedAt(Timestamp.valueOf(LocalDateTime.now()));
         // 회원 정보 저장
